@@ -1,0 +1,26 @@
+@import './base.css';
+
+body, h3{
+  margin: 0;
+}
+
+.fs-30{
+  font-size: 30px;
+}
+.mt-2{
+  margin-top: 2rem;
+}
+
+.table-title {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+:deep(.el-dialog .el-input__wrapper) {
+  flex-grow: 0 !important;
+  width: 28rem !important;
+}
+:deep(.el-dialog .el-input__inner) {
+  flex-grow: 0 !important;
+  width: 28rem !important;
+}
