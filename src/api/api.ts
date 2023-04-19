@@ -43,13 +43,28 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
-/**
- * @description 获取应急资源
- * 
- */
-export const getEmergencyResource=function(payload={}){
+//获取应急资源列表
+export const emergencyResource=function(payload={}){
     return $axios.get('/emergency-resource',payload)
 }
+//增加应急资源
+export const addEmergencyResource=function(payload={}){
+    return $axios.post('/emergency-resource',payload)
+}
+// 删除应急资源
+export const deleteEmergencyResource=function(id:number,payload={}){
+    return  $axios.delete('/emergency-resource/'+id,payload)
+}
+// 更新应急资源
+export const updateEmergencyResource=function(id:number,payload={}){
+    return $axios.patch('/emergency-resource/'+id,payload)
+}
+// 查询应急资源详情
+export const  getEmergencyResource=function(id:number,payload={}){
+    return $axios.get('/emergency-resource/'+id,payload)
+}
+
+// 
 // 获取应急事件列表
 export const emergencyEventList = function (payload = {}) {
     return $axios.get('/emergencyEvent', payload);
