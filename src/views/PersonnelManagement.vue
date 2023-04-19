@@ -1,101 +1,76 @@
 <template>
-  <div class="job-list">
-    <div class="main">
-      <div class="table-title">人员管理</div>
-      <div class="search mt-2">
-        <div class="search-left">
-          <el-input
-            v-model="form.work_time"
-            clearable
-            size="large"
-            class="ipt-search"
-            placeholder="根据关停原因查询"
-          ></el-input>
-          <el-button type="primary" @click="search" size="large">搜索</el-button>
+     <div class="user-list">
+        <div class="header">
+            <div class="search">
+                <el-input v-model="from.avatarName" size="small" class="ipt-search" placeholder="搜索员工"></el-input>
+                <el-select v-model="from.deptNo" multiple collapse-tags size="small" @change="selectChange"
+                    placeholder="请选择部门">
+                    <el-option v-for="item in newDeptNoList" :key="item.deptId" :label="item.name" :value="item.deptId">
+                    </el-option>
+                </el-select>
+                <el-select v-model="from.roles" size="small" clearable placeholder="请选择职位">
+                    <el-option v-for="(item, index) in newPosition" :key="index" :label="item.value" :value="item.id">
+                    </el-option>
+                </el-select>
+                <!-- <el-date-picker v-model="from.time" size="small" type="date" placeholder="选择入职日期">
+                </el-date-picker> -->
+                <el-input v-model="from.phoneNumber" size="small" class="ipt-search" placeholder="搜索手机号"></el-input>
+                <el-button type="primary" size="small" @click="search">搜索</el-button>
+                <el-button type="info" class="clear" size="small" @click="clear">清除</el-button>
+            </div>
+            <el-button type="primary" @click="dialogFormVisible = true" size="small">添加员工</el-button>
+            <el-dialog title="添加成员" class="dialog" width="30%" :visible.sync="dialogFormVisible">
+                <from-world ref="fromworld"></from-world>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+                </div>
+            </el-dialog>
         </div>
-        <el-button type="primary" @click="jobReport" size="large">添加人员信息</el-button>
-        <el-dialog title="检修信息" v-model="dialogFormVisible" width="50%">
-          <el-form :model="addForm" size="mini">
-            <el-form-item label="日期" :label-width="formLabelWidth">
-              <el-date-picker
-                v-model="addForm.work_type"
-                type="date"
-                placeholder="选择日期"
-                :size="size"
-              />
-            </el-form-item>
-            <el-form-item label="关停原因" :label-width="formLabelWidth">
-              <el-input v-model="addForm.work_time" autocomplete="off" placeholder="请输入关停原因"></el-input>
-            </el-form-item>
-            <el-form-item label="关停时间" :label-width="formLabelWidth">
-              <el-time-picker v-model="addForm.work_location" placeholder="请选择关停时间" />
-            </el-form-item>
-            <el-form-item label="检修内容" :label-width="formLabelWidth">
-              <el-input v-model="addForm.pre_conditions" autocomplete="off" placeholder="请输入检修内容"></el-input>
-            </el-form-item>
-            <el-form-item label="修理时间" :label-width="formLabelWidth">
-              <el-input
-                type="number"
-                v-model="addForm.security_measures"
-                autocomplete="off"
-                placeholder="请输入修理时间"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="重启时间" :label-width="formLabelWidth">
-              <el-date-picker v-model="addForm.submit_time" type="datetime" placeholder="选择日期时间"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="责任人" :label-width="formLabelWidth">
-              <el-input v-model="addForm.status" autocomplete="off" placeholder="请输入责任人姓名"></el-input>
-            </el-form-item>
-          </el-form>
-          <template #footer>
-            <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="addInformation" size="mini">确 定</el-button>
-          </template>
-        </el-dialog>
-      </div>
-      <div class="table">
-        <el-table
-          :data="newTableData"
-          class="table-content"
-          style="width: 100%"
-          :header-cell-style="headerCellStyle"
-          :cell-style="cellStyle"
-        >
-          <el-table-column label="日期" width="auto">
-            <template #default="scope">{{ filTime(scope.row.work_type) }}</template>
-          </el-table-column>
-          <el-table-column prop="work_time" label="关停原因" width="auto"></el-table-column>
-          <el-table-column prop="work_location" label="关停时间" width="auto"></el-table-column>
-          <el-table-column prop="pre_conditions" label="检修内容" width="auto"></el-table-column>
-          <el-table-column prop="security_measures" label="修理时间(时)" width="auto"></el-table-column>
-          <el-table-column prop="submit_time" label="重启时间" width="auto"></el-table-column>
-          <el-table-column prop="status" label="责任人" width="auto"></el-table-column>
-          <el-table-column prop="operate" label="操作" width="auto">
-            <template #default="scope">
-              <el-button
-                link
-                type="primary"
-                size="small"
-                @click.prevent="deleteRow(scope.$index)"
-              >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
-          :page-size="pagingItem"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="val"
-        ></el-pagination>
-      </div>
+        <div class="news mt-20" v-if="flag">
+            <div class="news-content">
+                <span class="salary">工资条一对一发放至员工！安全可靠！</span>
+                <span class="free-use">免费使用>></span>
+            </div>
+            <div class="delete" @click="remove">×</div>
+        </div>
+        <div class="container mt-20">
+            <el-table :data="newUserList" border style="width: 100%" max-height="300">
+                <el-table-column prop="id" label="入职日期" align="center" width="auto">
+                </el-table-column>
+                <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
+                </el-table-column>
+                <el-table-column align="center" label="部门" width="auto">
+                    <template slot-scope="scope">
+                        {{ department(scope.row.deptNo) }}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="职位" width="auto">
+                    <template slot-scope="scope">
+                        {{ position(scope.row.roles) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="phoneNumber" align="center" label="手机号" width="auto">
+                    <template slot-scope="scope">
+                        {{ newPhoneNumber(scope.row.phoneNumber) }}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="操作" width="auto">
+                    <template slot-scope="scope">
+                        <el-link @click="handleClick(scope.row)" class="table-link" :underline="false"
+                            type="primary">查看</el-link>
+                        <el-link type="primary" class="table-link" :underline="false">编辑</el-link>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <div class="block mt-20">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                :page-sizes="[1, 2, 5, 10, 20]" :page-size="pagingItem" layout="total, sizes, prev, pager, next, jumper"
+                :total="val">
+            </el-pagination>
+        </div>
     </div>
-  </div>
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
@@ -356,68 +331,67 @@ const jobReport = function () {
 }
 </script>
 <style scoped lang="scss">
-.job-list {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  box-sizing: border-box;
+.user-list {
+    padding: 30px;
+    min-width: 800px;
 
-  .main {
-    height: 100%;
-    box-sizing: border-box;
-
-    .search {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-
-      .search-left {
+    .header {
         display: flex;
-        gap: 1rem;
+        justify-content: space-between;
+        gap: 20px;
 
-        .clear {
-          margin: 0;
+        .search {
+            display: flex;
+            gap: 20px;
+
+            .ipt-search {
+                width: 188px;
+            }
+
+            .clear {
+                margin: 0;
+            }
         }
 
-        .ipt-search {
-          width: 20rem;
+       
+
+    }
+
+    .news {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e5f7ff;
+        border: 1px solid #c8ecff;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 1rem;
+
+        .news-content {
+            margin-left: 20px;
+
+            .free-use {
+                cursor: pointer;
+                color: #409eff;
+                margin-left: 50px;
+            }
+
         }
-      }
+
+        .delete {
+            margin-right: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
     }
 
-    .table {
-      margin: 2rem 0;
-      ::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-      }
+    .container {
+        .table-link {
+            font-size: 14px;
+            margin: 0 5px;
+        }
 
-      :v-deep(.cell) {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        line-height: 4rem;
-        padding: 0;
-      }
-
-      .table-clink {
-        font-size: 1.5rem;
-      }
     }
-  }
-}
-.dialog-footer {
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-}
 
-:deep(.el-dialog .el-input__wrapper) {
-  flex-grow: 0 !important;
-  width: 28rem !important;
-}
-:deep(.el-dialog .el-input__inner) {
-  flex-grow: 0 !important;
-  width: 28rem !important;
 }
 </style>

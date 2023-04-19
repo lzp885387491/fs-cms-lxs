@@ -86,3 +86,11 @@ export const updateEmergencyEvent = function (id : number , payload = {}) {
 export const deleteEmergencyEvent = function (id : number , payload = {}) {
     return $axios.delete('/emergencyEvent/' + id, payload);
 }
+// 获取人员信息
+export const getUserListApi = function (payload = {}) {
+    return $axios.delete('/user', payload);
+}
+// 修改人员信息
+export const patchUserListApi = function (id : number , payload = {}) {
+    return $axios.delete('/user/' + id, payload);
+}
