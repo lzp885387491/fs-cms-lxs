@@ -99,7 +99,6 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-// let arr = reactive([])
 let form = reactive({
   planName: ''
 })
@@ -319,7 +318,7 @@ const jobReport = function () {
 <style scoped lang="scss">
 .job-list {
   box-sizing: border-box;
-
+  padding: 3rem;
   .main {
     height: 100%;
     box-sizing: border-box;
