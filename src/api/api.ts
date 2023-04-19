@@ -15,7 +15,7 @@ $axios.interceptors.request.use(config => {
     // 在请求拦截器的请求头里面添加token
     let token = sessionStorage.getItem('token');
     if (config.headers) {
-        config.headers.token = token
+        config.headers.Authorization = 'Bearer ' + token;
     }
     return config
 })
