@@ -43,3 +43,17 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
+/**
+ * @description 创建企业列表
+ * @param payload ""
+ */
+export const createEnterpriseList = function (payload = {}) {
+    return $axios.post('/enterprise', payload);
+}
+/**
+ * @description 获取企业列表
+ * @param payload ""
+ */
+export const getEnterpriseList = function (payload = {}) {
+    return $axios.get('/enterprise', payload);
+}
