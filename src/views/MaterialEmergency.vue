@@ -7,7 +7,7 @@
                     <el-input v-model="form.name" clearable size="large" class="ipt-search"
                         placeholder="根据资源名称查询"></el-input>
 
-                    <!-- <el-button type="primary" @click="search" size="large">搜索</el-button> -->
+                    <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="addResource" size="large">添加应急资源</el-button>
                 <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="50%">
@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { emergencyResource,addEmergencyResource,deleteEmergencyResource,updateEmergencyResource } from '@/api/api'
+import { emergencyResource,addEmergencyResource,deleteEmergencyResource,updateEmergencyResource,getEmergencyResource } from '@/api/api'
 let form = reactive({
     name: ''
 })
@@ -119,6 +119,7 @@ let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
+let searchtableData:any=ref(tableData)
 let totalNum = computed(() => {
     console.log(tableData.value.length);
     return tableData.value.length
@@ -146,11 +147,18 @@ const handleCurrentChange = function (val: any) {
 }
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
-    return tableData.value.slice(
+    return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
     )
 })
+async function getEmergencyResourceApi(params:number){
+    let res=await getEmergencyResource(params);
+    if(res.status==200){
+        console.log(res.data+'查询成功');
+        
+    }
+}
 interface  resource{
     name:string,
     type:string,
@@ -174,7 +182,7 @@ const addInformation = function () {
     if (check(addForm)) {
         console.log(addForm);
         addEmergencyResourceApi(addForm);
-        getEmergencyResourceApi()
+        emergencyResourceApi()
         dialogFormVisible.value = false;
         ElMessage({
             message: '创建成功',
@@ -182,27 +190,27 @@ const addInformation = function () {
         })
     }
 }
-// const search = function () {
-//     let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
-//     let from1: any = ref({
-//         name: {
-//             filter: (key: any) => {
-//                 return !form.name
-//                     ? key
-//                     : key.filter((item: any) => {
-//                         return item.name.includes(form.name)
-//                     })
-//             }
-//         }
-//     })
+const search = function () {
+    let list=reactive(JSON.parse(JSON.stringify(tableData)));
+    let from: any = ref({
+        name: {
+            filter: (list: any) => {
+                return !form.name
+                    ? list
+                    : list.filter((item: any) => {
+                        return item.name.includes(form.name)
+                    })
+            }
+        }
+    })
 
-//     Object.keys(from1).forEach((key1: any) => {
-//         list.values = from1[key1].filter(list)
-//         console.log(list)
-//     })
-//     currentPage.value = 1
-//     searchtableData.value = list.values
-// }
+    Object.keys(from).forEach((key: any) => {
+        list.values = from[key].filter(list)
+        console.log(list)
+    })
+    currentPage.value = 1
+    searchtableData.value = list.values
+}
 const addResource = function () {
     dialogFormVisible.value = true
     Object.assign(addForm, {
@@ -217,7 +225,7 @@ const addResource = function () {
 }
 const deleteRow = (row:any) => {
     deleteEmergencyResourceApi(row.id);
-    getEmergencyResourceApi()
+    emergencyResourceApi()
 }
 const editRow=(row:any)=>{
     console.log(row.id);
@@ -238,13 +246,14 @@ async function deleteEmergencyResourceApi(params:number) {
     
 }
 
-async function getEmergencyResourceApi() {
+async function emergencyResourceApi() {
     let res=await emergencyResource();
     // console.log(res.data);
     tableData.value=res.data; 
+  
     
 }
-getEmergencyResourceApi();
+emergencyResourceApi();
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
