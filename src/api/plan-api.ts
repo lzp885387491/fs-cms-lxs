@@ -1,0 +1,35 @@
+import axios from './api'
+
+interface playoad {
+    id?: number
+}
+
+
+// 创建应急预案列表
+export const createEmergencyPlanList = function (payload = {}) {
+    return axios.post('/emergency-plan', payload);
+}
+
+
+// 获取应急预案列表
+export const getEmergencyPlanList = function (payload = {}) {
+    return axios.get('/emergency-plan', payload);
+}
+
+
+// 获取应急预案详情
+export const getEmergencyPlanDetail = function (payload: playoad = {}) {
+    return axios.get('/emergency/' + payload.id);
+}
+
+
+// 修改应急预案
+export const updateEmergencyPlan = function (payload: playoad = {}) {
+    return axios.patch('/emergency/' + payload.id);
+}
+
+
+// 删除应急预案
+export const deleteEmergencyPlan = function (payload: playoad = {}) {
+    return axios.delete('/emergency/' + payload.id);
+}
