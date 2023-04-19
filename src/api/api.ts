@@ -58,8 +58,8 @@ export const createPark = function (payload : cretaePark) {
  * @description 查询园区信息
  * @param payload
  */
-export const queryParkInfo = function (payload = {}) {
-    return $axios.get('/parkInfo' + "/" + payload.id , payload);
+export const queryParkInfo = function (id:number,payload = {}) {
+    return $axios.get('/parkInfo/' + id , payload);
 }
 /**
  * @description 修改园区信息

@@ -104,7 +104,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { getParkInfo, login } from '@/api/api';
+import { getParkInfo, queryParkInfo } from '@/api/api';
 const visible = ref(false);
 let form = reactive({
   pre_conditions: ''
