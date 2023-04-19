@@ -43,3 +43,10 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
+/**
+ * @description 获取应急资源
+ * 
+ */
+export const getEmergencyResource=function(payload={}){
+    return $axios.get('/emergency-resource',payload)
+}
