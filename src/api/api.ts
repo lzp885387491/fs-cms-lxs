@@ -88,9 +88,9 @@ export const deleteEmergencyEvent = function (id : number , payload = {}) {
 }
 // 获取人员信息
 export const getUserListApi = function (payload = {}) {
-    return $axios.delete('/user', payload);
+    return $axios.get('/user', payload);
 }
 // 修改人员信息
 export const patchUserListApi = function (id : number , payload = {}) {
-    return $axios.delete('/user/' + id, payload);
+    return $axios.patch('/user/' + id, payload);
 }
