@@ -15,7 +15,7 @@ $axios.interceptors.request.use(config => {
     // 在请求拦截器的请求头里面添加token
     let token = sessionStorage.getItem('token');
     if (config.headers) {
-        config.headers.token = token
+        config.headers.Authorization = 'Bearer ' + token;
     }
     return config
 })
@@ -42,4 +42,47 @@ export const login = function (payload = {}) {
  */
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
+}
+/**
+ * @description 创建企业列表
+ * @param payload ""
+ */
+export const createEnterpriseList = function (payload = {}) {
+    return $axios.post('/enterprise', payload);
+}
+/**
+ * @description 获取企业列表
+ * @param payload ""
+ */
+export const getEnterpriseList = function (payload = {}) {
+    return $axios.get('/enterprise', payload);
+}
+export default $axios
+
+/**
+ * @description 获取应急资源
+ * 
+ */
+export const getEmergencyResource=function(payload={}){
+    return $axios.get('/emergency-resource',payload)
+}
+// 获取应急事件列表
+export const emergencyEventList = function (payload = {}) {
+    return $axios.get('/emergencyEvent', payload);
+}
+// 查询应急事件
+export const getEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.get('/emergencyEvent/' + id, payload);
+}
+// 增加应急事件
+export const addEmergencyEvent = function (payload = {}) {
+    return $axios.post('/emergencyEvent', payload);
+}
+// 更新应急事件
+export const updateEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.patch('/emergencyEvent/' + id, payload);
+}
+// 删除应急事件
+export const deleteEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.delete('/emergencyEvent/' + id, payload);
 }
