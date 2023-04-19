@@ -43,7 +43,7 @@ const submit = async function(){
     console.log(res);
     if (res.data.code == 200) {
         sessionStorage.setItem("token",res.data.data.access_token);
-        router.push('/parkInfo');
+        router.push('/ParkCompanyList');
     }else{
         console.log('网络错误');
     }

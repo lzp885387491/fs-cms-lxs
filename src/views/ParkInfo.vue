@@ -136,7 +136,7 @@ const addFormRule: any = reactive({
   workerPerson: '工人人数',
   totalPerson: '总数'
 })
-const Dates = function (time: any) {
+const Dates = function (time: any) :void {
   var date = new Date(time).toJSON()
   var timeft = new Date(+new Date(date))
     .toISOString()
