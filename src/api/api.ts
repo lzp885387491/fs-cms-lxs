@@ -43,3 +43,23 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
+// 获取应急事件列表
+export const emergencyEventList = function (payload = {}) {
+    return $axios.get('/emergencyEvent', payload);
+}
+// 查询应急事件
+export const getEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.get('/emergencyEvent/' + id, payload);
+}
+// 增加应急事件
+export const addEmergencyEvent = function (payload = {}) {
+    return $axios.post('/emergencyEvent', payload);
+}
+// 更新应急事件
+export const updateEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.patch('/emergencyEvent/' + id, payload);
+}
+// 删除应急事件
+export const deleteEmergencyEvent = function (id : number , payload = {}) {
+    return $axios.delete('/emergencyEvent/' + id, payload);
+}
