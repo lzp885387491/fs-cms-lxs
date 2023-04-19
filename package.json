@@ -19,6 +19,8 @@
     "sass": "^1.62.0",
     "sass-loader": "^7.0.3",
     "swagger-ui-express": "^4.6.2",
+    "video.js": "^8.0.4",
+    "videojs-contrib-hls": "^5.15.0",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
