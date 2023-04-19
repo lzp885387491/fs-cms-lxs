@@ -7,14 +7,14 @@
       <el-container class="container">
         <el-aside width="220px">
           <el-menu :default-active="route.name" class="el-menu-vertical-demo">
-            <el-sub-menu :index="item.label" v-for="item in menu">
+            <el-sub-menu :index="item.label" v-for="(item,index) in menu" :key=index>
               <template #title>
                 <el-icon>
                   <component :is="item.icon"></component>
                 </el-icon>
                 <span>{{ item.label }}</span>
               </template>
-              <el-menu-item @click="navigator(children)" :index="children.name" v-for="children in item.children">{{
+              <el-menu-item @click="navigator(children)" :index="children.name" v-for="(children,index) in item.children" :key="index">{{
                 children.label }}</el-menu-item>
             </el-sub-menu>
           </el-menu>
@@ -54,7 +54,7 @@ const menu = [
       },
       {
         label: '人员管理',
-        name: 'deviceOverhaul'
+        name: 'Personnel'
       }
     ]
   },

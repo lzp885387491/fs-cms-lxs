@@ -104,7 +104,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { getParkInfo, login } from '@/api/api';
+import { getParkInfo, queryParkInfo } from '@/api/api';
 const visible = ref(false);
 let form = reactive({
   pre_conditions: ''
@@ -187,71 +187,8 @@ let cellStyle = reactive({
   fontSize: '1.5rem',
   padding: '1rem 0'
 })
-let jobType = reactive([
-  {
-    id: '1',
-    title: '高空作业'
-  },
-  {
-    id: '2',
-    title: '火工品装卸'
-  },
-  {
-    id: '3',
-    title: '危险品包装'
-  },
-  {
-    id: '4',
-    title: '有毒物质接触'
-  },
-  {
-    id: '5',
-    title: '射线处理'
-  },
-  {
-    id: '6',
-    title: '水上作业'
-  }
-])
-let auditStatus = reactive([
-  {
-    id: '1',
-    status: 0,
-    title: '未通过'
-  },
-  {
-    id: '2',
-    status: 1,
-    title: '已通过'
-  }
-])
-let companyName = reactive([
-  {
-    id: '1',
-    name: 'ABC公司'
-  },
-  {
-    id: '2',
-    name: 'DEF公司'
-  },
-  {
-    id: '3',
-    name: 'GHI公司'
-  },
-  {
-    id: '4',
-    name: 'JKL公司'
-  },
-  {
-    id: '5',
-    name: 'MNO公司'
-  }
-])
 const handleSizeChange = function (val: any) {
   pagingItem.value = val
-  console.log(pagingItem.value)
-
-  console.log(val)
 }
 const handleCurrentChange = function (val: any) {
   currentPage.value = val
@@ -327,7 +264,6 @@ const deleteRow = function (index: any) {
 const parkInfoList = async function(){
   let res = await getParkInfo();
   console.log('---------');
-  
   console.log(res);
 }
 parkInfoList();
