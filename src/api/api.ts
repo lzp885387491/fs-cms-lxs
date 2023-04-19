@@ -43,3 +43,5 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
+
+export default $axios
