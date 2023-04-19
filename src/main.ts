@@ -7,8 +7,14 @@ import router from './router'
 import ElementPlus from 'element-plus'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'element-plus/dist/index.css'
-
 import './assets/main.css'
+import 'video.js/dist/video-js.css'
+import Video from 'video.js'
+import video_zhCN from 'video.js/dist/lang/zh-CN.json'
+import video_en from 'video.js/dist/lang/en.json'
+
+Video.addLanguage('zh-CN', video_zhCN);
+Video.addLanguage('en', video_en);
 
 const app = createApp(App)
 
