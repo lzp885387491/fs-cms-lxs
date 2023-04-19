@@ -1,7 +1,7 @@
 <template>
   <div class="job-list">
     <div class="main">
-      <div class="table-title">装置开停车和大检修</div>
+      <div class="table-title">人员管理</div>
       <div class="search mt-2">
         <div class="search-left">
           <el-input
@@ -13,7 +13,7 @@
           ></el-input>
           <el-button type="primary" @click="search" size="large">搜索</el-button>
         </div>
-        <el-button type="primary" @click="jobReport" size="large">添加检修信息</el-button>
+        <el-button type="primary" @click="jobReport" size="large">添加人员信息</el-button>
         <el-dialog title="检修信息" v-model="dialogFormVisible" width="50%">
           <el-form :model="addForm" size="mini">
             <el-form-item label="日期" :label-width="formLabelWidth">
