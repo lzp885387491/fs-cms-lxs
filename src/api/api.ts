@@ -22,10 +22,13 @@ $axios.interceptors.request.use(config => {
 
 $axios.interceptors.response.use(function (response) {
     // if (response.data.status == 401) {
-    //     // window.location.href = '/login'
+    //     window.location.href = '/login'
     // }
     return response;
 }, function (error) {
+    if (error.response.data.status == 401) {
+        window.location.href = '/login'
+    }
     return Promise.reject(error);
 })
 
