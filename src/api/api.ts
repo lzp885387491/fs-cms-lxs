@@ -46,6 +46,13 @@ export const getParkInfo = function (payload = {}) {
 
 export default $axios
 
+/**
+ * @description 获取应急资源
+ * 
+ */
+export const getEmergencyResource=function(payload={}){
+    return $axios.get('/emergency-resource',payload)
+}
 // 获取应急事件列表
 export const emergencyEventList = function (payload = {}) {
     return $axios.get('/emergencyEvent', payload);
