@@ -27,9 +27,9 @@ const router = createRouter({
           component: () => import('../views/ParkCompanyList.vue')
         },
         {
-          path: '/deviceOverhaul',
-          name: 'deviceOverhaul',
-          component: () => import('../views/DeviceOverhaul.vue')
+          path: '/Personnel',
+          name: 'Personnel',
+          component: () => import('../views/PersonnelManagement.vue')
         },
         {
           path: '/chemicalManagement',

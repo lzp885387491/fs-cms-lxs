@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import type { login } from "@/types/xhrPayLoadApi"; //写接口
+import type { cretaePark, updatePark } from '@/types/xhrPayLoadApi';
 
 const BASE_URL = '/api'
 
@@ -22,10 +22,13 @@ $axios.interceptors.request.use(config => {
 
 $axios.interceptors.response.use(function (response) {
     // if (response.data.status == 401) {
-    //     // window.location.href = '/login'
+    //     window.location.href = '/login'
     // }
     return response;
 }, function (error) {
+    if (error.response.data.status == 401) {
+        window.location.href = '/login'
+    }
     return Promise.reject(error);
 })
 
@@ -36,6 +39,7 @@ $axios.interceptors.response.use(function (response) {
 export const login = function (payload = {}) {
     return $axios.post('/auth/login', payload)
 }
+
 /**
  * @description 获取园区列表
  * @param payload ""
@@ -43,6 +47,46 @@ export const login = function (payload = {}) {
 export const getParkInfo = function (payload = {}) {
     return $axios.get('/parkInfo', payload);
 }
+/**
+ * @description 新建园区
+ * @param payload
+ */
+export const createPark = function (payload : cretaePark) {
+    return $axios.post('/parkInfo', payload);
+}
+/**
+ * @description 查询园区信息
+ * @param payload
+ */
+export const queryParkInfo = function (payload = {}) {
+    return $axios.get('/parkInfo' + "/" + payload.id , payload);
+}
+/**
+ * @description 修改园区信息
+ * @param payload
+ */
+export const updateParkInfo = function (payload : updatePark){
+    return $axios.patch('/parkInfo'+"/"+payload.id , payload);
+}
+
+
+
+/**
+ * @description 创建企业列表
+ * @param payload ""
+ */
+export const createEnterpriseList = function (payload = {}) {
+    return $axios.post('/enterprise', payload);
+}
+/**
+ * @description 获取企业列表
+ * @param payload ""
+ */
+export const getEnterpriseList = function (payload = {}) {
+    return $axios.get('/enterprise', payload);
+}
+export default $axios
+
 /**
  * @description 获取应急资源
  * 
@@ -69,4 +113,12 @@ export const updateEmergencyEvent = function (id : number , payload = {}) {
 // 删除应急事件
 export const deleteEmergencyEvent = function (id : number , payload = {}) {
     return $axios.delete('/emergencyEvent/' + id, payload);
+}
+// 获取人员信息
+export const getUserListApi = function (payload = {}) {
+    return $axios.get('/user', payload);
+}
+// 修改人员信息
+export const patchUserListApi = function (id : number , payload = {}) {
+    return $axios.patch('/user/' + id, payload);
 }

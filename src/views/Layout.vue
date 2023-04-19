@@ -54,7 +54,7 @@ const menu = [
       },
       {
         label: '人员管理',
-        name: 'deviceOverhaul'
+        name: 'Personnel'
       }
     ]
   },
