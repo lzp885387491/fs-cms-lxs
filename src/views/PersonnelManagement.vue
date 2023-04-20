@@ -104,6 +104,8 @@ onMounted(() => {
 //调用接口获取人员信息
 let getUserList = async function () {
   await getUserListApi().then(res => {
+    console.log(1111);
+    
     console.log(res);
     tableData.value = JSON.parse(JSON.stringify(res.data.data))
   }).catch(error => {
