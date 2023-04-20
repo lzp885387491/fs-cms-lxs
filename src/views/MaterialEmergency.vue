@@ -23,12 +23,14 @@
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
                             <el-select v-model="addForm.siteId" class="m-2" placeholder="请选择厂区">
-                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
-                                    :value="item.id" />
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name" :value="item.id" />
                             </el-select>
                         </el-form-item>
                         <el-form-item label="资源状态" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.status" autocomplete="off" placeholder="请输入资源状态"></el-input>
+                            <el-select v-model="addForm.status" class="m-2" placeholder="请选择资源状态">
+                                <el-option v-for="item in resourceStatusList" :key="item.id" :label="item.name"
+                                    :value="item.status" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
                             <el-input v-model="addForm.head" autocomplete="off" placeholder="请输入负责人"></el-input>
@@ -57,12 +59,14 @@
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
                             <el-select v-model="editForm.siteId" class="m-2" placeholder="请选择厂区">
-                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
-                                    :value="item.id" />
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name" :value="item.id" />
                             </el-select>
                         </el-form-item>
                         <el-form-item label="资源状态" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.status" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.status" class="m-2" placeholder="请选择资源状态">
+                                <el-option v-for="item in resourceStatusList" :key="item.id" :label="item.name"
+                                    :value="item.status" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
                             <el-input v-model="editForm.head" autocomplete="off"></el-input>
@@ -91,7 +95,11 @@
                             <div>{{ getSiteName(scope.row.siteId) }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="资源状态" width="auto"></el-table-column>
+                    <el-table-column label="资源状态" width="auto">
+                        <template #default="scope">
+                            <div>{{ getStatusName(scope.row.status) }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="head" label="负责人" width="auto"></el-table-column>
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
@@ -99,7 +107,7 @@
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
                             <!-- <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button> -->
                             <el-button link type="danger" size="small" @click.prevent="open(scope.row)">删除
-                            
+
                             </el-button>
                         </template>
                     </el-table-column>
@@ -114,13 +122,36 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ElMessage,ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { factorySiteApi, emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
 let searchForm = reactive({
     name: ''
 })
-let factoryValue=ref('')
+let resourceStatusList = reactive([
+    {
+        id: 1,
+        name: '审核中',
+        status: 'pending'
+    },
+    {
+        id: 2,
+        name: '审核已通过',
+        status: 'approved'
+    },
+    {
+        id: 3,
+        name: '审核已拒绝',
+        status: 'rejected'
+    },
+])
+const getStatusName=function(status:any){
+    return resourceStatusList.find(item=>{
+        console.log(item.status,status)
+        return item.status==status
+    })?.name
+}
+let factoryValue = ref('')
 function check(data: any | undefined) {
     let isType = Object.prototype.toString.call(data)
     let flag = true
@@ -271,13 +302,13 @@ const addResource = function () {
 }
 async function addInformation() {
     console.log(addForm);
-    
+
     if (check(addForm)) {
         console.log(addForm);
         await addEmergencyResource(addForm).then(response => {
             ElMessage.success('添加成功！')
             emergencyResourceApi()
-            
+
         }).catch(error => {
             ElMessage.warning('添加失败！')
         })
@@ -335,25 +366,27 @@ async function deleteRow(row: any) {
     })
     emergencyResourceApi()
 }
-const open=function(row: any){
+const open = function (row: any) {
     ElMessageBox.confirm(
-    '确认要删除吗？',
-    '是否删除',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-    .then(() => {
-       deleteRow(row) 
-    })
+        '确认要删除吗？',
+        '是否删除',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            deleteRow(row)
+        })
 }
 // 获取应急资源列表
 async function emergencyResourceApi() {
     await emergencyResource().then(response => {
         tableData.value = response.data;
-        searchtableData.value = response.data
+        searchtableData.value = response.data;
+        console.log(tableData.value);
+        
     }).catch(error => {
         ElMessage.warning(error.message)
     })
