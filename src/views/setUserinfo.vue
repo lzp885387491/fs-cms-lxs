@@ -1,37 +1,36 @@
 <template>
-    <div>
-        <el-form :model="form" label-width="120px">
-            <el-form-item label="姓名">
-                <el-input v-model="form.name" />
-            </el-form-item>
+    <div class="set-user-info">
+        <div class="form_box">
+            <h2>修改用户信息</h2>
+            <el-form :model="form" label-position="top" label-width="100px">
+                <el-form-item label="姓名">
+                    <el-input v-model="form.avatarName" placeholder="请输入姓名..." />
+                </el-form-item>
 
-            <el-form-item label="联系方式">
-                <el-input v-model="form.phoneNumber" />
-            </el-form-item>
+                <el-form-item label="联系方式">
+                    <el-input v-model="form.phoneNumber" placeholder="请输入联系方式..." />
+                </el-form-item>
 
-            <el-form-item label="身份证号">
-                <el-input v-model="form.identity" />
-            </el-form-item>
+                <el-form-item label="身份证号">
+                    <el-input v-model="form.identityCard" placeholder="请输入身份证号..." />
+                </el-form-item>
 
-            <!-- 职位  下拉列表 \\\ 公司  下拉列表 -->
-            <el-form-item label="职位">
-                <el-select v-model="form.position" placeholder="please select your zone">
-                    <el-option label="职位1" value="职位1Val" />
-                    <el-option label="职位2" value="职位2Val" />
-                </el-select>
-            </el-form-item>
+                <el-form-item label="职位">
+                    <el-input v-model="form.position" disabled placeholder="职位" />
+                </el-form-item>
 
-            <el-form-item label="公司">
-                <el-select v-model="form.enterprife" placeholder="please select your zone">
-                    <el-option label="公司1" value="公司1Val" />
-                    <el-option label="公司2" value="公司2Val" />
-                </el-select>
-            </el-form-item>
+                <el-form-item label="公司">
+                    <el-select v-model="form.enterprise" placeholder="please select your zone">
+                        <el-option label="公司1" value="公司1Val" />
+                        <el-option label="公司2" value="公司2Val" />
+                    </el-select>
+                </el-form-item>
 
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">提交</el-button>
-            </el-form-item>
-        </el-form>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">提交</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
 </template>
 
@@ -39,19 +38,19 @@
 import { reactive } from 'vue'
 import { UpdateUserInfoApi } from '@/api/api'
 interface fromType {
-    name: string,
-    phoneNumber: string,
-    identity: string,
-    position: string,
-    enterprife: string,
+    avatarName: string, // 姓名
+    phoneNumber: string, // 手机号
+    identityCard: string, // 身份证号
+    position: string,  // 职位
+    enterprise: string, // 企业
 }
 
 const form: fromType = reactive({
-    name: '',
+    avatarName: '',
     phoneNumber: '',
-    identity: '',
+    identityCard: '',
     position: '',
-    enterprife: ''
+    enterprise: ''
 })
 
 const onSubmit = () => {
@@ -67,4 +66,29 @@ async function setUserInfo(params: fromType) {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.set-user-info {
+    width: 100%;
+    height: 100%;
+
+    .form_box {
+        width: 500px !important;
+        // background-color: #ccc;
+
+        h2 {
+            padding: 0;
+            margin: 0 0 0 50px;
+        }
+
+        :deep(.el-input) {
+            width: 500px;
+        }
+
+        .el-form {
+            margin: 30px 0 0 30px;
+            width: 500px;
+        }
+
+    }
+}
+</style>
