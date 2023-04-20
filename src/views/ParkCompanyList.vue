@@ -315,7 +315,7 @@ let newTableData = computed(() => {
     width: 28rem !important;
 }
 
-:deep(.el-table) {
-    --el-table-border-color: none
-}
+// :deep(.el-table) {
+//     --el-table-border-color: none
+// }
 </style>
