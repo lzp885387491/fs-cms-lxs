@@ -39,6 +39,13 @@ $axios.interceptors.response.use(function (response) {
 export const login = function (payload = {}) {
     return $axios.post('/auth/login', payload)
 }
+/**
+ * @description 注册
+ * @param payload  object
+ */
+export const register = function (payload = {}) {
+    return $axios.post('/auth/register', payload)
+}
 
 /**
  * @description 获取园区列表
@@ -183,12 +190,17 @@ export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
 }
 // 查询人员信息
-export const whereUserListApi = function (id : any , payload = {}) {
+export const getUserApi = function (id : any , payload = {}) {
     return $axios.get('/user/' + id, payload);
 }
 // 修改人员信息
 export const patchUserListApi = function (id : any , payload = {}) {
     return $axios.patch('/user/' + id, payload);
+}
+
+// 获取位置信息
+export const factorySiteApi=function(payload={}){
+    return $axios.get('/site',payload)
 }
 
 export default $axios

@@ -3,65 +3,58 @@
     <div class="main">
       <div class="table-title">园区基础信息管理</div>
       <div class="search mt-2">
-        <div class="search-left">
-          <el-input
-            v-model="form.pre_conditions"
-            clearable
-            size="large"
-            class="ipt-search"
-            placeholder="根据前置条件查询"
-          ></el-input>
-          <el-button type="primary" @click="search" size="large">搜索</el-button>
-        </div>
+
         <el-button type="primary" @click="jobReport" size="large">添加厂区信息</el-button>
-        <el-dialog title="作业报备" v-model="dialogFormVisible" width="50%">
-          <el-form :model="addForm" size="mini">
-            <el-form-item label="厂区名称" :label-width="formLabelWidth">
+        <el-dialog title="添加厂区信息" v-model="dialogFormVisible" width="50%">
+          <el-form :model="addForm" size="default">
+            <el-form-item label="厂区名称" :required="true" :label-width="formLabelWidth">
               <el-input v-model="addForm.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="法定负责人" :label-width="formLabelWidth">
+            <el-form-item label="法定负责人" :required="true" :label-width="formLabelWidth">
               <el-input v-model="addForm.person" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="厂区面积" :label-width="formLabelWidth">
-              <el-input v-model="addForm.area" autocomplete="off"></el-input>
+            <el-form-item label="厂区面积" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.area" type="text" oninput="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"
+                autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="厂区描述" :label-width="formLabelWidth">
-              <el-input v-model="addForm.describe" autocomplete="off"></el-input>
+            <el-form-item label="厂区描述" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.description" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="厂区创建日期" :label-width="formLabelWidth">
+            <el-form-item label="位置" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.location" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="厂区创建日期" :required="true" :label-width="formLabelWidth">
               <el-date-picker v-model="addForm.createDate" type="datetime" placeholder="选择日期时间"></el-date-picker>
             </el-form-item>
-            <el-form-item label="办公人数" :label-width="formLabelWidth">
-              <el-input v-model="addForm.workPerson" autocomplete="off"></el-input>
+            <el-form-item label="办公人数" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.workPerson" autocomplete="off" type="text"
+                oninput="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"></el-input>
             </el-form-item>
-            <el-form-item label="工人人数" :label-width="formLabelWidth">
-              <el-input v-model="addForm.workerPerson" autocomplete="off"></el-input>
+            <el-form-item label="工人人数" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.workerPerson" autocomplete="off" type="text"
+                oninput="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"></el-input>
             </el-form-item>
-            <el-form-item label="企业总人数" :label-width="formLabelWidth">
-              <el-input v-model="addForm.totalPerson" autocomplete="off"></el-input>
+            <el-form-item label="企业总人数" :required="true" :label-width="formLabelWidth">
+              <el-input v-model="addForm.totalPerson" autocomplete="off" type="text"
+                oninput="value=value.replace(/[^\d.]/g,'')" placeholder="请输入数字"></el-input>
             </el-form-item>
           </el-form>
           <template #footer>
-            <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
-            <el-button type="primary" @click="addInformation" size="mini">确 定</el-button>
+            <el-button @click="dialogFormVisible = false" size="default">取 消</el-button>
+            <el-button type="primary" @click="addInformation" size="default">确 定</el-button>
           </template>
         </el-dialog>
       </div>
       <div class="table mt-2">
-        <el-table
-          :data="newTableData"
-          :border="true"
-          class="table-content"
-          style="width: 100%"
-          :header-cell-style="headerCellStyle"
-          :cell-style="cellStyle"
-        >
+        <el-table :data="tableData" :border="true" class="table-content" style="width: 100%"
+          :header-cell-style="headerCellStyle" :cell-style="cellStyle">
           <el-table-column prop="name" label="厂区名称" width="auto"></el-table-column>
           <el-table-column prop="person" label="法定责任人" width="auto"></el-table-column>
           <el-table-column prop="area" label="厂区面积" width="auto"></el-table-column>
-          <el-table-column prop="describe" label="厂区描述" width="auto"></el-table-column>
-          <el-table-column prop="createDate" label="创建日期" width="auto">
-            <template #default="scoped">{{Dates(scoped.row.createDate)}}</template>
+          <el-table-column prop="description" label="厂区描述" width="auto"></el-table-column>
+          <el-table-column prop="location" label="位置" width="auto"></el-table-column>
+          <el-table-column prop="createTime" label="创建日期" width="auto">
+            <template #default="scoped">{{ Dates(scoped.row.createTime) }}</template>
           </el-table-column>
           <el-table-column prop="workPerson" label="办公人数" width="auto"></el-table-column>
           <el-table-column prop="workerPerson" label="工人人数" width="auto"></el-table-column>
@@ -75,28 +68,12 @@
                   <el-button size="small" type="primary" @click="visible = false">确定</el-button>
                 </div>
                 <template #reference>
-                  <el-button
-                    @click="deleteRow(scope.$index)"
-                    type="text"
-                    class="table-clink"
-                    size="small"
-                  >删除</el-button>
+                  <el-button @click="deleteRow(scope.$index)" type="text" class="table-clink" size="small">删除</el-button>
                 </template>
               </el-popover>
             </template>
           </el-table-column>
         </el-table>
-      </div>
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
-          :page-size="pagingItem"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="val"
-        ></el-pagination>
       </div>
     </div>
   </div>
@@ -104,11 +81,9 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { getParkInfo, queryParkInfo } from '@/api/api';
+import { getParkInfo, createPark } from '@/api/api';
+import type { cretaePark } from '@/types/xhrPayLoadApi';
 const visible = ref(false);
-let form = reactive({
-  pre_conditions: ''
-})
 function chek(data: any | undefined) {
   let isType = Object.prototype.toString.call(data)
   let flag = true
@@ -130,15 +105,15 @@ const addFormRule: any = reactive({
   name: '厂区名称',
   person: '法定责任人',
   area: '厂区面积',
-  describe: '厂区描述',
+  description: '厂区描述',
   createDate: '创建日期',
   workPerson: '办公人数',
   workerPerson: '工人人数',
   totalPerson: '总数'
 })
-const Dates = function (time: any) :void {
+const Dates = function (time: any): void {
   var date = new Date(time).toJSON()
-  var timeft = new Date(+new Date(date))
+  var timeft: any = new Date(+new Date(date))
     .toISOString()
     .replace(/T/g, ' ')
     .replace(/\.[\d]{3}Z/, '')
@@ -148,35 +123,22 @@ let addForm = reactive({
   name: '',
   person: '',
   area: '',
-  describe: '',
+  description: '',
   createDate: '',
   workPerson: '',
   workerPerson: '',
-  totalPerson: ''
+  totalPerson: '',
+  location: '',
 })
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref('120px')
-let currentPage = ref(1)
-let pagingItem = ref(5)
-let tableData = reactive([
-  {
-    id: 1,
-    name: '华辉捷环保科技有限公司',
-    location: '临汾市浮山县天坛镇平里村西部',
-    person: '杨瑞强',
-    area: '90余亩',
-    describe: '一家以从事石油、煤炭及其他燃料加工业为主的企业',
-    createDate: '2021-02-20T13:15:14.7666463Z',
-    workPerson: '7',
-    workerPerson: '61',
-    totalPerson: '68'
-  }
-])
-let searchtableData = ref(tableData)
-let val = computed(() => {
-  return searchtableData.value.length
-})
-
+let tableData: any = ref([]);
+const getParkList = function(){
+  getParkInfo().then((res) => {
+    tableData.value = res.data.data;
+  });
+}
+getParkList();
 let headerCellStyle = reactive({
   fontSize: '1.7rem',
   textAlign: 'center',
@@ -187,53 +149,26 @@ let cellStyle = reactive({
   fontSize: '1.5rem',
   padding: '1rem 0'
 })
-const handleSizeChange = function (val: any) {
-  pagingItem.value = val
-}
-const handleCurrentChange = function (val: any) {
-  currentPage.value = val
-  console.log(val)
-  console.log(currentPage.value)
-}
-//计算属性计算出分页后需要的用户信息
-let newTableData = computed(() => {
-  return searchtableData.value.slice(
-    (currentPage.value - 1) * pagingItem.value,
-    currentPage.value * pagingItem.value
-  )
-})
-const addInformation = function () {
+
+const addInformation = async function () {
   if (chek(addForm)) {
     dialogFormVisible.value = false
     let froms = JSON.parse(JSON.stringify(addForm))
-    tableData.push(froms)
-    ElMessage({
-      message: '创建成功',
-      type: 'success'
-    })
-  }
-}
-const search = function () {
-  let list = reactive(JSON.parse(JSON.stringify(tableData)))
-  let from1: any = reactive({
-    pre_conditions: {
-      filter: (key: any) => {
-        return !form.pre_conditions
-          ? key
-          : key.filter((item: any) => {
-              return item.name.includes(form.pre_conditions)
-            })
-      }
+    tableData.value.push(froms);
+    let flag = await createParkInfo(froms);
+    if (flag) {
+      ElMessage({
+        message: '创建成功',
+        type: 'success'
+      })
+    } else {
+      ElMessage({
+        message: '创建失败o.o,稍后在试',
+        type: 'success'
+      })
     }
-  })
-  console.log(list)
 
-  Object.keys(from1).forEach((key1: any) => {
-    list.values = from1[key1].filter(list)
-  })
-  currentPage.value = 1
-
-  searchtableData.value = list.values
+  }
 }
 
 const jobReport = function () {
@@ -242,44 +177,47 @@ const jobReport = function () {
     name: '',
     person: '',
     area: '',
-    describe: '',
+    description: '',
     createDate: '',
     workPerson: '',
     workerPerson: '',
-    totalPerson: ''
+    totalPerson: '',
+    location: ''
   })
 }
 
 const deleteRow = function (index: any) {
 
-  let arr = tableData;
-  arr.splice((currentPage.value-1) * pagingItem.value + index, 1)
-  tableData = arr;
+  let arr = tableData.value;
+  tableData.value = arr;
   ElMessage({
     message: '删除成功',
     type: 'success'
   })
 }
-
-const parkInfoList = async function(){
-  let res = await getParkInfo();
-  console.log('---------');
-  console.log(res);
+// 创建园区
+const createParkInfo = async function (data: cretaePark) {
+  let value = false;
+  let res = await createPark(data);
+  if (res.data.code == 200) { value = true; };
+  return value;
 }
-parkInfoList();
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
   flex-grow: 0;
   width: 28rem;
 }
+
 :deep(.el-dialog .el-input__inner) {
   flex-grow: 0;
   width: 28rem;
 }
+
 .block {
   margin-top: 2rem;
 }
+
 .job-list {
   box-sizing: border-box;
 
@@ -346,6 +284,7 @@ parkInfoList();
     }
 
     .block {
+
       ::deep(li),
       ::deep(.el-pagination button:disabled),
       ::deep(.btn-prev),

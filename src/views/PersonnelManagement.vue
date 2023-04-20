@@ -7,29 +7,10 @@
         <!-- <el-input v-model="from.phoneNumber" clearable size="large" class="ipt-search" placeholder="搜索手机号"></el-input> -->
         <el-button type="primary" @click="search" size="large">搜索</el-button>
       </div>
-      <el-button type="primary" @click="dialogFormVisible = true" size="large">添加员工</el-button>
-      <el-dialog v-model="dialogFormVisible" title="添加成员" width="30%">
-        <el-form :model="ruleForm">
-          <el-form-item label="姓名" :label-width="formLabelWidth">
-            <el-input v-model="ruleForm.avatarName" autocomplete="off" placeholder="请输入姓名" />
-          </el-form-item>
-          <el-form-item label="部门" :label-width="formLabelWidth">
-            <el-input v-model="ruleForm.deptNo" autocomplete="off" placeholder="请选择部门" />
-          </el-form-item>
-          <el-form-item label="手机号" :label-width="formLabelWidth">
-            <el-input v-model="ruleForm.phoneNumber" autocomplete="off" placeholder="请输入手机号" />
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取消</el-button>
-            <el-button type="primary" @click="add">确定 </el-button>
-          </span>
-        </template>
-      </el-dialog>
     </div>
     <div class="container mt-2">
-      <el-table :data="newTableData" border style="width: 100%">
+      <el-table :data="newTableData" border style="width: 100%" :header-cell-style="headerCellStyle"
+        :cell-style="cellStyle">
         <el-table-column prop="id" label="序号" align="center" width="80">
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
@@ -40,7 +21,6 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="150">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="delate(scope.row)">删除</el-button>
             <el-button link type="primary" size="small" @click="patch(scope.row)">修改</el-button>
 
           </template>
@@ -77,17 +57,13 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-import { getUserListApi, whereUserListApi, patchUserListApi } from '@/api/api'
+import { getUserListApi, getUserApi, patchUserListApi } from '@/api/api'
 let from = reactive({
   id: '',
   avatarName: '',
   phoneNumber: ''
 })
-const ruleForm = reactive({
-  avatarName: "",
-  deptNo: '',
-  phoneNumber: ""
-})
+
 let patchForm = ref({
   id: '',
   avatarName: "",
@@ -128,6 +104,8 @@ onMounted(() => {
 //调用接口获取人员信息
 let getUserList = async function () {
   await getUserListApi().then(res => {
+    console.log(1111);
+    
     console.log(res);
     tableData.value = JSON.parse(JSON.stringify(res.data.data))
   }).catch(error => {
@@ -142,7 +120,7 @@ const handleCurrentChange = function (val: any) {
 }
 //搜索
 const search = function () {
-  whereUserListApi(from.id).then((res: any) => {
+  getUserApi(from.id).then((res: any) => {
     if (!from.id) {
       getUserList()
     } else {
@@ -189,8 +167,7 @@ const patch = function (val: any) {
 }
 const update = async function () {
   dialogFormVisible1.value = false
-  console.log(patchForm.value.id);
-await  patchUserListApi(patchForm.value.id, {
+  await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
     deptNo: patchForm.value.deptNo,
     phoneNumber: patchForm.value.phoneNumber
@@ -198,6 +175,9 @@ await  patchUserListApi(patchForm.value.id, {
     console.log(res)
     getUserList()
     ElMessage.success('修改成功')
+  }).catch((error: any) => {
+    console.log(error);
+    ElMessage.success('修改失败')
   })
 }
 // 删除
