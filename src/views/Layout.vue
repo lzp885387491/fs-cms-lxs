@@ -181,13 +181,10 @@ const navigator = function (item: MenuItem) {
 
 .container {
   height: calc(100vh - 60px);
+
 }
 
 .el-menu {
   height: 100%;
-}
-
-:deep(.el-main) {
-  padding: 0 !important;
 }
 </style>
