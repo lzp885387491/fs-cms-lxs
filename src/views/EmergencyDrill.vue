@@ -21,8 +21,11 @@
                         <el-form-item label="事件描述" :label-width="formLabelWidth">
                             <el-input type="text" v-model="addForm.description" class="ipt" placeholder="事件描述"></el-input>
                         </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.site_id" class="ipt" placeholder="事件站点"></el-input>
+                        <el-form-item label="部署地点" :label-width="formLabelWidth">
+                            <el-select v-model="addForm.site_id" class="m-2" placeholder="请选择厂区">
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
                             <el-input type="text" v-model="addForm.type" class="ipt" placeholder="事件类型"></el-input>
@@ -42,7 +45,11 @@
                     <el-table-column prop="name" label="应急事件名称" width="auto"></el-table-column>
                     <el-table-column prop="level" label="应急事件级别" width="auto"></el-table-column>
                     <el-table-column prop="description" label="应急事件描述" width="auto"></el-table-column>
-                    <el-table-column prop="siteId" label="事件站点" width="auto"></el-table-column>
+                    <el-table-column label="事件站点" width="auto">
+                        <template #default="scope">
+                            <div>{{ getSiteName(scope.row.siteId) }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="type" label="事件类型" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
@@ -71,8 +78,11 @@
                         <el-form-item label="事件描述" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件描述"></el-input>
                         </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.siteId" class="ipt" placeholder="事件站点"></el-input>
+                        <el-form-item label="部署地点" :label-width="formLabelWidth">
+                            <el-select v-model="updateForm.siteId" class="ipt" placeholder="请选择厂区">
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.type" class="ipt" placeholder="事件类型"></el-input>
@@ -121,7 +131,8 @@ import {
     deleteEmergencyEvent, 
     addEmergencyEvent, 
     updateEmergencyEvent, 
-    getEmergencyEvent
+    getEmergencyEvent,
+    factorySiteApi
  } from '@/api/api'
 
 let tableData = ref([])
@@ -181,6 +192,24 @@ let cellStyle = reactive({
     fontSize: '1.5rem',
     padding: '1rem 0'
 })
+
+// 获取地点名称
+const getSiteName = function (id: any) {
+    return factoryInfo.value.find((item: any) => {
+        return item.id == id
+    }).name
+}
+let factoryInfo: any = ref([])
+getFactorySite()
+async function getFactorySite() {
+    await factorySiteApi().then(response => {
+        factoryInfo.value = response.data;
+    }).catch(error => {
+        console.log(error);
+
+    })
+}
+
 
 //   //计算属性计算出分页后需要的用户信息
 let newTableData:any = computed(() => {
@@ -332,11 +361,9 @@ const jobReport = function () {
 .job-list {
     padding: 20px;
     box-sizing: border-box;
-
     .main {
         height: 100%;
         box-sizing: border-box;
-
         .search {
             display: flex;
             justify-content: space-between;
@@ -345,44 +372,11 @@ const jobReport = function () {
             .search-left {
                 display: flex;
                 gap: 1rem;
-
-                .clear {
-                    margin: 0;
-                }
-
                 .ipt-search {
                     width: 30rem;
                 }
             }
-
-            .ipt {
-                width: 28rem;
-            }
-        }
-
-        .table {
-            margin-top: 2rem;
-
-            ::-webkit-scrollbar {
-                width: 0;
-                height: 0;
-            }
-
-            :v-deep(.cell) {
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                line-height: 4rem;
-                padding: 0;
-            }
-
-            .table-clink {
-                font-size: 1.5rem;
-            }
-        }
-
-        .block {
-            margin-top: 2rem;
+           
         }
     }
 }
