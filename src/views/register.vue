@@ -48,7 +48,7 @@ const ruleForm = reactive({
     avatarName: '',
     identityCard: ''
 })
-const toLogin = function(){
+const toLogin = function () {
     router.push("/login")
 }
 const submit = async function () {
@@ -61,9 +61,9 @@ const submit = async function () {
     }).then(res => {
         if (res.data.code == 200) {
             ElMessage.success("注册成功")
-            setTimeout(()=>{
+            setTimeout(() => {
                 router.push("/login")
-            },1000)
+            }, 1000)
         }
     })
 }
@@ -121,7 +121,8 @@ const submit = async function () {
     width: 100%;
     margin-top: 40px;
 }
-.operation{
+
+.operation {
     display: flex;
     justify-content: space-between;
     padding: 10px;
