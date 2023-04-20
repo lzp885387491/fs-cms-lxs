@@ -19,7 +19,7 @@
                 </div>
                 <div class="operation">
                     <el-link type="primary">忘记密码</el-link>
-                    <el-link type="primary">注册</el-link>
+                    <el-link type="primary" @click="toRegister()">注册</el-link>
                 </div>
             </div>
         </div>
@@ -46,6 +46,9 @@ const submit = async function(){
     }else{
         console.log('网络错误');
     }
+}
+const toRegister = function(){
+    router.push("/register")
 }
 </script>
 

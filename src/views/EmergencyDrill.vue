@@ -361,11 +361,9 @@ const jobReport = function () {
 .job-list {
     padding: 20px;
     box-sizing: border-box;
-
     .main {
         height: 100%;
         box-sizing: border-box;
-
         .search {
             display: flex;
             justify-content: space-between;
@@ -374,44 +372,11 @@ const jobReport = function () {
             .search-left {
                 display: flex;
                 gap: 1rem;
-
-                .clear {
-                    margin: 0;
-                }
-
                 .ipt-search {
                     width: 30rem;
                 }
             }
-
-            .ipt {
-                width: 28rem;
-            }
-        }
-
-        .table {
-            margin-top: 2rem;
-
-            ::-webkit-scrollbar {
-                width: 0;
-                height: 0;
-            }
-
-            :v-deep(.cell) {
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                line-height: 4rem;
-                padding: 0;
-            }
-
-            .table-clink {
-                font-size: 1.5rem;
-            }
-        }
-
-        .block {
-            margin-top: 2rem;
+           
         }
     }
 }
