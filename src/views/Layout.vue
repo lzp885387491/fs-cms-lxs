@@ -99,6 +99,10 @@ const menu = [
         label: '应急事件管理',
         name: 'emergencyDrill'
       },
+      {
+        label: '物资出入库',
+        name: 'materialOutIn'
+      },
     ]
   },
   {

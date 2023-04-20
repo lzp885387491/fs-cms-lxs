@@ -47,7 +47,7 @@
                     </template>
                 </el-dialog>
                 <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="50%">
-                    <el-form :model="addForm" size="mini">
+                    <el-form :model="editForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
                         </el-form-item>
@@ -147,7 +147,6 @@ let resourceStatusList = reactive([
 ])
 const getStatusName = function (status: any) {
     return resourceStatusList.find(item => {
-        console.log(item.status, status)
         return item.status == status
     })?.name
 }
@@ -301,8 +300,6 @@ const addResource = function () {
     })
 }
 async function addInformation() {
-    console.log(addForm);
-
     if (check(addForm)) {
         console.log(addForm);
         await addEmergencyResource(addForm).then(response => {
@@ -556,6 +553,16 @@ let allArr = [
         phoneNumber: '17603592484'
     },
 ]
+
+// const add=function() {
+//     let promises: any = [];
+//     allArr.forEach((params: any) => {
+//         let promise = addEmergencyResource(params);
+//         promises.push(promise)
+//     })
+//     const res = await Promise.all(promises);
+//     console.log(res);
+// }
 emergencyResourceApi();
 </script>
 <style scoped lang="scss">

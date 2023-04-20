@@ -20,6 +20,8 @@
             {{ positionName(scope.row.deptNo) }}
           </template>
         </el-table-column>
+        <el-table-column prop="identityCard" label="身份证号" align="center" width="auto">
+        </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
         </el-table-column>
         <el-table-column align="center" label="操作" width="150">
@@ -42,6 +44,9 @@
         <el-form-item label="手机号" :label-width="formLabelWidth">
           <el-input v-model="patchForm.phoneNumber" autocomplete="off" placeholder="请输入手机号" />
         </el-form-item>
+        <el-form-item label="身份证号" :label-width="formLabelWidth">
+          <el-input v-model="patchForm.identityCard" autocomplete="off" placeholder="请输入身份证号" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -62,145 +67,23 @@
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 import { getUserListApi, getUserApi, patchUserListApi } from '@/api/api'
+import deptList from '@/assets/js/list'
 let from = reactive({
   id: '',
   avatarName: '',
   phoneNumber: ''
 })
-
 let patchForm = ref({
   id: '',
   avatarName: "",
   deptNo: '',
-  phoneNumber: ""
+  phoneNumber: "",
+  identityCard:''
 })
-let deptList: any = reactive([
-  {
-    deptId: 1,
-    position: '总经理'
-  },
-  {
-    deptId: 2,
-    position: '经理助理'
-  },
-  {
-    deptId: 3,
-    position: '厂长'
-  },
-  {
-    deptId: 4,
-    position: '会计'
-  },
-  {
-    deptId: 5,
-    position: '化验室主任'
-  },
-  {
-    deptId: 6,
-    position: '炭化主任'
-  },
-  {
-    deptId: 7,
-    position: '成型主任'
-  },
-  {
-    deptId: 8,
-    position: '活化主任'
-  },
-  {
-    deptId: 9,
-    position: '炭化班长'
-  },
-  {
-    deptId: 10,
-    position: '成型班长'
-  },
-  {
-    deptId: 11,
-    position: '活化班长'
-  },
-  {
-    deptId: 12,
-    position: '人事专员'
-  },
-
-  {
-    deptId: 13,
-    position: '司炉'
-  },
-  {
-    deptId: 14,
-    position: '备用司炉'
-  },
-  {
-    deptId: 15,
-    position: '操作工'
-  },
-  {
-    deptId: 16,
-    position: '搅拌工'
-  },
-  {
-    deptId: 17,
-    position: '出料皮带工'
-  },
-  {
-    deptId: 18,
-    position: '上料皮带工'
-  },
-  {
-    deptId: 19,
-    position: '电工'
-  },
-  {
-    deptId: 20,
-    position: '杂工'
-  },
-  {
-    deptId: 21,
-    position: '机修工'
-  },
-  {
-    deptId: 22,
-    position: '后勤专员'
-  },
-
-  {
-    deptId: 23,
-    position: '采购员'
-  },
-  {
-    deptId: 24,
-    position: '化验员'
-  },
-  {
-    deptId: 25,
-    position: '装载机司机'
-  },
-  {
-    deptId: 26,
-    position: '脱硫'
-  },
-  {
-    deptId: 27,
-    position: '库管'
-  },
-  {
-    deptId: 28,
-    position: '磨粉'
-  },
-  {
-    deptId: 29,
-    position: '污水'
-  },
-  {
-    deptId: 30,
-    position: '调度'
-  }
-])
+let deptList1: any = reactive(deptList)
 let dialogFormVisible = ref(false)
 let dialogFormVisible1 = ref(false)
-let formLabelWidth = ref('8rem')
+let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(10)
 let tableData = ref([])
@@ -248,7 +131,7 @@ const handleCurrentChange = function (val: any) {
 }
 const positionName = function (deptNo: any) {
   if (deptNo == 0) return "暂无"
-  return deptList.find((element: any) => deptNo == element.deptId).position
+  return deptList1.find((element: any) => deptNo == element.deptId).position
 }
 //搜索
 const search = function () {
@@ -303,7 +186,8 @@ const update = async function () {
   await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
     deptNo: patchForm.value.deptNo,
-    phoneNumber: patchForm.value.phoneNumber
+    phoneNumber: patchForm.value.phoneNumber,
+    identityCard:patchForm.value.identityCard
   }).then(res => {
     console.log(res)
     getUserList()
