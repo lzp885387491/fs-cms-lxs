@@ -44,6 +44,9 @@
         <el-form-item label="手机号" :label-width="formLabelWidth">
           <el-input v-model="patchForm.phoneNumber" autocomplete="off" placeholder="请输入手机号" />
         </el-form-item>
+        <el-form-item label="身份证号" :label-width="formLabelWidth">
+          <el-input v-model="patchForm.identityCard" autocomplete="off" placeholder="请输入身份证号" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -80,7 +83,7 @@ let patchForm = ref({
 let deptList1: any = reactive(deptList)
 let dialogFormVisible = ref(false)
 let dialogFormVisible1 = ref(false)
-let formLabelWidth = ref('8rem')
+let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(10)
 let tableData = ref([])
@@ -183,7 +186,8 @@ const update = async function () {
   await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
     deptNo: patchForm.value.deptNo,
-    phoneNumber: patchForm.value.phoneNumber
+    phoneNumber: patchForm.value.phoneNumber,
+    identityCard:patchForm.value.identityCard
   }).then(res => {
     console.log(res)
     getUserList()
