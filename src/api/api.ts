@@ -220,4 +220,21 @@ export const factorySiteApi = function (payload = {}) {
     return $axios.get('/site', payload)
 }
 
+// 添加资源派发记录
+export const  addResourceRecordApi=function(payload={}){
+    return $axios.post('/emergency-dispatch',payload)
+}
+// 获取资源派发记录表
+export const  getResourceRecordApi=function(payload={}){
+    return $axios.get('/emergency-dispatch',payload)
+}
+// 删除派发记录
+export const  deleteResourceRecordApi=function(id:any,payload={}){
+    return $axios.delete('/emergency-dispatch/'+id,payload)
+}
+// 更新派发记录
+export const  updateResourceRecordApi=function(id:any,payload={}){
+    return $axios.patch('/emergency-dispatch/'+id,payload)
+}
+
 export default $axios
