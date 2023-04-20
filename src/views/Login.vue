@@ -116,6 +116,10 @@ const toRegister = function(){
                     <form class="form" :class="isShow ? 'none' : ''">
                         <input type="text" v-model="forms.username" placeholder="Username">
                         <input type="password" v-model="forms.password" placeholder="Password">
+                        <div class="operation">
+                            <el-link :underline="false" type="primary">忘记密码</el-link>
+                            <el-link :underline="false" type="primary" @click="toRegister()">注册</el-link>
+                        </div>
                         <button class="login-button" @click="toLogin">Login</button>
                     </form>
                 </div>
@@ -170,8 +174,23 @@ const submit = async function(){
         })
     }
 }
+const toRegister = function(){
+    router.push("/register")
+}
 </script>
 <style scoped>
+::v-deep .el-link{
+    color: #efefef;
+}
+::v-deep .el-link:hover{
+    color: #fff;
+    text-decoration: #fff !important;
+}
+.operation{
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+}
 .main{
     overflow: hidden;
 }
