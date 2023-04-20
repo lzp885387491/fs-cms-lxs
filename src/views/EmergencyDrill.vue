@@ -46,7 +46,8 @@
                     <el-table-column prop="type" label="事件类型" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="small" @click.prevent="xiu(scope.row)">修改</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="modify(scope.row)">修改</el-button>
+                            <!-- <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button> -->
                             <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -59,7 +60,7 @@
             </div>
         </div>
     </div>
-    <el-dialog title="添加应急事件信息" v-model="updateDialog" width="30%">
+    <el-dialog title="修改应急事件信息" v-model="updateDialog" width="30%">
                     <el-form :model="updateForm" size="mini">
                         <el-form-item label="事件名称" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="事件名称"></el-input>
@@ -71,7 +72,7 @@
                             <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件描述"></el-input>
                         </el-form-item>
                         <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.site_id" class="ipt" placeholder="事件站点"></el-input>
+                            <el-input type="text" v-model="updateForm.siteId" class="ipt" placeholder="事件站点"></el-input>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.type" class="ipt" placeholder="事件类型"></el-input>
@@ -84,11 +85,44 @@
                         </span>
                     </template>
                 </el-dialog>
+                <!-- 详情 -->
+                <!-- <el-dialog title="当前详情" v-model="updateDialog" width="30%">
+                    <el-form :model="detailsForm" size="mini">
+                        <el-form-item label="事件名称" :label-width="formLabelWidth">
+                            <el-input type="text" :value="detailsForm.name" v-model="detailsForm.name" class="ipt" placeholder="事件名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="事件级别" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="detailsForm.level" class="ipt" placeholder="事件级别"></el-input>
+                        </el-form-item>
+                        <el-form-item label="事件描述" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="detailsForm.description" class="ipt" placeholder="事件描述"></el-input>
+                        </el-form-item>
+                        <el-form-item label="事件站点" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="detailsForm.siteId" class="ipt" placeholder="事件站点"></el-input>
+                        </el-form-item>
+                        <el-form-item label="事件类型" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="detailsForm.type" class="ipt" placeholder="事件类型"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="updateDialog = false">取 消</el-button>
+                            <el-button type="primary" @click="updateRow">确 定</el-button>
+                        </span>
+                    </template>
+                </el-dialog> -->
 </template>
+<!-- details -->
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { emergencyEventList, deleteEmergencyEvent, addEmergencyEvent, updateEmergencyEvent } from '@/api/api'
+import { 
+    emergencyEventList, 
+    deleteEmergencyEvent, 
+    addEmergencyEvent, 
+    updateEmergencyEvent, 
+    getEmergencyEvent
+ } from '@/api/api'
 
 let tableData = ref([])
 let form = reactive({
@@ -117,14 +151,22 @@ let addForm = reactive({
 
 let updateForm = reactive({
     name: '',
-    site_id: 1,
+    siteId: 1,
+    level: '',
+    description: '',
+    type: '',
+    id:1
+})
+let detailsForm = reactive({
+    name: '',
+    siteId: 1,
     level: '',
     description: '',
     type: '',
     id:1
 })
 
-let searchtableData = ref(tableData)
+let searchtableData = ref([])
 let val = computed(() => {
     return searchtableData.value.length
 })
@@ -141,7 +183,7 @@ let cellStyle = reactive({
 })
 
 //   //计算属性计算出分页后需要的用户信息
-let newTableData = computed(() => {
+let newTableData:any = computed(() => {
     return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
@@ -159,6 +201,7 @@ emer()
 async function emer() {
     await emergencyEventList({}).then(res => {
         tableData.value = res.data
+        searchtableData.value = res.data
         console.log(tableData);
     }).catch(res => {
         ElMessage.warning(res.message)
@@ -175,22 +218,22 @@ async function deleteRow(row: any) {
     })
 }
 // 更新
-const xiu = function(row: any){
+const modify = function(row: any){
     updateDialog.value = true
     Object.assign(updateForm,{
         name: row.name,
-        site_id: row.siteId,
+        siteId: row.siteId,
         level: row.level,
         description: row.description,
         type: row.type,
-        id : row.id
+        id : row.id 
     })
 }
 
 async function updateRow() {
     await updateEmergencyEvent(updateForm.id, {
         name: updateForm.name,
-        siteId: updateForm.site_id,
+        siteId: +updateForm.siteId,
         level: updateForm.level,
         description: updateForm.description,
         type: updateForm.type
@@ -203,7 +246,7 @@ async function updateRow() {
     })
 }
 
-
+// 校验
 function chek(data: any | undefined) {
     // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
     // 如果传进来的值 是一个数组 就循环遍历每一项 判断每一项的值是否为空
@@ -246,24 +289,32 @@ async function addInformation() {
 }
 // 搜索
 const search = function () {
-    let list = reactive(JSON.parse(JSON.stringify(tableData)))
-    let from1: any = reactive({
+    let list = JSON.parse(JSON.stringify(tableData.value))
+    let from1: any = ref({
         planName: {
             filter: (key: any) => {
-                console.log(key._value);
+                console.log(key);
                 return !form.eventName
                     ? key
-                    : key._value.filter((item: any) => {
-                        return item.planName.includes(form.eventName)
+                    : key.filter((item: any) => {
+                        return item.name.includes(form.eventName)
                     })
             }
         }
     })
-    Object.keys(from1).forEach((key1: any) => {
-        list.values = from1[key1].filter(list)
+    Object.keys(from1.value).forEach((key1: any) => {
+        list = from1.value[key1].filter(list)
     })
     currentPage.value = 1
-    searchtableData.value = list.values
+    searchtableData.value = list
+}
+// 详情
+const detail = async function (row : any){
+    await getEmergencyEvent(row.id,{}).then(res=>{
+        console.log(res);
+    }).catch(err=>{
+        console.log(err);
+    })
 }
 
 const jobReport = function () {
