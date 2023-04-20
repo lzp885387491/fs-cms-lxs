@@ -37,7 +37,38 @@
                     <template #footer>
                         <span class="dialog-footer">
                             <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
-                            <el-button  type="primary" @click="addInformation" size="mini">确 定</el-button>
+                            <el-button type="primary" @click="addInformation" size="mini">确 定</el-button>
+                        </span>
+                    </template>
+                </el-dialog>
+                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="50%">
+                    <el-form :model="addForm" size="mini">
+                        <el-form-item label="资源名称" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="资源类型" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.type" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="资源描述" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.description" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="部署地点" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.siteId" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="资源状态" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.status" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="负责人" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.head" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="负责人电话" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.phoneNumber" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="editDialogFormVisible = false" size="mini">取 消</el-button>
+                            <el-button type="primary" @click="submitEditInformation" size="mini">确 定</el-button>
                         </span>
                     </template>
                 </el-dialog>
@@ -55,10 +86,8 @@
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="small"
-                                @click.prevent="deleteRow(scope.row)">删除</el-button>
-                            <el-button link type="primary" size="small"
-                                @click.prevent="editRow(scope.row)">编辑</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -74,7 +103,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { emergencyResource,addEmergencyResource,deleteEmergencyResource,updateEmergencyResource,getEmergencyResource } from '@/api/api'
+import { emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
 let form = reactive({
     name: ''
 })
@@ -114,16 +143,27 @@ let addForm: any = reactive({
     head: '',
     phoneNumber: ''
 })
+let editForm: any = reactive({
+    id: '',
+    name: '',
+    type: '',
+    description: '',
+    siteId: 1,
+    status: '',
+    head: '',
+    phoneNumber: ''
+})
 let dialogFormVisible = ref(false)
+let editDialogFormVisible = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
-let searchtableData:any=ref([])
+let searchtableData: any = ref([])
 let totalNum = computed(() => {
-    console.log(tableData.value.length);
     return tableData.value.length
 })
+let arr: any = ref([])
 
 let headerCellStyle = reactive({
     fontSize: '1.7rem',
@@ -138,13 +178,11 @@ let cellStyle = reactive({
 
 const handleSizeChange = function (val: any) {
     pagingItem.value = val
-    console.log(pagingItem.value)
 }
 const handleCurrentChange = function (val: any) {
     currentPage.value = val
-    console.log(val)
-    console.log(currentPage.value)
 }
+
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
     return searchtableData.value.slice(
@@ -152,30 +190,24 @@ let newTableData = computed(() => {
         currentPage.value * pagingItem.value
     )
 })
-async function getEmergencyResourceApi(params:number){
-    let res=await getEmergencyResource(params);
-    if(res.status==200){
-        console.log(res.data+'查询成功');
-        
-    }
+
+interface resource {
+    name: string,
+    type: string,
+    description: string,
+    siteId: number,
+    status: string,
+    head: string,
+    phoneNumber: string
 }
-interface  resource{
-    name:string,
-    type:string,
-    description:string,
-    siteId:number,
-    status:string,
-    head:string,
-    phoneNumber:string
-}
-async function addEmergencyResourceApi(params:resource) {
-    let res=await addEmergencyResource(params);
-    if(res.status==200){
+async function addEmergencyResourceApi(params: resource) {
+    let res = await addEmergencyResource(params);
+    if (res.status == 200) {
         // console.log(res);
-        
-        console.log(res.data+'添加成功');
- 
-        
+
+        console.log(res.data + '添加成功');
+
+
     }
 }
 const addInformation = function () {
@@ -190,18 +222,41 @@ const addInformation = function () {
         })
     }
 }
+
+const submitEditInformation = function () {
+    let params = {
+        name: editForm.name,
+        type: editForm.type,
+        description: editForm.description,
+        siteId: editForm.siteId,
+        status: editForm.status,
+        head: editForm.head,
+        phoneNumber: editForm.phoneNumber
+    }
+
+    console.log(params);
+    updateEmergencyResourceApi(editForm.id, params);
+
+    console.log('更新后的tabledata', tableData);
+    ElMessage({
+        message: '修改成功',
+        type: 'success',
+    })
+    editDialogFormVisible.value = false;
+    emergencyResourceApi();
+}
 const search = function () {
     console.log(tableData.value);
-    
-    let list=JSON.parse(JSON.stringify(tableData.value));
+
+    let list = JSON.parse(JSON.stringify(tableData.value));
     console.log(list);
-    
+
     let from: any = ref({
         name: {
             filter: (a: any) => {
                 console.log('a');
                 console.log('a');
-                
+
                 return !form.name
                     ? a
                     : a.filter((item: any) => {
@@ -221,44 +276,69 @@ const addResource = function () {
     dialogFormVisible.value = true
     Object.assign(addForm, {
         name: '',
-        type:'',
-        description:'',
-        siteId:1,
-        status:'',
-        head:'',
-        phoneNumber:''
+        type: '',
+        description: '',
+        siteId: 1,
+        status: '',
+        head: '',
+        phoneNumber: ''
     })
 }
-const deleteRow = (row:any) => {
+// 删除某条应急资源
+const deleteRow = (row: any) => {
     deleteEmergencyResourceApi(row.id);
     emergencyResourceApi()
 }
-const editRow=(row:any)=>{
-    console.log(row.id);
-    dialogFormVisible.value=true;
+// 编辑某条应急资源
+const editRow = (row: any) => {
+    editDialogFormVisible.value = true;
+    editForm.id = row.id;
+    editForm.name = row.name;
+    editForm.type = row.type;
+    editForm.description = row.description;
+    editForm.siteId = row.siteId;
+    editForm.head = row.head;
+    editForm.phoneNumber = row.phoneNumber;
+    editForm.status = row.status;
 
-    // updateEmergencyResourceApi
-    
-}
-async function updateEmergencyResourceApi(params:number) {
-    let res=await updateEmergencyResource(params);
 
-    console.log(res);
-    
 }
-async function deleteEmergencyResourceApi(params:number) {
-    let res=await deleteEmergencyResource(params);
-    console.log(res);
-    
-}
+async function getEmergencyResourceApi(params: number) {
+    let res = await getEmergencyResource(params);
+    if (res.status == 200) {
+        console.log(res.data, '查询成功');
+    }
+    arr.value = res.data;
+    console.log('arr的value', arr.value);
 
+}
+async function updateEmergencyResourceApi(id: number, params: any) {
+    let res = await updateEmergencyResource(id,params);
+    if (res.status == 200) {
+        console.log('更新后当前数据：', res.data);
+
+    }
+
+}
+// 删除
+async function deleteEmergencyResourceApi(params: number) {
+    let res = await deleteEmergencyResource(params);
+    if (res.status == 200) {
+        console.log(res);
+    }
+
+}
+// 获取应急资源列表
 async function emergencyResourceApi() {
-    let res=await emergencyResource();
+    let res = await emergencyResource();
     // console.log(res.data);
-    tableData.value=res.data; 
-    searchtableData.value=res.data
-  
-    
+    if (res.status == 200) {
+        tableData.value = res.data;
+        searchtableData.value = res.data
+        console.log('获取成功', res.data)
+    } else {
+        console.log('获取失败', res);
+    }
 }
 emergencyResourceApi();
 </script>
