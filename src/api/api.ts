@@ -51,7 +51,7 @@ export const register = function (payload = {}) {
  * @description 获取个人用户信息
  */
 export const getUserInfoApi = function () {
-    return $axios.get('/user/info')
+    return $axios.post('/auth/profile')
 }
 
 
@@ -172,23 +172,23 @@ export const deleteEmergencyEvent = function (id: number, payload = {}) {
 }
 
 
-// 获取应急事件列表
+// 获取厂区位置列表
 export const siteList = function (payload = {}) {
     return $axios.get('/site/', payload);
 }
-// 查询应急事件
+// 查询厂区位置
 export const getSite = function (id: number, payload = {}) {
     return $axios.get('/site/' + id, payload);
 }
-// 增加应急事件
+// 增加厂区位置
 export const addSite = function (payload = {}) {
     return $axios.post('/site', payload);
 }
-// 更新应急事件
+// 更新厂区位置
 export const updateSite = function (id: number, payload = {}) {
     return $axios.patch('/site/' + id, payload);
 }
-// 删除应急事件
+// 删除厂区位置
 export const deleteSite = function (id: number, payload = {}) {
     return $axios.delete('/site/' + id, payload);
 }

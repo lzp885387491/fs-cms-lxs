@@ -22,6 +22,11 @@ const router = createRouter({
           component: () => import('../views/ParkInfo.vue')
         },
         {
+          path: '/setUserInfo',
+          name: 'setUserInfo',
+          component: () => import('@/views/setUserinfo.vue')
+        },
+        {
           path: '/ParkCompanyList',
           name: 'ParkCompanyList',
           component: () => import('../views/ParkCompanyList.vue')
