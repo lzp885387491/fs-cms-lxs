@@ -47,17 +47,6 @@
                     </el-table-column>
                 </el-table>
             </div>
-            <el-dialog v-model="dialogFormVisible3" title="是否删除" width="28%">
-                <span>确定要删除吗？</span>
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button @click="dialogFormVisible3 = false">取消</el-button>
-                        <el-button type="primary" @click="deleteRow()">
-                            确定
-                        </el-button>
-                    </span>
-                </template>
-            </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
                     <el-form-item label="公司名称" :label-width="formLabelWidth">
@@ -89,7 +78,7 @@
 </template>
 <script setup lang="ts">
 import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
     id: ''
@@ -153,22 +142,30 @@ let headerCellStyle = reactive({
     padding: '1rem 0'
 })
 const deleteList = function (index: number, row: any) {
-    ind.value = index;
-    rows.value = row.id;
-    dialogFormVisible3.value = true
+    ElMessageBox.confirm(
+        '确定要删除吗?',
+        '是否删除',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            deleteRow(index, row)
+        })
 }
-const deleteRow = async () => {
-    let res = await deleteEnterpriseList(rows.value)
+const deleteRow = async (index: number, row: any) => {
+    let res = await deleteEnterpriseList(row.id)
     if (res) {
         let arr = tableData;
-        searchtableData.value.splice((currentPage.value - 1) * pagingItem.value + ind.value, 1)
+        searchtableData.value.splice((currentPage.value - 1) * pagingItem.value + index, 1)
         tableData = arr;
         ElMessage({
             message: '删除成功',
             type: 'success'
         })
     }
-    dialogFormVisible3.value = false
 }
 const upDate = function (row: any) {
     dialogFormVisible2.value = true
