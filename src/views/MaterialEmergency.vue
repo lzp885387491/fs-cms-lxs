@@ -10,28 +10,28 @@
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="addResource" size="large">添加应急资源</el-button>
-                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="30%">
+                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="50%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.name" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入资源名称"></el-input>
                         </el-form-item>
                         <el-form-item label="资源类型" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.type" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.type" autocomplete="off" placeholder="请输入资源类型"></el-input>
                         </el-form-item>
                         <el-form-item label="资源描述" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.description" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.description" autocomplete="off" placeholder="请输入资源对应描述"></el-input>
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.siteId" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.siteId" autocomplete="off" placeholder="请输入部署地点"></el-input>
                         </el-form-item>
                         <el-form-item label="资源状态" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.status" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.status" autocomplete="off" placeholder="请输入资源状态"></el-input>
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.head" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.head" autocomplete="off" placeholder="请输入负责人"></el-input>
                         </el-form-item>
                         <el-form-item label="负责人电话" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.phoneNumber" autocomplete="off"></el-input>
+                            <el-input v-model="addForm.phoneNumber" autocomplete="off" placeholder="请输入负责人电话"></el-input>
                         </el-form-item>
                     </el-form>
                     <template #footer>
@@ -41,7 +41,7 @@
                         </span>
                     </template>
                 </el-dialog>
-                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="30%">
+                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="50%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
@@ -80,7 +80,11 @@
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
                     <el-table-column prop="description" label="资源描述" width="auto"></el-table-column>
-                    <el-table-column prop="siteId" label="部署地点" width="auto"></el-table-column>
+                    <el-table-column label="部署地点" width="auto">
+                        <template #default="scope">
+                            <div>{{ getSiteName(scope.row.siteId) }}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="status" label="资源状态" width="auto"></el-table-column>
                     <el-table-column prop="head" label="负责人" width="auto"></el-table-column>
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
@@ -104,7 +108,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
+import { factorySiteApi, emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
 let searchForm = reactive({
     name: ''
 })
@@ -125,6 +129,26 @@ function check(data: any | undefined) {
         }
     }
     return flag
+}
+// 获取地点名称
+const getSiteName=function(id:any) {
+    getFactorySite(id);
+    console.log(factoryInfo.find((item:any)=>{
+            return item.id==id
+        }));
+    
+    return factoryInfo.find((item:any)=>{
+            return item.id==id
+        })
+}
+let factoryInfo=reactive([])
+async function getFactorySite(id:any){
+    await factorySiteApi().then(response => {
+        factoryInfo=response.data;
+    }).catch(error=>{
+        console.log(error);
+        
+    })
 }
 // 添加规则
 const addFormRule: any = reactive({
@@ -161,7 +185,7 @@ let editForm: any = reactive({
 let dialogFormVisible = ref(false)
 // 编辑应急资源弹窗
 let editDialogFormVisible = ref(false)
-let formLabelWidth = ref('10rem')
+let formLabelWidth = ref('30rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
@@ -246,13 +270,13 @@ const addResource = function () {
         phoneNumber: ''
     })
 }
-async function addInformation(){
+async function addInformation() {
     if (check(addForm)) {
         console.log(addForm);
         await addEmergencyResource(addForm).then(response => {
             ElMessage.success('添加成功！')
             emergencyResourceApi()
-        }).catch(error=>{
+        }).catch(error => {
             ElMessage.warning('添加失败！')
         })
         dialogFormVisible.value = false;

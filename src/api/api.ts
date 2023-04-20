@@ -174,4 +174,9 @@ export const patchUserListApi = function (id : any , payload = {}) {
     return $axios.patch('/user/' + id, payload);
 }
 
+// 获取位置信息
+export const factorySiteApi=function(payload={}){
+    return $axios.get('/site',payload)
+}
+
 export default $axios

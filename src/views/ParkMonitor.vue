@@ -113,17 +113,16 @@ export default {
         width: 100%;
         height: 100%;
         overflow: scroll;
-        padding: 10px;
         box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
+        gap: 10px;
 
         .item {
             width: 530px !important;
             max-height: 420px !important;
             background-color: #ccc;
-            margin: 10px 0;
         }
     }
 }
