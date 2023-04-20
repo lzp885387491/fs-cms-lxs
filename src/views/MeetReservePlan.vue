@@ -19,14 +19,16 @@
             <el-form-item label="预案名称" :label-width="formLabelWidth">
               <el-input type="text" v-model="selectPlan.name" class="ipt" placeholder="请输入预案名称"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="演练地点" :label-width="formLabelWidth">
-              <el-input
-                type="text"
-                v-model="addForm.exerciseLocation"
-                class="ipt"
-                placeholder="请输入演练地点"
-              ></el-input>
-            </el-form-item>-->
+            <el-form-item label="haha" :label-width="formLabelWidth">
+              <el-select v-model="selectPlan" placeholder="请选择作业类型">
+                <el-option
+                  v-for="item in siteList"
+                  :label="item.name"
+                  :value="item.value"
+                  :key="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="描述" :label-width="formLabelWidth">
               <el-input
                 type="text"
@@ -112,14 +114,20 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-import { getEmergencyPlanList, createEmergencyPlanList, deleteEmergencyPlan } from '@/api/plan-api'
+import {
+  getEmergencyPlanList,
+  createEmergencyPlanList,
+  deleteEmergencyPlan,
+  getSiteList
+} from '@/api/plan-api'
 onMounted(async () => {
   getPlanList()
 })
 let resList = ref([]) //服务端返回的数据
-let searchList=ref([])
+let searchList = ref([])
 let pageNum = ref(1) //第几页
 let pageSize = ref(5) //每页数量
+let siteList = ref([])
 let selectPlan: any = reactive({
   // name: '',
   // description: '',
@@ -129,13 +137,22 @@ let total = computed(() => {
   return searchList.value.length
 })
 let tableList = computed(() => {
-  return searchList.value.slice((pageNum.value - 1) * pageSize.value, pageNum.value * pageSize.value)
+  return searchList.value.slice(
+    (pageNum.value - 1) * pageSize.value,
+    pageNum.value * pageSize.value
+  )
 }) //分页后的数据
 const getPlanList = async function () {
   let res = await getEmergencyPlanList()
   if (res.status == 200 || res.status == 304) {
     resList.value = res.data
-    searchList.value=res.data
+    searchList.value = res.data
+  }
+}
+const getSiteData = async function () {
+  let res = await getSiteList()
+  if (res.status == 200 || res.status == 304) {
+    siteList.value = res.data
   }
 }
 const showDialog = function () {

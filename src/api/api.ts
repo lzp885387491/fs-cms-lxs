@@ -160,4 +160,4 @@ export const patchUserListApi = function (id : number , payload = {}) {
     return $axios.patch('/user/' + id, payload);
 }
 
-export default axios
+export default $axios
