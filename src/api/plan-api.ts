@@ -33,3 +33,8 @@ export const updateEmergencyPlan = function (payload: playoad = {}) {
 export const deleteEmergencyPlan = function (payload: playoad = {}) {
     return axios.delete('/emergency/' + payload.id);
 }
+
+//获取地区列表
+export const getSiteList = function () {
+    return axios.get('/site');
+}

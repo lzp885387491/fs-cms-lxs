@@ -4,12 +4,12 @@
             <div class="table-title">园区公司列表</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.id" clearable size="large" class="ipt-search" placeholder="根据id查找"></el-input>
+                    <el-input v-model="form.id" clearable class="ipt-search" placeholder="根据id查找"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加园区公司</el-button>
-                <el-dialog title="园区公司" v-model="dialogFormVisible" width="50%">
-                    <el-form :model="addForm" size="mini">
+                <el-dialog title="园区公司" v-model="dialogFormVisible" width="28%">
+                    <el-form :model="addForm">
                         <el-form-item label="公司名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
                         </el-form-item>
@@ -25,8 +25,8 @@
                         </el-form-item>
                     </el-form>
                     <template #footer>
-                        <el-button @click="dialogFormVisible = false" size="mini">取 消</el-button>
-                        <el-button type="primary" @click="addInformation" size="mini">确 定</el-button>
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="addInformation">确 定</el-button>
                     </template>
                 </el-dialog>
             </div>
@@ -40,26 +40,46 @@
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="small">编辑</el-button>
-                            <el-button link type="primary" size="small"
+                            <el-button link type="primary" @click="upDate(scope.row)">编辑</el-button>
+                            <el-button link type="primary"
                                 @click="deleteRow(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
+            <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
+                <el-form :model="upDateForm">
+                    <el-form-item label="公司名称" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="公司地址" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系人" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.contactPerson" autocomplete="off" placeholder="请输入联系人"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话" :label-width="formLabelWidth">
+                        <el-input type="number" v-model="upDateForm.contactTel" autocomplete="off"
+                            placeholder="请输入联系电话"></el-input>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                    <el-button type="primary" @click="upDateFormList()">确 定</el-button>
+                </template>
+            </el-dialog>
             <div class="block">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                     :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pagingItem"
-                    layout="total, sizes, prev, pager, next, jumper" :total="val"></el-pagination>
+                    layout="total, prev, pager, next, jumper" :total="val"></el-pagination>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-const size = ref<'default' | 'large' | 'small'>('default')
 let form = reactive({
     id: ''
 })
@@ -96,7 +116,15 @@ const addForm = reactive({
     contactPerson: '',
     contactTel: '',
 })
+const upDateForm = reactive({
+    id: 0,
+    name: '',
+    address: '',
+    contactPerson: '',
+    contactTel: '',
+})
 let dialogFormVisible = ref(false)
+const dialogFormVisible2 = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
@@ -121,6 +149,27 @@ const deleteRow = async (index: number, row: any) => {
             type: 'success'
         })
     }
+}
+const upDate = function (row: any) {
+    dialogFormVisible2.value = true
+    upDateForm.id = row.id
+    upDateForm.name = row.name
+    upDateForm.address = row.address
+    upDateForm.contactPerson = row.contactPerson
+    upDateForm.contactTel = row.contactTel
+}
+const upDateFormList = async function () {
+    let { name, address, contactPerson, contactTel } = upDateForm
+    await updateEnterpriseList(upDateForm.id, {
+        name,
+        address,
+        contactPerson,
+        contactTel
+    }).then(res => {
+        dialogFormVisible2.value = false
+        getEnterpriseInfo()
+        ElMessage.success('修改成功')
+    })
 }
 let cellStyle = reactive({
     textAlign: 'center',
@@ -165,7 +214,7 @@ onMounted(async () => {
 })
 
 const search = async function () {
-    await queryEnterpriseList(form.id).then((res)=>{
+    await queryEnterpriseList(form.id).then((res) => {
         if (form.id == '') {
             getEnterpriseInfo()
             return ElMessage.warning('关键词不能为空！！！')
@@ -174,10 +223,9 @@ const search = async function () {
             searchtableData.value = [res.data]
             return searchtableData.value
         }
-    }).catch((error)=>{
-        console.log(error);
+    }).catch((error) => {
         getEnterpriseInfo()
-        return ElMessage.warning('暂无此内容')
+        return ElMessage.warning('没有查找到此内容')
     })
 }
 const jobReport = function () {
@@ -265,5 +313,9 @@ let newTableData = computed(() => {
 :deep(.el-dialog .el-input__inner) {
     flex-grow: 0 !important;
     width: 28rem !important;
+}
+
+:deep(.el-table) {
+    --el-table-border-color: none
 }
 </style>
