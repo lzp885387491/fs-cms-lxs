@@ -1,12 +1,14 @@
 <template>
   <div class="job-list">
     <div class="main">
-      <div class="table-title">园区基础信息管理</div>
-      <el-button type="primary" @click="upDate" size="large"
-          :class="tableData.name == '' ? 'none' : ''">修改信息</el-button>
+      <div class="df">
+        <div class="table-title">园区基础信息管理</div>
+        <el-button type="primary" @click="upDate" size="large"
+            :class="tableData.name == '' ? 'none' : ''">修改信息</el-button>
+            <el-button type="primary" @click="jobReport" size="large"
+              :class="tableData.name == '' ? '' : 'none'">添加厂区信息</el-button>
+      </div>
       <div class="search mt-2">
-        <el-button type="primary" @click="jobReport" size="large"
-          :class="tableData.name == '' ? '' : 'none'">添加厂区信息</el-button>
         <el-dialog title="添加厂区信息" v-model="dialogFormVisible" width="50%">
           <el-form :model="addForm" size="default">
             <el-form-item label="厂区名称" :required="true" :label-width="formLabelWidth">
@@ -48,7 +50,7 @@
         </el-dialog>
       </div>
       <!-- 园区信息 -->
-      <el-form label-position="right" label-width="100px" :model="tableData" style="max-width: 50%;margin: 0 auto;">
+      <el-form :class="tableData.name == '' ? 'none' : ''" label-position="right" label-width="100px" :model="tableData" style="max-width: 50%;margin: 0 auto;">
         <el-form-item :label="addFormRule.name">
           <el-input v-model="tableData.name" :disabled="disabled">
 
@@ -99,6 +101,7 @@
             <el-button type="primary" @click="cancellation" size="large"
             :class="disabled ? 'none' : ''">取消</el-button>
       </el-form>
+      <el-empty description="暂无数据" :class="tableData.name == '' ? '' : 'none'"/>
     </div>
   </div>
 </template>
@@ -162,11 +165,10 @@ let tableData: any = ref({
 });
 const getParkList = function () {
   getParkInfo().then((res) => {
-    console.log(res);
-    
-    // res.data.data.forEach((el: any) => {
-    //   tableData.value = el;
-    // });
+    res.data.data.forEach((el: any) => {
+      tableData.value = el;
+      console.log(tableData.value);
+    });
   });
 }
 getParkList();
@@ -241,7 +243,11 @@ const cancellation = function(){
   flex-grow: 0;
   width: 28rem;
 }
-
+.df{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 :deep(.el-dialog .el-input__inner) {
   flex-grow: 0;
   width: 28rem;

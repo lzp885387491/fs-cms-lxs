@@ -34,7 +34,7 @@ import { login } from '@/api/api';
 const router = useRouter();
 
 const form = reactive({
-    username: "xiaoc",
+    username: "admin",
     password: "999999"
 })
 
