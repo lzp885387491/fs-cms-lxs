@@ -39,6 +39,13 @@ $axios.interceptors.response.use(function (response) {
 export const login = function (payload = {}) {
     return $axios.post('/auth/login', payload)
 }
+/**
+ * @description 注册
+ * @param payload  object
+ */
+export const register = function (payload = {}) {
+    return $axios.post('/auth/register', payload)
+}
 
 /**
  * @description 获取园区列表

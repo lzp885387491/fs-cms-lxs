@@ -80,9 +80,14 @@ const router = createRouter({
           path: '/emergencyDrill',
           name: 'emergencyDrill',
           component: () => import('../views/EmergencyDrill.vue')
-        }
+        },
       ]
     },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/register.vue')
+    }
   ]
 })
 
