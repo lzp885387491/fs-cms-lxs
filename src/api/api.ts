@@ -39,6 +39,22 @@ $axios.interceptors.response.use(function (response) {
 export const login = function (payload = {}) {
     return $axios.post('/auth/login', payload)
 }
+/**
+ * @description 注册
+ * @param payload  object
+ */
+export const register = function (payload = {}) {
+    return $axios.post('/auth/register', payload)
+}
+
+/**
+ * @description 获取个人用户信息
+ */
+export const getUserInfoApi = function () {
+    return $axios.get('/user/info')
+}
+
+
 
 /**
  * @description 获取园区列表
@@ -154,6 +170,30 @@ export const updateEmergencyEvent = function (id: number, payload = {}) {
 export const deleteEmergencyEvent = function (id: number, payload = {}) {
     return $axios.delete('/emergencyEvent/' + id, payload);
 }
+
+
+// 获取应急事件列表
+export const siteList = function (payload = {}) {
+    return $axios.get('/site/', payload);
+}
+// 查询应急事件
+export const getSite = function (id: number, payload = {}) {
+    return $axios.get('/site/' + id, payload);
+}
+// 增加应急事件
+export const addSite = function (payload = {}) {
+    return $axios.post('/site', payload);
+}
+// 更新应急事件
+export const updateSite = function (id: number, payload = {}) {
+    return $axios.patch('/site/' + id, payload);
+}
+// 删除应急事件
+export const deleteSite = function (id: number, payload = {}) {
+    return $axios.delete('/site/' + id, payload);
+}
+
+
 // 获取人员信息
 export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
