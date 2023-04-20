@@ -10,7 +10,7 @@
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="addResource" size="large">添加应急资源</el-button>
-                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="50%">
+                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off"></el-input>
@@ -41,7 +41,7 @@
                         </span>
                     </template>
                 </el-dialog>
-                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="50%">
+                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
@@ -86,8 +86,9 @@
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button>
+                            <el-button link type="danger" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -155,7 +156,7 @@ let editForm: any = reactive({
 })
 let dialogFormVisible = ref(false)
 let editDialogFormVisible = ref(false)
-let formLabelWidth = ref('120px')
+let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
@@ -222,13 +223,16 @@ const addInformation = function () {
         })
     }
 }
-
+const checkRow=function(row:any){
+    console.log('正在查看');
+    
+}
 const submitEditInformation = function () {
     let params = {
         name: editForm.name,
         type: editForm.type,
         description: editForm.description,
-        siteId: Number(editForm.siteId),
+        siteId: +editForm.siteId,
         status: editForm.status,
         head: editForm.head,
         phoneNumber: editForm.phoneNumber
@@ -243,7 +247,7 @@ const submitEditInformation = function () {
         type: 'success',
     })
     editDialogFormVisible.value = false;
-    
+
 }
 const search = function () {
     console.log(tableData.value);
@@ -313,14 +317,14 @@ async function getEmergencyResourceApi(params: number) {
 
 }
 async function updateEmergencyResourceApi(id: number, params: any) {
-     await updateEmergencyResource(id,params).then((res:any)=>{
-        console.log(111111);      
+    await updateEmergencyResource(id, params).then((res: any) => {
+        console.log(111111);
         console.log(res);
         emergencyResourceApi();
-        
-    }).catch((Error:any)=>{
+
+    }).catch((Error: any) => {
         console.log(Error);
-        
+
     });
     // if (res.status == 200) {
     //     console.log('更新后当前数据：', res.data);
@@ -333,7 +337,7 @@ async function deleteEmergencyResourceApi(params: number) {
     let res = await deleteEmergencyResource(params);
     if (res.status == 200) {
         console.log(res);
-        
+
     }
 
 }
