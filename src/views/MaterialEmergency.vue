@@ -98,7 +98,9 @@
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
                             <!-- <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button> -->
-                            <el-button link type="danger" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
+                            <el-button link type="danger" size="small" @click.prevent="open(scope.row)">删除
+                            
+                            </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -112,7 +114,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import { ElMessage,ElMessageBox } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { factorySiteApi, emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
 let searchForm = reactive({
@@ -233,11 +235,6 @@ let newTableData = computed(() => {
 //     phoneNumber: string
 // }
 
-
-const checkRow = function (row: any) {
-    console.log('正在查看');
-
-}
 //根据名称查询
 const search = function () {
     let list = JSON.parse(JSON.stringify(tableData.value));
@@ -329,7 +326,6 @@ async function getEmergencyResourceApi(params: number) {
 
 }
 
-
 // 删除某条应急资源
 async function deleteRow(row: any) {
     await deleteEmergencyResource(row.id, {}).then(response => {
@@ -338,6 +334,20 @@ async function deleteRow(row: any) {
         ElMessage.warning(error.message)
     })
     emergencyResourceApi()
+}
+const open=function(row: any){
+    ElMessageBox.confirm(
+    '确认要删除吗？',
+    '是否删除',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+       deleteRow(row) 
+    })
 }
 // 获取应急资源列表
 async function emergencyResourceApi() {
