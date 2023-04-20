@@ -7,14 +7,14 @@
           <div class="avatar">
             <img src="@/assets/images/user_avatar.png" alt="">
           </div>
-          <el-dropdown trigger="click">
+          <el-dropdown class="pointer" trigger="click">
             <span class="el-dropdown-link">
               <span>用户昵称</span>
               <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item :icon="Setting">用户设置</el-dropdown-item>
+                <el-dropdown-item class="pointer" :icon="Setting">用户设置</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -143,6 +143,10 @@ const navigator = function (item: MenuItem) {
 <style scoped lang="scss">
 .layout {
   height: 100vh;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .layout .header {
