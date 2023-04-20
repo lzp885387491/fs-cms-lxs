@@ -40,7 +40,6 @@ const form = reactive({
 
 const submit = async function(){
     let res =  await login(form);
-    console.log(res);
     if (res.data.code == 200) {
         sessionStorage.setItem("token",res.data.data.access_token);
         router.push('/ParkCompanyList');
