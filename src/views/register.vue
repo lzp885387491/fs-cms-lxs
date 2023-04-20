@@ -25,6 +25,10 @@
                     </div>
                     <el-button type="primary" class="btn-submit" @click="submit">注册</el-button>
                 </div>
+                <div class="operation">
+                    <el-link type="primary"></el-link>
+                    <el-link type="primary" @click="toLogin()">去登录</el-link>
+                </div>
             </div>
         </div>
     </div>
@@ -44,6 +48,9 @@ const ruleForm = reactive({
     avatarName: '',
     identityCard: ''
 })
+const toLogin = function(){
+    router.push("/login")
+}
 const submit = async function () {
     let { username, password, avatarName, identityCard } = ruleForm;
     await register({
@@ -113,5 +120,10 @@ const submit = async function () {
 .btn-submit {
     width: 100%;
     margin-top: 40px;
+}
+.operation{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
 }
 </style>
