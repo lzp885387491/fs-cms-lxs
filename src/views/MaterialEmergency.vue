@@ -145,10 +145,10 @@ let resourceStatusList = reactive([
         status: 'rejected'
     },
 ])
-const getStatusName=function(status:any){
-    return resourceStatusList.find(item=>{
-        console.log(item.status,status)
-        return item.status==status
+const getStatusName = function (status: any) {
+    return resourceStatusList.find(item => {
+        console.log(item.status, status)
+        return item.status == status
     })?.name
 }
 let factoryValue = ref('')
@@ -386,12 +386,186 @@ async function emergencyResourceApi() {
         tableData.value = response.data;
         searchtableData.value = response.data;
         console.log(tableData.value);
-        
+
     }).catch(error => {
         ElMessage.warning(error.message)
     })
 
 }
+let allArr = [
+    {
+        name: '呼吸过滤防毒面具',
+        type: '防护救助',
+        description: '保护人体呼吸器官不受外界有毒气体伤害的专用呼吸设置',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '防护眼镜',
+        type: '防护救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '一次性防护口罩',
+        type: '防护救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '橡胶手套',
+        type: '防护救助',
+        description: '无',
+        siteId: 2,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '防护服',
+        type: '防护救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '一次性帽子',
+        type: '防护救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '一次性鞋套',
+        type: '防护救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '急救医药箱',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '消防沙袋',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '消防桶',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '干粉灭火器',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: 'CO2灭火器',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '水基灭火器',
+        type: '消防救助',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '铁锹',
+        type: '设备工具',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '警戒带',
+        type: '设备工具',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '应急手电',
+        type: '设备工具',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '对讲机',
+        type: '设备工具',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+    {
+        name: '担架',
+        type: '设备工具',
+        description: '无',
+        siteId: 1,
+        status: 'approved',
+        head: '卫鹏',
+        phoneNumber: '17603592484'
+    },
+]
+
+// const add=function() {
+//     let promises: any = [];
+//     allArr.forEach((params: any) => {
+//         let promise = addEmergencyResource(params);
+//         promises.push(promise)
+//     })
+//     const res = await Promise.all(promises);
+//     console.log(res);
+// }
 emergencyResourceApi();
 </script>
 <style scoped lang="scss">

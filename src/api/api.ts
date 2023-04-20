@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { cretaePark, updatePark } from '@/types/xhrPayLoadApi';
-
+import { ElMessage } from 'element-plus'
 const BASE_URL = '/api'
 
 const $axios = axios.create({

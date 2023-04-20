@@ -19,6 +19,10 @@
                         <label for="">用户昵称</label>
                         <el-input v-model="ruleForm.avatarName" placeholder="请输入用户昵称" />
                     </div>
+                    <div class="item">
+                        <label for="">用户昵称</label>
+                        <el-input v-model="ruleForm.identityCard" length="18" placeholder="请输入身份证" />
+                    </div>
                     <el-button type="primary" class="btn-submit" @click="submit">注册</el-button>
                 </div>
             </div>
@@ -37,15 +41,19 @@ const ruleForm = reactive({
     username: "",
     password: "",
     checkPass: '',
-    avatarName: ''
+    avatarName: '',
+    identityCard:''
 })
 const submit = async function(){
-    let { username, password, avatarName } = ruleForm
+    let { username, password, avatarName, identityCard } = ruleForm;
     await register({
         username,
         password,
-        avatarName
+        avatarName,
+        identityCard
     }).then(res=>{
+        console.log(res);
+        
         ElMessage.success("注册成功")
         router.push("/login")
     })

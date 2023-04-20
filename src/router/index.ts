@@ -90,7 +90,12 @@ const router = createRouter({
           path: '/factorySite',
           name: 'factorySite',
           component: () => import('../views/FactorySite.vue')
-        }
+        },
+        {
+          path: '/materialOutIn',
+          name: 'materialOutIn',
+          component: () => import('../views/MaterialOutIn.vue')
+        },
       ]
     },
     {
