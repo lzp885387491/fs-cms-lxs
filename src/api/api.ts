@@ -39,6 +39,7 @@ $axios.interceptors.response.use(function (response) {
 export const login = function (payload = {}) {
     return $axios.post('/auth/login', payload)
 }
+
 /**
  * @description 注册
  * @param payload  object
@@ -52,6 +53,13 @@ export const register = function (payload = {}) {
  */
 export const getUserInfoApi = function () {
     return $axios.post('/auth/profile')
+}
+
+/**
+ * @description 更新个人用户信息
+ */
+export const UpdateUserInfoApi = function (payload = {}) {
+    return $axios.post('/auth/profile', payload)
 }
 
 
@@ -69,22 +77,22 @@ export const getParkInfo = function (payload = {}) {
  * @description 新建园区
  * @param payload
  */
-export const createPark = function (payload : cretaePark) {
+export const createPark = function (payload: cretaePark) {
     return $axios.post('/parkInfo', payload);
 }
 /**
  * @description 查询园区信息
  * @param payload
  */
-export const queryParkInfo = function (id:number,payload = {}) {
-    return $axios.get('/parkInfo/' + id , payload);
+export const queryParkInfo = function (id: number, payload = {}) {
+    return $axios.get('/parkInfo/' + id, payload);
 }
 /**
  * @description 修改园区信息
  * @param payload
  */
-export const updateParkInfo = function (payload : updatePark){
-    return $axios.patch('/parkInfo'+"/"+payload.id , payload);
+export const updateParkInfo = function (payload: updatePark) {
+    return $axios.patch('/parkInfo' + "/" + payload.id, payload);
 }
 
 
@@ -107,21 +115,21 @@ export const getEnterpriseList = function (payload = {}) {
  * @description 查询企业详情
  * @param payload ""
  */
-export const queryEnterpriseList = function (id:any,payload = {}) {
+export const queryEnterpriseList = function (id: any, payload = {}) {
     return $axios.get('/enterprise' + '/' + id, payload);
 }
 /**
  * @description 删除企业信息
  * @param payload ""
  */
-export const deleteEnterpriseList = function (id:number,payload = {}) {
+export const deleteEnterpriseList = function (id: number, payload = {}) {
     return $axios.delete('/enterprise' + '/' + id, payload);
 }
 /**
  * @description 修改企业信息
  * @param payload ""
  */
-export const updateEnterpriseList = function (id:number,payload = {}) {
+export const updateEnterpriseList = function (id: number, payload = {}) {
     return $axios.patch('/enterprise' + '/' + id, payload);
 }
 
@@ -129,24 +137,24 @@ export const updateEnterpriseList = function (id:number,payload = {}) {
  * @description 获取应急资源
  * 
  */
-export const emergencyResource=function(payload={}){
-    return $axios.get('/emergency-resource',payload)
+export const emergencyResource = function (payload = {}) {
+    return $axios.get('/emergency-resource', payload)
 }
 //增加应急资源
-export const addEmergencyResource=function(payload={}){
-    return $axios.post('/emergency-resource',payload)
+export const addEmergencyResource = function (payload = {}) {
+    return $axios.post('/emergency-resource', payload)
 }
 // 删除应急资源
-export const deleteEmergencyResource=function(id:number,payload={}){
-    return  $axios.delete('/emergency-resource/'+id,payload)
+export const deleteEmergencyResource = function (id: number, payload = {}) {
+    return $axios.delete('/emergency-resource/' + id, payload)
 }
 // 更新应急资源
-export const updateEmergencyResource=function(id:number,payload={}){
-    return $axios.patch('/emergency-resource/'+id,payload)
+export const updateEmergencyResource = function (id: number, payload = {}) {
+    return $axios.patch('/emergency-resource/' + id, payload)
 }
 // 查询应急资源详情
-export const  getEmergencyResource=function(id:number,payload={}){
-    return $axios.get('/emergency-resource/'+id,payload)
+export const getEmergencyResource = function (id: number, payload = {}) {
+    return $axios.get('/emergency-resource/' + id, payload)
 }
 
 // 
@@ -199,17 +207,17 @@ export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
 }
 // 查询人员信息
-export const getUserApi = function (id : any , payload = {}) {
+export const getUserApi = function (id: any, payload = {}) {
     return $axios.get('/user/' + id, payload);
 }
 // 修改人员信息
-export const patchUserListApi = function (id : any , payload = {}) {
+export const patchUserListApi = function (id: any, payload = {}) {
     return $axios.patch('/user/' + id, payload);
 }
 
 // 获取位置信息
-export const factorySiteApi=function(payload={}){
-    return $axios.get('/site',payload)
+export const factorySiteApi = function (payload = {}) {
+    return $axios.get('/site', payload)
 }
 
 export default $axios
