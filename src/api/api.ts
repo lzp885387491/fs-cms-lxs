@@ -60,8 +60,8 @@ export const createPark = function (payload : cretaePark) {
  * @description 查询园区信息
  * @param payload
  */
-export const queryParkInfo = function (payload = {}) {
-    return $axios.get('/parkInfo' + "/" + payload.id , payload);
+export const queryParkInfo = function (id:number,payload = {}) {
+    return $axios.get('/parkInfo/' + id , payload);
 }
 /**
  * @description 修改园区信息
@@ -158,7 +158,13 @@ export const deleteEmergencyEvent = function (id: number, payload = {}) {
 export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
 }
+// 查询人员信息
+export const whereUserListApi = function (id : number , payload = {}) {
+    return $axios.get('/user/' + id, payload);
+}
 // 修改人员信息
 export const patchUserListApi = function (id : number , payload = {}) {
     return $axios.patch('/user/' + id, payload);
 }
+
+export default $axios

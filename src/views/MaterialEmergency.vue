@@ -119,7 +119,7 @@ let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
-let searchtableData:any=ref(tableData)
+let searchtableData:any=ref([])
 let totalNum = computed(() => {
     console.log(tableData.value.length);
     return tableData.value.length
@@ -191,25 +191,31 @@ const addInformation = function () {
     }
 }
 const search = function () {
-    let list=reactive(JSON.parse(JSON.stringify(tableData)));
+    console.log(tableData.value);
+    
+    let list=JSON.parse(JSON.stringify(tableData.value));
+    console.log(list);
+    
     let from: any = ref({
         name: {
-            filter: (list: any) => {
+            filter: (a: any) => {
+                console.log('a');
+                console.log('a');
+                
                 return !form.name
-                    ? list
-                    : list.filter((item: any) => {
+                    ? a
+                    : a.filter((item: any) => {
                         return item.name.includes(form.name)
                     })
             }
         }
     })
 
-    Object.keys(from).forEach((key: any) => {
-        list.values = from[key].filter(list)
-        console.log(list)
+    Object.keys(from.value).forEach((key: any) => {
+        list = from.value[key].filter(list)
     })
     currentPage.value = 1
-    searchtableData.value = list.values
+    searchtableData.value = list
 }
 const addResource = function () {
     dialogFormVisible.value = true
@@ -250,6 +256,7 @@ async function emergencyResourceApi() {
     let res=await emergencyResource();
     // console.log(res.data);
     tableData.value=res.data; 
+    searchtableData.value=res.data
   
     
 }
