@@ -46,6 +46,7 @@ const submit = async function(){
         password,
         avatarName
     }).then(res=>{
+        console.log(res);
         ElMessage.success("注册成功")
         router.push("/login")
     })
