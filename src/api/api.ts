@@ -60,8 +60,8 @@ export const createPark = function (payload : cretaePark) {
  * @description 查询园区信息
  * @param payload
  */
-export const queryParkInfo = function (payload = {}) {
-    return $axios.get('/parkInfo' + "/" + payload.id , payload);
+export const queryParkInfo = function (id:number,payload = {}) {
+    return $axios.get('/parkInfo/' + id , payload);
 }
 /**
  * @description 修改园区信息
@@ -87,7 +87,20 @@ export const createEnterpriseList = function (payload = {}) {
 export const getEnterpriseList = function (payload = {}) {
     return $axios.get('/enterprise', payload);
 }
-export default $axios
+/**
+ * @description 查询企业详情
+ * @param payload ""
+ */
+export const queryEnterpriseList = function (id:any,payload = {}) {
+    return $axios.get('/enterprise' + '/' + id, payload);
+}
+/**
+ * @description 删除企业信息
+ * @param payload ""
+ */
+export const deleteEnterpriseList = function (id:number,payload = {}) {
+    return $axios.delete('/enterprise' + '/' + id, payload);
+}
 
 /**
  * @description 获取应急资源
@@ -119,7 +132,7 @@ export const emergencyEventList = function (payload = {}) {
     return $axios.get('/emergencyEvent', payload);
 }
 // 查询应急事件
-export const getEmergencyEvent = function (id : number , payload = {}) {
+export const getEmergencyEvent = function (id: number, payload = {}) {
     return $axios.get('/emergencyEvent/' + id, payload);
 }
 // 增加应急事件
@@ -127,11 +140,11 @@ export const addEmergencyEvent = function (payload = {}) {
     return $axios.post('/emergencyEvent', payload);
 }
 // 更新应急事件
-export const updateEmergencyEvent = function (id : number , payload = {}) {
+export const updateEmergencyEvent = function (id: number, payload = {}) {
     return $axios.patch('/emergencyEvent/' + id, payload);
 }
 // 删除应急事件
-export const deleteEmergencyEvent = function (id : number , payload = {}) {
+export const deleteEmergencyEvent = function (id: number, payload = {}) {
     return $axios.delete('/emergencyEvent/' + id, payload);
 }
 // 获取人员信息

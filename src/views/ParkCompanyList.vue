@@ -4,7 +4,7 @@
             <div class="table-title">园区公司列表</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.name" clearable size="large" class="ipt-search" placeholder="根据公司名称"></el-input>
+                    <el-input v-model="form.id" clearable size="large" class="ipt-search" placeholder="根据id查找"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加园区公司</el-button>
@@ -17,10 +17,10 @@
                             <el-input v-model="addForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
                         </el-form-item>
                         <el-form-item label="联系人" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.contact_person" autocomplete="off" placeholder="请输入联系人"></el-input>
+                            <el-input v-model="addForm.contactPerson" autocomplete="off" placeholder="请输入联系人"></el-input>
                         </el-form-item>
                         <el-form-item label="联系电话" :label-width="formLabelWidth">
-                            <el-input type="number" v-model="addForm.contact_tel" autocomplete="off"
+                            <el-input type="number" v-model="addForm.contactTel" autocomplete="off"
                                 placeholder="请输入联系电话"></el-input>
                         </el-form-item>
                     </el-form>
@@ -36,13 +36,13 @@
                     <el-table-column prop="id" label="id" width="auto"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
-                    <el-table-column prop="contact_person" label="联系人" width="auto"></el-table-column>
-                    <el-table-column prop="contact_tel" label="联系电话" width="auto"></el-table-column>
+                    <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
+                    <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small">编辑</el-button>
                             <el-button link type="primary" size="small"
-                                @click.prevent="deleteRow(scope.$index)">删除</el-button>
+                                @click="deleteRow(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -56,12 +56,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList } from '@/api/api';
 import { ElMessage } from 'element-plus'
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 const size = ref<'default' | 'large' | 'small'>('default')
 let form = reactive({
-    name: ''
+    id: ''
 })
 function chek(data: any | undefined) {
     // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
@@ -85,116 +85,23 @@ function chek(data: any | undefined) {
 }
 
 const addFormRule: any = reactive({
-    id: 'id',
     name: '公司名称',
     address: '公司地址',
-    contact_person: '联系人',
-    contact_tel: '联系电话',
+    contactPerson: '联系人',
+    contactTel: '联系电话',
 })
 const addForm = reactive({
-    id: '',
     name: '',
     address: '',
-    contact_person: '',
-    contact_tel: '',
+    contactPerson: '',
+    contactTel: '',
 })
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
-let tableData = reactive([
-    {
-        id: '2023-01-01',
-        name: '排放',
-        address: '08:00',
-        contact_person: '更换阀门',
-        contact_tel: '10',
-        submit_time: '2023-01-02 18:00',
-        status: '陈海峰'
-    },
-    {
-        id: '2023-01-02',
-        name: '自查',
-        address: '10:00',
-        contact_person: '维护设备',
-        contact_tel: '5',
-        submit_time: '2023-01-02 15:00',
-        status: '方杰本'
-    },
-    {
-        id: '2023-01-03',
-        name: '检查',
-        address: '12:00',
-        contact_person: '检修管道',
-        contact_tel: '7',
-        submit_time: '2023-01-03 19:00',
-        status: '盖瑞'
-    },
-    {
-        id: '2023-01-05',
-        name: '防爆',
-        address: '09:00',
-        contact_person: '更换电缆',
-        contact_tel: '8',
-        submit_time: '2023-01-05 17:00',
-        status: '梁海'
-    },
-    {
-        id: '2023-01-06',
-        name: '安检',
-        address: '13:00',
-        contact_person: '维修变压器',
-        contact_tel: '6',
-        submit_time: '2023-01-06 19:00',
-        status: '高挺'
-    },
-    {
-        id: '2023-01-07',
-        name: '改造',
-        address: '11:00',
-        contact_person: '升级泵站',
-        contact_tel: '12',
-        submit_time: '2023-01-08 11:00',
-        status: '路方云'
-    },
-    {
-        id: '2023-01-08',
-        name: '维修',
-        address: '14:00',
-        contact_person: '更换仪表',
-        contact_tel: '3',
-        submit_time: '2023-01-08 17:00',
-        status: '毛亚波'
-    },
-    {
-        id: '2023-01-09',
-        name: '安装',
-        address: '07:00',
-        contact_person: '新建过滤器',
-        contact_tel: '16',
-        submit_time: '2023-01-10 23:00',
-        status: '毛世爱'
-    },
-    {
-        id: '2023-01-11',
-        name: '维护',
-        address: '10:30',
-        contact_person: '检修换热器',
-        contact_tel: '8',
-        submit_time: '2023-01-11 18:30',
-        status: '王志亮'
-    },
-    {
-        id: '2023-01-12',
-        name: '更换',
-        address: '15:00',
-        contact_person: '更换泵轮',
-        contact_tel: '4',
-        submit_time: '2023-01-12 19:00',
-        status: '王淑刚'
-    }
-])
-let searchtableData = ref(tableData)
+let tableData = ref([])
+let searchtableData: any = ref(tableData)
 let val = computed(() => {
     return searchtableData.value.length
 })
@@ -203,14 +110,17 @@ let headerCellStyle = reactive({
     textAlign: 'center',
     padding: '1rem 0'
 })
-const deleteRow = (index: number) => {
-    let arr = tableData;
-    arr.splice((currentPage.value - 1) * pagingItem.value + index, 1)
-    tableData = arr;
-    ElMessage({
-        message: '删除成功',
-        type: 'success'
-    })
+const deleteRow = async (index: number, row: any) => {
+    let res = await deleteEnterpriseList(row.id)
+    if (res) {
+        let arr = tableData;
+        searchtableData.value.splice((currentPage.value - 1) * pagingItem.value + index, 1)
+        tableData = arr;
+        ElMessage({
+            message: '删除成功',
+            type: 'success'
+        })
+    }
 }
 let cellStyle = reactive({
     textAlign: 'center',
@@ -219,14 +129,65 @@ let cellStyle = reactive({
 })
 const handleSizeChange = function (val: any) {
     pagingItem.value = val
-    console.log(pagingItem.value)
-
-    console.log(val)
 }
 const handleCurrentChange = function (val: any) {
     currentPage.value = val
-    console.log(val)
-    console.log(currentPage.value)
+}
+
+const addInformation = async function () {
+    let { name, address, contactPerson, contactTel } = addForm
+    let res = await createEnterpriseList({
+        name,
+        address,
+        contactPerson,
+        contactTel
+    })
+    if (res) {
+        if (chek(addForm)) {
+            dialogFormVisible.value = false
+            ElMessage({
+                message: '创建成功',
+                type: 'success'
+            })
+            location.reload()
+        }
+    }
+}
+const getEnterpriseInfo = async function () {
+    let res = await getEnterpriseList()
+    if (res) {
+        tableData.value = res.data
+        return tableData.value
+    }
+}
+onMounted(async () => {
+    await getEnterpriseInfo()
+})
+
+const search = async function () {
+    await queryEnterpriseList(form.id).then((res)=>{
+        if (form.id == '') {
+            getEnterpriseInfo()
+            return ElMessage.warning('关键词不能为空！！！')
+        } else {
+            ElMessage.success('搜索成功')
+            searchtableData.value = [res.data]
+            return searchtableData.value
+        }
+    }).catch((error)=>{
+        console.log(error);
+        getEnterpriseInfo()
+        return ElMessage.warning('暂无此内容')
+    })
+}
+const jobReport = function () {
+    dialogFormVisible.value = true
+    Object.assign(addForm, {
+        name: '',
+        address: '',
+        contactPerson: '',
+        contactTel: '',
+    })
 }
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
@@ -235,71 +196,12 @@ let newTableData = computed(() => {
         currentPage.value * pagingItem.value
     )
 })
-const addInformation = async function () {
-    if (chek(addForm)) {
-        tableData.push(addForm)
-        dialogFormVisible.value = false
-        ElMessage({
-            message: '创建成功',
-            type: 'success'
-        })
-    }
-    // let { name, address, contact_person, contact_tel } = addForm
-    // let res = await createEnterpriseList({
-    //     name,
-    //     address,
-    //     contact_person,
-    //     contact_tel
-    // })
-    // if (res) {
-    //     console.log(res);
-    // }
-}
-const getEnterpriseInfo = async function () {
-    let res = await getEnterpriseList()
-    console.log(res);
-}
-getEnterpriseInfo()
-const search = function () {
-    let list = reactive(JSON.parse(JSON.stringify(tableData)))
-    let from1: any = reactive({
-        name: {
-            filter: (key: any) => {
-                return !form.name
-                    ? key
-                    : key.filter((item: any) => {
-                        return item.name.includes(form.name)
-                    })
-            }
-        }
-    })
-    console.log(list)
-
-    Object.keys(from1).forEach((key1: any) => {
-        list.values = from1[key1].filter(list)
-        console.log(list)
-    })
-    currentPage.value = 1
-    console.log(list)
-
-    searchtableData.value = list.values
-    console.log(searchtableData)
-}
-const jobReport = function () {
-    dialogFormVisible.value = true
-    Object.assign(addForm, {
-        id: '',
-        name: '',
-        address: '',
-        contact_person: '',
-        contact_tel: '',
-    })
-}
 </script>
 <style scoped lang="scss">
 .job-list {
     background-repeat: no-repeat;
     background-size: cover;
+    padding: 2rem;
     background-position: center;
     box-sizing: border-box;
 
