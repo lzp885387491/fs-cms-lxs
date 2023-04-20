@@ -48,6 +48,15 @@ export const register = function (payload = {}) {
 }
 
 /**
+ * @description 获取个人用户信息
+ */
+export const getUserInfoApi = function () {
+    return $axios.get('/user/info')
+}
+
+
+
+/**
  * @description 获取园区列表
  * @param payload ""
  */

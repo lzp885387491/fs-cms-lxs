@@ -40,9 +40,9 @@
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="mini" @click="upDate(scope.row)">编辑</el-button>
+                            <el-button link type="primary" size="small" @click="upDate(scope.row)">编辑</el-button>
                             <el-button class="cl-r" link type="primary" @click="deleteList(scope.$index, scope.row)"
-                                size="mini">删除</el-button>
+                                size="small">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
