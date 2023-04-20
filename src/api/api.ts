@@ -101,6 +101,13 @@ export const queryEnterpriseList = function (id:any,payload = {}) {
 export const deleteEnterpriseList = function (id:number,payload = {}) {
     return $axios.delete('/enterprise' + '/' + id, payload);
 }
+/**
+ * @description 修改企业信息
+ * @param payload ""
+ */
+export const updateEnterpriseList = function (id:number,payload = {}) {
+    return $axios.patch('/enterprise' + '/' + id, payload);
+}
 
 /**
  * @description 获取应急资源
