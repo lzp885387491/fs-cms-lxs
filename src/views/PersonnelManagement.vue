@@ -15,14 +15,16 @@
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
         </el-table-column>
-        <el-table-column prop="deptNo" align="center" label="部门" width="auto">
+        <el-table-column align="center" label="职位" width="auto">
+          <template #default="scope">
+            {{ positionName(scope.row.deptNo) }}
+          </template>
         </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
         </el-table-column>
         <el-table-column align="center" label="操作" width="150">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="patch(scope.row)">修改</el-button>
-
           </template>
         </el-table-column>
       </el-table>
@@ -32,8 +34,10 @@
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="patchForm.avatarName" autocomplete="off" placeholder="请输入姓名" />
         </el-form-item>
-        <el-form-item label="部门" :label-width="formLabelWidth">
-          <el-input v-model="patchForm.deptNo" autocomplete="off" placeholder="请选择部门" />
+        <el-form-item label="职位" :label-width="formLabelWidth">
+          <el-select v-model="patchForm.deptNo" class="m-2" placeholder="请选择职位">
+            <el-option v-for="item in deptList" :key="item.deptId" :label="item.position" :value="item.deptId" />
+          </el-select>
         </el-form-item>
         <el-form-item label="手机号" :label-width="formLabelWidth">
           <el-input v-model="patchForm.phoneNumber" autocomplete="off" placeholder="请输入手机号" />
@@ -70,6 +74,130 @@ let patchForm = ref({
   deptNo: '',
   phoneNumber: ""
 })
+let deptList: any = reactive([
+  {
+    deptId: 1,
+    position: '总经理'
+  },
+  {
+    deptId: 2,
+    position: '经理助理'
+  },
+  {
+    deptId: 3,
+    position: '厂长'
+  },
+  {
+    deptId: 4,
+    position: '会计'
+  },
+  {
+    deptId: 5,
+    position: '化验室主任'
+  },
+  {
+    deptId: 6,
+    position: '炭化主任'
+  },
+  {
+    deptId: 7,
+    position: '成型主任'
+  },
+  {
+    deptId: 8,
+    position: '活化主任'
+  },
+  {
+    deptId: 9,
+    position: '炭化班长'
+  },
+  {
+    deptId: 10,
+    position: '成型班长'
+  },
+  {
+    deptId: 11,
+    position: '活化班长'
+  },
+  {
+    deptId: 12,
+    position: '人事专员'
+  },
+
+  {
+    deptId: 13,
+    position: '司炉'
+  },
+  {
+    deptId: 14,
+    position: '备用司炉'
+  },
+  {
+    deptId: 15,
+    position: '操作工'
+  },
+  {
+    deptId: 16,
+    position: '搅拌工'
+  },
+  {
+    deptId: 17,
+    position: '出料皮带工'
+  },
+  {
+    deptId: 18,
+    position: '上料皮带工'
+  },
+  {
+    deptId: 19,
+    position: '电工'
+  },
+  {
+    deptId: 20,
+    position: '杂工'
+  },
+  {
+    deptId: 21,
+    position: '机修工'
+  },
+  {
+    deptId: 22,
+    position: '后勤专员'
+  },
+
+  {
+    deptId: 23,
+    position: '采购员'
+  },
+  {
+    deptId: 24,
+    position: '化验员'
+  },
+  {
+    deptId: 25,
+    position: '装载机司机'
+  },
+  {
+    deptId: 26,
+    position: '脱硫'
+  },
+  {
+    deptId: 27,
+    position: '库管'
+  },
+  {
+    deptId: 28,
+    position: '磨粉'
+  },
+  {
+    deptId: 29,
+    position: '污水'
+  },
+  {
+    deptId: 30,
+    position: '调度'
+  }
+])
 let dialogFormVisible = ref(false)
 let dialogFormVisible1 = ref(false)
 let formLabelWidth = ref('8rem')
@@ -105,7 +233,7 @@ onMounted(() => {
 let getUserList = async function () {
   await getUserListApi().then(res => {
     console.log(1111);
-    
+
     console.log(res);
     tableData.value = JSON.parse(JSON.stringify(res.data.data))
   }).catch(error => {
@@ -117,6 +245,10 @@ const handleSizeChange = function (val: any) {
 }
 const handleCurrentChange = function (val: any) {
   currentPage.value = val
+}
+const positionName = function (deptNo: any) {
+  if (deptNo == 0) return "暂无"
+  return deptList.find((element: any) => deptNo == element.deptId).position
 }
 //搜索
 const search = function () {
@@ -163,6 +295,7 @@ const patch = function (val: any) {
   console.log(val);
   dialogFormVisible1.value = true
   Object.assign(patchForm.value, val)
+  if (val.deptNo == 0) patchForm.value.deptNo = "暂无"
 
 }
 const update = async function () {

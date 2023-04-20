@@ -22,7 +22,10 @@
                             <el-input v-model="addForm.description" autocomplete="off" placeholder="请输入资源对应描述"></el-input>
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.siteId" autocomplete="off" placeholder="请输入部署地点"></el-input>
+                            <el-select v-model="addForm.siteId" class="m-2" placeholder="请选择厂区">
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="资源状态" :label-width="formLabelWidth">
                             <el-input v-model="addForm.status" autocomplete="off" placeholder="请输入资源状态"></el-input>
@@ -53,7 +56,10 @@
                             <el-input v-model="editForm.description" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.siteId" autocomplete="off"></el-input>
+                            <el-select v-model="editForm.siteId" class="m-2" placeholder="请选择厂区">
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="资源状态" :label-width="formLabelWidth">
                             <el-input v-model="editForm.status" autocomplete="off"></el-input>
@@ -112,7 +118,7 @@ import { factorySiteApi, emergencyResource, addEmergencyResource, deleteEmergenc
 let searchForm = reactive({
     name: ''
 })
-
+let factoryValue=ref('')
 function check(data: any | undefined) {
     let isType = Object.prototype.toString.call(data)
     let flag = true
@@ -131,23 +137,19 @@ function check(data: any | undefined) {
     return flag
 }
 // 获取地点名称
-const getSiteName=function(id:any) {
-    getFactorySite(id);
-    console.log(factoryInfo.find((item:any)=>{
-            return item.id==id
-        }));
-    
-    return factoryInfo.find((item:any)=>{
-            return item.id==id
-        })
+const getSiteName = function (id: any) {
+    return factoryInfo.value.find((item: any) => {
+        return item.id == id
+    }).name
 }
-let factoryInfo=reactive([])
-async function getFactorySite(id:any){
+let factoryInfo: any = ref([])
+getFactorySite()
+async function getFactorySite() {
     await factorySiteApi().then(response => {
-        factoryInfo=response.data;
-    }).catch(error=>{
+        factoryInfo.value = response.data;
+    }).catch(error => {
         console.log(error);
-        
+
     })
 }
 // 添加规则
@@ -165,10 +167,10 @@ let addForm: any = reactive({
     name: '',
     type: '',
     description: '',
-    siteId: 1,
+    siteId: '',
     status: '',
     head: '',
-    phoneNumber: ''
+    phoneNumber: '',
 })
 // 编辑应急资源表单
 let editForm: any = reactive({
@@ -176,7 +178,7 @@ let editForm: any = reactive({
     name: '',
     type: '',
     description: '',
-    siteId: 1,
+    siteId: '',
     status: '',
     head: '',
     phoneNumber: ''
@@ -264,21 +266,25 @@ const addResource = function () {
         name: '',
         type: '',
         description: '',
-        siteId: 1,
+        siteId: '',
         status: '',
         head: '',
         phoneNumber: ''
     })
 }
 async function addInformation() {
+    console.log(addForm);
+    
     if (check(addForm)) {
         console.log(addForm);
         await addEmergencyResource(addForm).then(response => {
             ElMessage.success('添加成功！')
             emergencyResourceApi()
+            
         }).catch(error => {
             ElMessage.warning('添加失败！')
         })
+        console.log(factoryValue);
         dialogFormVisible.value = false;
     }
 }

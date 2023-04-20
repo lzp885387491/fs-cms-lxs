@@ -81,6 +81,11 @@ const router = createRouter({
           name: 'emergencyDrill',
           component: () => import('../views/EmergencyDrill.vue')
         },
+        {
+          path: '/factorySite',
+          name: 'factorySite',
+          component: () => import('../views/FactorySite.vue')
+        }
       ]
     },
     {

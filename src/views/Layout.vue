@@ -51,6 +51,7 @@ import {
   ArrowDown,
   Setting
 } from '@element-plus/icons-vue'
+import { getUserInfoApi } from '@/api/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -138,6 +139,12 @@ const menu = [
 const navigator = function (item: MenuItem) {
   router.push(item.name)
 }
+
+async function getUserInfo(){
+  const res = await getUserInfoApi()
+  console.log(res);
+}
+getUserInfo()
 </script>
 
 <style scoped lang="scss">

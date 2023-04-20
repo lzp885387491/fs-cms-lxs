@@ -1,31 +1,19 @@
 <template>
     <div class="job-list">
         <div class="main">
-            <div class="table-title">应急事件管理</div>
+            <div class="table-title">厂区位置管理</div>
             <div class="search mt-2">
                 <div class="search-left">
                     <el-input v-model="form.eventName" clearable size="large" class="ipt-search"
-                        placeholder="根据事件名称查询"></el-input>
+                        placeholder="根据厂区位置查询"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
-                <el-button type="primary" @click="jobReport" size="large">添加事件</el-button>
+                <el-button type="primary" @click="jobReport" size="large">添加位置</el-button>
                 <!-- 添加事件弹层 -->
                 <el-dialog title="添加应急事件信息" v-model="dialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
-                        <el-form-item label="事件名称" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.name" class="ipt" placeholder="事件名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.level" class="ipt" placeholder="事件级别"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.description" class="ipt" placeholder="事件描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.site_id" class="ipt" placeholder="事件站点"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件类型" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.type" class="ipt" placeholder="事件类型"></el-input>
+                        <el-form-item label="位置名称" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="addForm.name" class="ipt" placeholder="位置名称"></el-input>
                         </el-form-item>
                     </el-form>
                     <template #footer>
@@ -39,11 +27,8 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%" :header-cell-style="headerCellStyle"
                     :cell-style="cellStyle">
-                    <el-table-column prop="name" label="应急事件名称" width="auto"></el-table-column>
-                    <el-table-column prop="level" label="应急事件级别" width="auto"></el-table-column>
-                    <el-table-column prop="description" label="应急事件描述" width="auto"></el-table-column>
-                    <el-table-column prop="siteId" label="事件站点" width="auto"></el-table-column>
-                    <el-table-column prop="type" label="事件类型" width="auto"></el-table-column>
+                    <el-table-column prop="id" label="厂区位置id" width="auto"></el-table-column>
+                    <el-table-column prop="name" label="厂区位置名称" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click.prevent="modify(scope.row)">修改</el-button>
@@ -64,18 +49,6 @@
                     <el-form :model="updateForm" size="mini">
                         <el-form-item label="事件名称" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="事件名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.level" class="ipt" placeholder="事件级别"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.siteId" class="ipt" placeholder="事件站点"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件类型" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.type" class="ipt" placeholder="事件类型"></el-input>
                         </el-form-item>
                     </el-form>
                     <template #footer>
@@ -117,11 +90,11 @@
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { 
-    emergencyEventList, 
-    deleteEmergencyEvent, 
-    addEmergencyEvent, 
-    updateEmergencyEvent, 
-    getEmergencyEvent
+    siteList, 
+    getSite, 
+    addSite, 
+    updateSite, 
+    deleteSite
  } from '@/api/api'
 
 let tableData = ref([])
@@ -133,28 +106,16 @@ let updateDialog = ref(false)
 let formLabelWidth = ref('15rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
-const addFormRule: any = reactive({
-    name: '应急事件名称',
-    level: '应急事件级别',
-    description: '应急事件描述',
-    site_id: '事件站点',
-    type: '事件类型',
-})
+// const addFormRule: any = reactive({
+//     name: '厂区位置名称',
+// })
 
 let addForm = reactive({
     name: '',
-    site_id: 1,
-    level: '',
-    description: '',
-    type: ''
 })
 
 let updateForm = reactive({
     name: '',
-    siteId: 1,
-    level: '',
-    description: '',
-    type: '',
     id:1
 })
 let detailsForm = reactive({
@@ -199,7 +160,7 @@ const handleCurrentChange = function (val: any) {
 // 获取列表
 emer()
 async function emer() {
-    await emergencyEventList({}).then(res => {
+    await siteList({}).then(res => {
         tableData.value = res.data
         searchtableData.value = res.data
         console.log(tableData);
@@ -210,11 +171,14 @@ async function emer() {
 
 // 删除
 async function deleteRow(row: any) {
-    await deleteEmergencyEvent(row.id, {}).then(res => {
+    console.log(row.id);
+    
+    await deleteSite(row.id, {}).then(res => {
         ElMessage.success('删除成功')
         emer()
     }).catch(res => {
-        ElMessage.warning('删除失败！！')
+        console.log(res);
+        ElMessage.warning('该地点不能删除！！')
     })
 }
 // 更新
@@ -231,12 +195,8 @@ const modify = function(row: any){
 }
 
 async function updateRow() {
-    await updateEmergencyEvent(updateForm.id, {
+    await updateSite(updateForm.id, {
         name: updateForm.name,
-        siteId: +updateForm.siteId,
-        level: updateForm.level,
-        description: updateForm.description,
-        type: updateForm.type
     }).then(res=>{
         ElMessage.success('修改成功')
         updateDialog.value = false
@@ -247,36 +207,33 @@ async function updateRow() {
 }
 
 // 校验
-function chek(data: any | undefined) {
-    // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
-    // 如果传进来的值 是一个数组 就循环遍历每一项 判断每一项的值是否为空
-    // 如果传进来的值 是一个单独的字段 则就只校验该字段是否为空
-    let isType = Object.prototype.toString.call(data)
-    let flag = true
-    if (isType === '[object Object]') {
-        for (const key in data) {
-            if (data[key] === undefined || data[key] === '') {
-                flag = false
-                console.log(key)
-                ElMessage({
-                    message: '请填写' + addFormRule[key],
-                    type: 'warning'
-                })
-                break
-            }
-        }
-    }
-    return flag
-}
+// function chek(data: any | undefined) {
+//     // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
+//     // 如果传进来的值 是一个数组 就循环遍历每一项 判断每一项的值是否为空
+//     // 如果传进来的值 是一个单独的字段 则就只校验该字段是否为空
+//     let isType = Object.prototype.toString.call(data)
+//     let flag = true
+//     if (isType === '[object Object]') {
+//         for (const key in data) {
+//             if (data[key] === undefined || data[key] === '') {
+//                 flag = false
+//                 ElMessage({
+//                     message: '请填写' + addFormRule[key],
+//                     type: 'warning'
+//                 })
+//                 break
+//             }
+//         }
+//     }
+//     return flag
+// }
 // 添加
 async function addInformation() {
-    if (chek(addForm)) {
-        await addEmergencyEvent({
+    if(addForm.name == ''){
+        return ElMessage.warning('厂区名称不能为空！！')
+    }
+        await addSite({
             name: addForm.name,
-            siteId: addForm.site_id,
-            level: addForm.level,
-            description: addForm.description,
-            type: addForm.type
         }).then(res => {
             dialogFormVisible.value = false
             ElMessage.success('添加成功！')
@@ -285,7 +242,6 @@ async function addInformation() {
             console.log(res);
             ElMessage.warning('添加失败请重试！')
         })
-    }
 }
 // 搜索
 const search = function () {
@@ -308,14 +264,14 @@ const search = function () {
     currentPage.value = 1
     searchtableData.value = list
 }
-// 详情
-const detail = async function (row : any){
-    await getEmergencyEvent(row.id,{}).then(res=>{
-        console.log(res);
-    }).catch(err=>{
-        console.log(err);
-    })
-}
+// // 详情
+// const detail = async function (row : any){
+//     await getEmergencyEvent(row.id,{}).then(res=>{
+//         console.log(res);
+//     }).catch(err=>{
+//         console.log(err);
+//     })
+// }
 
 const jobReport = function () {
     dialogFormVisible.value = true

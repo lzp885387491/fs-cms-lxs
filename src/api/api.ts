@@ -48,6 +48,15 @@ export const register = function (payload = {}) {
 }
 
 /**
+ * @description 获取个人用户信息
+ */
+export const getUserInfoApi = function () {
+    return $axios.get('/user/info')
+}
+
+
+
+/**
  * @description 获取园区列表
  * @param payload ""
  */
@@ -161,6 +170,30 @@ export const updateEmergencyEvent = function (id: number, payload = {}) {
 export const deleteEmergencyEvent = function (id: number, payload = {}) {
     return $axios.delete('/emergencyEvent/' + id, payload);
 }
+
+
+// 获取厂区位置列表
+export const siteList = function (payload = {}) {
+    return $axios.get('/site/', payload);
+}
+// 查询厂区位置
+export const getSite = function (id: number, payload = {}) {
+    return $axios.get('/site/' + id, payload);
+}
+// 增加厂区位置
+export const addSite = function (payload = {}) {
+    return $axios.post('/site', payload);
+}
+// 更新厂区位置
+export const updateSite = function (id: number, payload = {}) {
+    return $axios.patch('/site/' + id, payload);
+}
+// 删除厂区位置
+export const deleteSite = function (id: number, payload = {}) {
+    return $axios.delete('/site/' + id, payload);
+}
+
+
 // 获取人员信息
 export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
