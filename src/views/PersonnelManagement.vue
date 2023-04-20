@@ -20,6 +20,8 @@
             {{ positionName(scope.row.deptNo) }}
           </template>
         </el-table-column>
+        <el-table-column prop="identityCard" label="身份证号" align="center" width="auto">
+        </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
         </el-table-column>
         <el-table-column align="center" label="操作" width="150">
@@ -72,7 +74,8 @@ let patchForm = ref({
   id: '',
   avatarName: "",
   deptNo: '',
-  phoneNumber: ""
+  phoneNumber: "",
+  identityCard:''
 })
 let deptList: any = reactive([
   {
