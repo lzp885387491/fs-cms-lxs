@@ -71,7 +71,7 @@
             <div class="block">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                     :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pagingItem"
-                    layout="total, prev, pager, next, jumper" :total="val"></el-pagination>
+                    layout="total, sizes, prev, pager, next, jumper" :total="val"></el-pagination>
             </div>
         </div>
     </div>
@@ -125,9 +125,6 @@ const upDateForm = reactive({
 })
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
-const dialogFormVisible3 = ref(false)
-const ind = ref()
-const rows = ref()
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
