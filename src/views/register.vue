@@ -15,6 +15,10 @@
                         <label for="">密码</label>
                         <el-input v-model="ruleForm.password" placeholder="请输入密码" type="password" />
                     </div>
+                    <div class="item">
+                        <label for="">用户昵称</label>
+                        <el-input v-model="ruleForm.avatarName" placeholder="请输入用户昵称" />
+                    </div>
                     <el-button type="primary" class="btn-submit" @click="submit">注册</el-button>
                 </div>
             </div>
@@ -24,14 +28,27 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { register } from '@/api/api';
+import router from '@/router';
+import { ElMessage } from 'element-plus'
+
+
 const ruleForm = reactive({
     username: "",
     password: "",
     checkPass: '',
     avatarName: ''
 })
-const submit=function(){
-    
+const submit = async function(){
+    let { username, password, avatarName } = ruleForm
+    await register({
+        username,
+        password,
+        avatarName
+    }).then(res=>{
+        ElMessage.success("注册成功")
+        router.push("/login")
+    })
 }
 </script>
 
