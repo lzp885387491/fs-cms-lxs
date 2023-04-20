@@ -93,6 +93,10 @@ export const deleteEmergencyEvent = function (id : number , payload = {}) {
 export const getUserListApi = function (payload = {}) {
     return $axios.get('/user', payload);
 }
+// 查询人员信息
+export const whereUserListApi = function (id : number , payload = {}) {
+    return $axios.get('/user/' + id, payload);
+}
 // 修改人员信息
 export const patchUserListApi = function (id : number , payload = {}) {
     return $axios.patch('/user/' + id, payload);
