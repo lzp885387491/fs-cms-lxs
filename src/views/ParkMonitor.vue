@@ -61,6 +61,9 @@ export default {
             ],
         };
     },
+    created() {
+
+    },
     mounted() {
         this.initVideoDom()
     },
