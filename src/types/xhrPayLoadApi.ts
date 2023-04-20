@@ -14,14 +14,24 @@ export interface login{
  * @param description 园区描述
  * @param longitude 经度
  * @param latitude 纬度
+ * @param person 法定负责人
+ * @param createDate 创建时间
+ * @param workPerson 办公人数
+ * @param workerPerson 工人人数
+ * @param totalPerson 总人数
  */
 export interface cretaePark{
     name:string,
     location:string,
     area:number,
     description:string,
-    longitude:number,
-    latitude:number,
+    longitude?:number,
+    latitude?:number,
+    person: string,
+    createDate: string,
+    workPerson: number,
+    workerPerson: number,
+    totalPerson: number
 }
 
 /**
@@ -40,6 +50,11 @@ export interface queryParkDetail{
  * @param description 园区描述
  * @param longitude 经度
  * @param latitude 纬度
+ * @param person 法定负责人
+ * @param createDate 创建时间
+ * @param workPerson 办公人数
+ * @param workerPerson 工人人数
+ * @param totalPerson 总人数
  */
 export interface updatePark{
     id:number,
@@ -49,4 +64,9 @@ export interface updatePark{
     description:string,
     longitude:number,
     latitude:number,
+    person: string,
+    createDate: string,
+    workPerson: number,
+    workerPerson: number,
+    totalPerson: number
 }
