@@ -2,8 +2,11 @@
   <div class="job-list">
     <div class="main">
       <div class="table-title">园区基础信息管理</div>
+      <el-button type="primary" @click="upDate" size="large"
+          :class="tableData.name == '' ? 'none' : ''">修改信息</el-button>
       <div class="search mt-2">
-        <el-button type="primary" @click="jobReport" size="large"  :class="tableData.name == '' ? '' : 'none'">添加厂区信息</el-button>
+        <el-button type="primary" @click="jobReport" size="large"
+          :class="tableData.name == '' ? '' : 'none'">添加厂区信息</el-button>
         <el-dialog title="添加厂区信息" v-model="dialogFormVisible" width="50%">
           <el-form :model="addForm" size="default">
             <el-form-item label="厂区名称" :required="true" :label-width="formLabelWidth">
@@ -47,68 +50,54 @@
       <!-- 园区信息 -->
       <el-form label-position="right" label-width="100px" :model="tableData" style="max-width: 50%;margin: 0 auto;">
         <el-form-item :label="addFormRule.name">
-          <el-input v-model="tableData.name" disabled >
-            <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.name" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.person">
-          <el-input v-model="tableData.person" disabled >
-            <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.person" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.area">
-          <el-input v-model="tableData.area" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.area" @input="tableData.area = Number(tableData.area.replace(/[^\d]/g,''))" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.description">
-          <el-input v-model="tableData.description" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.description" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.createDate">
-          <el-input v-model="tableData.createTime" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.createTime" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.workPerson">
-          <el-input v-model="tableData.workPerson" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.workPerson" @input="tableData.workPerson = Number(tableData.workPerson.replace(/[^\d]/g,''))" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.workerPerson">
-          <el-input v-model="tableData.workerPerson" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.workerPerson" @input="tableData.workerPerson = Number(tableData.workerPerson.replace(/[^\d]/g,''))" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.totalPerson">
-          <el-input v-model="tableData.totalPerson" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.totalPerson" @input="tableData.totalPerson = Number(tableData.totalPerson.replace(/[^\d]/g,''))" :disabled="disabled">
+
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.location">
-          <el-input v-model="tableData.location" disabled >
-          <template #append>
-              <el-button :icon="Edit" />
-            </template>
+          <el-input v-model="tableData.location" :disabled="disabled">
+
           </el-input>
         </el-form-item>
+        <el-button type="primary" @click="determine" size="large"
+            :class="disabled ? 'none' : ''">确定</el-button>
+            <el-button type="primary" @click="cancellation" size="large"
+            :class="disabled ? 'none' : ''">取消</el-button>
       </el-form>
     </div>
   </div>
@@ -116,9 +105,8 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
-import { getParkInfo, createPark } from '@/api/api';
+import { getParkInfo, createPark, updateParkInfo } from '@/api/api';
 import type { cretaePark } from '@/types/xhrPayLoadApi';
-import { Edit } from '@element-plus/icons-vue';
 function chek(data: any | undefined) {
   let isType = Object.prototype.toString.call(data)
   let flag = true
@@ -145,7 +133,7 @@ const addFormRule: any = reactive({
   workPerson: '办公人数',
   workerPerson: '工人人数',
   totalPerson: '总数',
-  location:'位置'
+  location: '位置'
 })
 const Dates = function (time: any): void {
   var date = new Date(time).toJSON()
@@ -168,18 +156,20 @@ let addForm = reactive({
 })
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref('120px')
+let disabled = ref(true);
 let tableData: any = ref({
-  name:''
+  name: ''
 });
 const getParkList = function () {
   getParkInfo().then((res) => {
-    res.data.data.forEach((el:any) => {
-      tableData.value = el;
-    });
+    console.log(res);
+    
+    // res.data.data.forEach((el: any) => {
+    //   tableData.value = el;
+    // });
   });
 }
 getParkList();
-
 
 const addInformation = async function () {
   if (chek(addForm)) {
@@ -224,6 +214,27 @@ const createParkInfo = async function (data: cretaePark) {
   if (res.data.code == 200) { value = true; };
   return value;
 }
+// 修改园区信息
+const upDate = function(){
+  disabled.value = false
+}
+// 确定
+const determine = async function(){
+  let res = await updateParkInfo(tableData.value);
+  if (res.data.code == 200) {
+    disabled.value = false;
+    ElMessage({
+          message: "修改成功",
+          type: 'success'
+        })
+    getParkList()
+  };
+}
+// 取消m
+const cancellation = function(){
+  disabled.value = true;
+  getParkList();
+}
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
@@ -236,7 +247,7 @@ const createParkInfo = async function (data: cretaePark) {
   width: 28rem;
 }
 
-.none{
+.none {
   display: none;
 }
 
