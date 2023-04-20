@@ -122,3 +122,4 @@ let  deptList = [
       position: '调度'
     }
   ]
+  export default deptList
