@@ -9,12 +9,12 @@
           </div>
           <el-dropdown class="pointer" trigger="click">
             <span class="el-dropdown-link">
-              <span>用户昵称</span>
+              <span>{{ userInfo.avatarName ? userInfo.avatarName : '用户昵称' }}</span>
               <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item class="pointer" :icon="Setting">用户设置</el-dropdown-item>
+                <el-dropdown-item class="pointer" :icon="Setting" @click="nav('setUserInfo')">修改个人信息</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -47,14 +47,17 @@
 <script setup lang="ts">
 import { Document, } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  ArrowDown,
-  Setting
-} from '@element-plus/icons-vue'
+import { ArrowDown, Setting } from '@element-plus/icons-vue'
 import { getUserInfoApi } from '@/api/api'
+import { ref } from 'vue'
+import { userStore } from '@/stores/userInfo'
 
 const route = useRoute()
 const router = useRouter()
+let userInfo: any = ref({})
+
+let userStorePinia = userStore();
+
 
 interface MenuItem {
   label: string
@@ -140,11 +143,21 @@ const navigator = function (item: MenuItem) {
   router.push(item.name)
 }
 
-async function getUserInfo(){
-  const res = await getUserInfoApi()
-  console.log(res);
+async function getUserInfo() {
+  const res: any = await getUserInfoApi();
+  if (res.data.code == 200) {
+    userInfo.value = JSON.parse(JSON.stringify(res.data.data));
+
+    userStorePinia.setUserStore('userinfo', userInfo.value);
+    let piniaRes = userStorePinia.getUserStore('userinfo')
+    console.log('这是pinia存好并获取返回的值：',piniaRes);
+  }
 }
 getUserInfo()
+
+function nav(name: string): void {
+  router.push(name);
+}
 </script>
 
 <style scoped lang="scss">
