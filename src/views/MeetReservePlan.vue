@@ -5,7 +5,7 @@
       <div class="search mt-2">
         <div class="search-left">
           <el-input
-            v-model="form.planName"
+            v-model="form.name"
             clearable
             size="large"
             class="ipt-search"
@@ -13,21 +13,32 @@
           ></el-input>
           <el-button type="primary" @click="search" size="large">搜索</el-button>
         </div>
-        <el-button type="primary" @click="jobReport" size="large">添加</el-button>
+        <el-button type="primary" @click="showDialog" size="large">添加应急预案</el-button>
         <el-dialog title="添加应急预案信息" v-model="dialogFormVisible" width="30%">
-          <el-form :model="addForm" size="mini">
+          <el-form :model="selectPlan" size="default">
             <el-form-item label="预案名称" :label-width="formLabelWidth">
-              <el-input type="text" v-model="addForm.planName" class="ipt" placeholder="请输入预案名称"></el-input>
+              <el-input type="text" v-model="selectPlan.name" class="ipt" placeholder="请输入预案名称"></el-input>
             </el-form-item>
-            <el-form-item label="演练地点" :label-width="formLabelWidth">
+            <!-- <el-form-item label="演练地点" :label-width="formLabelWidth">
               <el-input
                 type="text"
                 v-model="addForm.exerciseLocation"
                 class="ipt"
                 placeholder="请输入演练地点"
               ></el-input>
+            </el-form-item>-->
+            <el-form-item label="描述" :label-width="formLabelWidth">
+              <el-input
+                type="text"
+                v-model="selectPlan.description"
+                class="ipt"
+                placeholder="请输入预案描述"
+              ></el-input>
             </el-form-item>
-            <el-form-item label="演练时间" :label-width="formLabelWidth">
+            <el-form-item label="地点" :label-width="formLabelWidth">
+              <el-input type="text" v-model="selectPlan.site" class="ipt" placeholder="请输入预案所定地点"></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="演练时间" :label-width="formLabelWidth">
               <el-date-picker v-model="addForm.exerciseTime" type="datetime" placeholder="请选择时间" />
             </el-form-item>
             <el-form-item label="参加人数" :label-width="formLabelWidth">
@@ -43,33 +54,35 @@
             </el-form-item>
             <el-form-item label="负责人" :label-width="formLabelWidth">
               <el-input type="text" v-model="addForm.head" class="ipt" placeholder="请输入负责人"></el-input>
-            </el-form-item>
+            </el-form-item>-->
           </el-form>
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="addInformation">确 定</el-button>
+              <el-button type="primary" @click="addPlan">确 定</el-button>
             </span>
           </template>
         </el-dialog>
       </div>
       <div class="table mt-2">
         <el-table
-          :data="newTableData"
+          :data="tableList"
           class="table-content"
           style="width: 100%"
           :header-cell-style="headerCellStyle"
           :cell-style="cellStyle"
         >
           <el-table-column type="index" width="50" />
-          <el-table-column prop="planName" label="预案名称" width="auto"></el-table-column>
-          <el-table-column prop="exerciseLocation" label="演练地点" width="auto"></el-table-column>
-          <el-table-column label="演练时间" width="auto">
+          <el-table-column prop="name" label="预案名称" width="auto"></el-table-column>
+          <el-table-column prop="description" label="预案描述" width="auto"></el-table-column>
+          <el-table-column prop="site" label="演练地点" width="auto"></el-table-column>
+          <!-- <el-table-column prop="exerciseLocation" label="演练地点" width="auto"></el-table-column> -->
+          <!-- <el-table-column label="演练时间" width="auto">
             <template #default="scope">{{ Dates(scope.row.exerciseTime) }}</template>
-          </el-table-column>
-          <el-table-column prop="numberOfParticipants" label="参加人数" width="auto"></el-table-column>
+          </el-table-column>-->
+          <!-- <el-table-column prop="numberOfParticipants" label="参加人数" width="auto"></el-table-column>
           <el-table-column prop="Organizer" label="举办单位" width="auto"></el-table-column>
-          <el-table-column prop="head" label="负责人" width="auto"></el-table-column>
+          <el-table-column prop="head" label="负责人" width="auto"></el-table-column>-->
           <el-table-column label="操作" width="auto">
             <template #default="scope">
               <el-button
@@ -86,11 +99,11 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
+          :current-page="pageNum"
           :page-sizes="[5, 10, 15, 20]"
-          :page-size="pagingItem"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="val"
+          :total="total"
         ></el-pagination>
       </div>
     </div>
@@ -98,13 +111,111 @@
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import { reactive, ref, computed } from 'vue'
-let form = reactive({
-  planName: ''
+import { reactive, ref, computed, onMounted } from 'vue'
+import { getEmergencyPlanList, createEmergencyPlanList, deleteEmergencyPlan } from '@/api/plan-api'
+onMounted(async () => {
+  getPlanList()
 })
+let resList = ref([]) //服务端返回的数据
+let searchList=ref([])
+let pageNum = ref(1) //第几页
+let pageSize = ref(5) //每页数量
+let selectPlan: any = reactive({
+  // name: '',
+  // description: '',
+  site: 1
+}) //选中的预案
+let total = computed(() => {
+  return searchList.value.length
+})
+let tableList = computed(() => {
+  return searchList.value.slice((pageNum.value - 1) * pageSize.value, pageNum.value * pageSize.value)
+}) //分页后的数据
+const getPlanList = async function () {
+  let res = await getEmergencyPlanList()
+  if (res.status == 200 || res.status == 304) {
+    resList.value = res.data
+    searchList.value=res.data
+  }
+}
+const showDialog = function () {
+  selectPlan = reactive({
+    site: 1
+  })
+  dialogFormVisible.value = true
+}
+const hiddenDialog = function () {
+  dialogFormVisible.value = false
+}
+const addPlan = async function () {
+  let res = await createEmergencyPlanList(selectPlan)
+  if (res.status == 201) {
+    ElMessage({
+      message: '创建成功',
+      type: 'success'
+    })
+    hiddenDialog()
+    getPlanList()
+  } else {
+    ElMessage({
+      message: '创建失败',
+      type: 'warning'
+    })
+  }
+} //添加方案
+const deletePlan = async function (id: number) {
+  let res = await deleteEmergencyPlan({ id })
+  if (res.status == 201) {
+    ElMessage({
+      message: '删除成功',
+      type: 'success'
+    })
+    getPlanList()
+  } else {
+    ElMessage({
+      message: '删除失败',
+      type: 'warning'
+    })
+  }
+} //删除方案
+let form = reactive({
+  name: ''
+}) //搜索框
 
+const search = function () {
+  let list = reactive(JSON.parse(JSON.stringify(resList.value)))
+  let from1: any = reactive({
+    name: {
+      filter: (data: any) => {
+        return !form.name
+          ? data
+          : data.filter((item: any) => {
+              return item.name.includes(form.name)
+            })
+      }
+    }
+  })
+
+  Object.keys(from1).forEach((key1: any) => {
+    list = from1[key1].filter(list)
+  })
+  pageNum.value = 1
+  searchList.value = list
+}
+
+let tableData = reactive([
+  {
+    id: 1,
+    planName: '中毒窒息应急演练',
+    exerciseLocation: '成型二车间旁边',
+    exerciseTime: '2022-11-02 15:00:00',
+    numberOfParticipants: 21,
+    Organizer: '应急救援管理机构',
+    head: '邢建平'
+  }
+])
 function chek(data: any | undefined) {
-  // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
+  // 如果传进来的是一个对象 则循环遍历每一个字段是否为空
   // 如果传进来的值 是一个数组 就循环遍历每一项 判断每一项的值是否为空
   // 如果传进来的值 是一个单独的字段 则就只校验该字段是否为空
   let isType = Object.prototype.toString.call(data)
@@ -113,7 +224,6 @@ function chek(data: any | undefined) {
     for (const key in data) {
       if (data[key] === undefined || data[key] === '') {
         flag = false
-        console.log(key)
 
         ElMessage({
           message: '请填写' + addFormRule[key],
@@ -145,17 +255,6 @@ let dialogFormVisible = ref(false)
 let formLabelWidth = ref('15rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
-let tableData = reactive([
-   {
-    id: 1,
-    planName: '中毒窒息应急演练',
-    exerciseLocation: '成型二车间旁边',
-    exerciseTime: '2022-11-02 15:00:00',
-    numberOfParticipants: 21,
-    Organizer: '应急救援管理机构',
-    head: '邢建平'
-  },
-])
 let searchtableData = ref(tableData)
 let val = computed(() => {
   return searchtableData.value.length
@@ -233,14 +332,9 @@ let companyName = reactive([
 ])
 const handleSizeChange = function (val: any) {
   pagingItem.value = val
-  console.log(pagingItem.value)
-
-  console.log(val)
 }
 const handleCurrentChange = function (val: any) {
   currentPage.value = val
-  console.log(val)
-  console.log(currentPage.value)
 }
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
@@ -257,46 +351,22 @@ const Dates = function (time: any) {
     .replace(/\.[\d]{3}Z/, '')
   return timeft
 }
-const addInformation = function () {
-  if (chek(addForm)) {
-    let obj = ref(JSON.parse(JSON.stringify(addForm)))
-    tableData.push(obj.value)
-    dialogFormVisible.value = false
-    ElMessage({
-      message: '创建成功',
-      type: 'success'
-    })
-  }
-}
-const search = function () {
-  let list = reactive(JSON.parse(JSON.stringify(tableData)))
-  let from1: any = reactive({
-    planName: {
-      filter: (key: any) => {
-        return !form.planName
-          ? key
-          : key.filter((item: any) => {
-              return item.planName.includes(form.planName)
-            })
-      }
-    }
-  })
-  console.log(list)
+// const addInformation = function () {
+//   if (chek(addForm)) {
+//     let obj = ref(JSON.parse(JSON.stringify(addForm)))
+//     tableData.push(obj.value)
+//     dialogFormVisible.value = false
+//     ElMessage({
+//       message: '创建成功',
+//       type: 'success'
+//     })
+//   }
+// }
 
-  Object.keys(from1).forEach((key1: any) => {
-    list.values = from1[key1].filter(list)
-    console.log(list)
-  })
-  currentPage.value = 1
-  console.log(list)
-
-  searchtableData.value = list.values
-  console.log(searchtableData)
-}
 const deleteRow = (index: number) => {
-  let arr = tableData;
-  arr.splice((currentPage.value-1) * pagingItem.value + index, 1)
-  tableData = arr;
+  let arr = tableData
+  arr.splice((currentPage.value - 1) * pagingItem.value + index, 1)
+  tableData = arr
   ElMessage({
     message: '删除成功',
     type: 'success'
@@ -316,6 +386,22 @@ const jobReport = function () {
 }
 </script>
 <style scoped lang="scss">
+:deep(.el-dialog .el-input__wrapper) {
+  flex-grow: 0 !important;
+  width: 28rem !important;
+}
+:deep(.el-dialog .el-input__inner) {
+  flex-grow: 0 !important;
+  width: 28rem !important;
+}
+
+:deep(.el-dialog) {
+  --el-dialog-margin-top: 0 !important;
+  position: relative !important;
+  margin: 0 auto !important;
+  top: 50% !important;
+  transform: translateY(-65%) !important;
+}
 .job-list {
   box-sizing: border-box;
   padding: 3rem;
