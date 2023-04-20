@@ -16,7 +16,7 @@
                 </el-form-item>
 
                 <el-form-item label="职位">
-                    <el-input v-model="form.position" disabled placeholder="职位" />
+                    <el-input disabled v-model="form.position" :placeholder="form.position" />
                 </el-form-item>
 
                 <el-form-item label="公司">
@@ -37,6 +37,10 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { UpdateUserInfoApi } from '@/api/api'
+import { userStore } from '@/stores/userInfo'
+
+
+
 interface fromType {
     avatarName: string, // 姓名
     phoneNumber: string, // 手机号
@@ -53,9 +57,13 @@ const form: fromType = reactive({
     enterprise: ''
 })
 
+const userStorePinia = userStore();
+const piniaRes = JSON.parse(JSON.stringify(userStorePinia.getUserStore('userinfo')));
+Object.assign(form, piniaRes);// 合并数组
+console.log(form);
+
 const onSubmit = () => {
     console.log('form', form)
-    // 调用设置用户信息接口
     // setUserInfo(form);
 }
 
