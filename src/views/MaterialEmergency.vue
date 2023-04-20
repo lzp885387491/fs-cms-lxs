@@ -4,13 +4,13 @@
             <div class="table-title">应急救援物资</div>
             <div class="search">
                 <div class="search-left">
-                    <el-input v-model="form.name" clearable size="large" class="ipt-search"
+                    <el-input v-model="searchForm.name" clearable size="large" class="ipt-search"
                         placeholder="根据资源名称查询"></el-input>
 
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="addResource" size="large">添加应急资源</el-button>
-                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="50%">
+                <el-dialog title="添加应急资源" v-model="dialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off"></el-input>
@@ -41,7 +41,7 @@
                         </span>
                     </template>
                 </el-dialog>
-                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="50%">
+                <el-dialog title="修改应急资源" v-model="editDialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
@@ -86,8 +86,9 @@
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
+                            <!-- <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button> -->
+                            <el-button link type="danger" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -104,7 +105,7 @@
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
-let form = reactive({
+let searchForm = reactive({
     name: ''
 })
 
@@ -125,6 +126,7 @@ function check(data: any | undefined) {
     }
     return flag
 }
+// 添加规则
 const addFormRule: any = reactive({
     name: '资源名称',
     type: '资源类型',
@@ -134,6 +136,7 @@ const addFormRule: any = reactive({
     head: '负责人',
     phoneNumber: '负责人电话'
 })
+// 添加应急资源表单
 let addForm: any = reactive({
     name: '',
     type: '',
@@ -143,6 +146,7 @@ let addForm: any = reactive({
     head: '',
     phoneNumber: ''
 })
+// 编辑应急资源表单
 let editForm: any = reactive({
     id: '',
     name: '',
@@ -153,9 +157,11 @@ let editForm: any = reactive({
     head: '',
     phoneNumber: ''
 })
+// 添加应急资源弹窗
 let dialogFormVisible = ref(false)
+// 编辑应急资源弹窗
 let editDialogFormVisible = ref(false)
-let formLabelWidth = ref('120px')
+let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
@@ -191,87 +197,43 @@ let newTableData = computed(() => {
     )
 })
 
-interface resource {
-    name: string,
-    type: string,
-    description: string,
-    siteId: number,
-    status: string,
-    head: string,
-    phoneNumber: string
+// interface resource {
+//     name: string,
+//     type: string,
+//     description: string,
+//     siteId: number,
+//     status: string,
+//     head: string,
+//     phoneNumber: string
+// }
+
+
+const checkRow = function (row: any) {
+    console.log('正在查看');
+
 }
-async function addEmergencyResourceApi(params: resource) {
-    let res = await addEmergencyResource(params);
-    if (res.status == 200) {
-        // console.log(res);
-
-        console.log(res.data + '添加成功');
-
-
-    }
-}
-const addInformation = function () {
-    if (check(addForm)) {
-        console.log(addForm);
-        addEmergencyResourceApi(addForm);
-        emergencyResourceApi()
-        dialogFormVisible.value = false;
-        ElMessage({
-            message: '创建成功',
-            type: 'success'
-        })
-    }
-}
-
-const submitEditInformation = function () {
-    let params = {
-        name: editForm.name,
-        type: editForm.type,
-        description: editForm.description,
-        siteId: editForm.siteId,
-        status: editForm.status,
-        head: editForm.head,
-        phoneNumber: editForm.phoneNumber
-    }
-
-    console.log(params);
-    updateEmergencyResourceApi(editForm.id, params);
-
-    console.log('更新后的tabledata', tableData);
-    ElMessage({
-        message: '修改成功',
-        type: 'success',
-    })
-    editDialogFormVisible.value = false;
-    emergencyResourceApi();
-}
+//根据名称查询
 const search = function () {
-    console.log(tableData.value);
-
     let list = JSON.parse(JSON.stringify(tableData.value));
-    console.log(list);
-
-    let from: any = ref({
+    let form: any = ref({
         name: {
-            filter: (a: any) => {
-                console.log('a');
-                console.log('a');
-
-                return !form.name
-                    ? a
-                    : a.filter((item: any) => {
-                        return item.name.includes(form.name)
+            filter: (list: any) => {
+                return !searchForm.name
+                    ? list
+                    : list.filter((item: any) => {
+                        return item.name.includes(searchForm.name)
                     })
             }
         }
     })
 
-    Object.keys(from.value).forEach((key: any) => {
-        list = from.value[key].filter(list)
+    Object.keys(form.value).forEach((key: any) => {
+        list = form.value[key].filter(list)
     })
     currentPage.value = 1
     searchtableData.value = list
 }
+// 添加应急资源
 const addResource = function () {
     dialogFormVisible.value = true
     Object.assign(addForm, {
@@ -284,10 +246,17 @@ const addResource = function () {
         phoneNumber: ''
     })
 }
-// 删除某条应急资源
-const deleteRow = (row: any) => {
-    deleteEmergencyResourceApi(row.id);
-    emergencyResourceApi()
+async function addInformation(){
+    if (check(addForm)) {
+        console.log(addForm);
+        await addEmergencyResource(addForm).then(response => {
+            ElMessage.success('添加成功！')
+            emergencyResourceApi()
+        }).catch(error=>{
+            ElMessage.warning('添加失败！')
+        })
+        dialogFormVisible.value = false;
+    }
 }
 // 编辑某条应急资源
 const editRow = (row: any) => {
@@ -300,9 +269,26 @@ const editRow = (row: any) => {
     editForm.head = row.head;
     editForm.phoneNumber = row.phoneNumber;
     editForm.status = row.status;
-
-
 }
+async function submitEditInformation() {
+    let params = {
+        name: editForm.name,
+        type: editForm.type,
+        description: editForm.description,
+        siteId: +editForm.siteId,
+        status: editForm.status,
+        head: editForm.head,
+        phoneNumber: editForm.phoneNumber
+    }
+    await updateEmergencyResource(editForm.id, params).then((response: any) => {
+        ElMessage.success('更新成功！')
+        emergencyResourceApi();
+    }).catch((error: any) => {
+        console.log(error);
+    });
+    editDialogFormVisible.value = false;
+}
+// 查看详情
 async function getEmergencyResourceApi(params: number) {
     let res = await getEmergencyResource(params);
     if (res.status == 200) {
@@ -312,33 +298,26 @@ async function getEmergencyResourceApi(params: number) {
     console.log('arr的value', arr.value);
 
 }
-async function updateEmergencyResourceApi(id: number, params: any) {
-    let res = await updateEmergencyResource(id,params);
-    if (res.status == 200) {
-        console.log('更新后当前数据：', res.data);
 
-    }
 
-}
-// 删除
-async function deleteEmergencyResourceApi(params: number) {
-    let res = await deleteEmergencyResource(params);
-    if (res.status == 200) {
-        console.log(res);
-    }
-
+// 删除某条应急资源
+async function deleteRow(row: any) {
+    await deleteEmergencyResource(row.id, {}).then(response => {
+        ElMessage.success('删除成功！')
+    }).catch(error => {
+        ElMessage.warning(error.message)
+    })
+    emergencyResourceApi()
 }
 // 获取应急资源列表
 async function emergencyResourceApi() {
-    let res = await emergencyResource();
-    // console.log(res.data);
-    if (res.status == 200) {
-        tableData.value = res.data;
-        searchtableData.value = res.data
-        console.log('获取成功', res.data)
-    } else {
-        console.log('获取失败', res);
-    }
+    await emergencyResource().then(response => {
+        tableData.value = response.data;
+        searchtableData.value = response.data
+    }).catch(error => {
+        ElMessage.warning(error.message)
+    })
+
 }
 emergencyResourceApi();
 </script>

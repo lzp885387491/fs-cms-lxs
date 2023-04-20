@@ -99,12 +99,6 @@ export default {
                 });
             })
         },
-        // 销毁
-        beforeDestroy() {
-            if (this.videoInstance) {
-                this.videoInstance.dispose(); // dispose()会直接删除Dom元素
-            }
-        },
     },
 };
 </script>

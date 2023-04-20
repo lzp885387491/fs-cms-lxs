@@ -3,19 +3,36 @@
     <el-container>
       <el-header class="header">
         <h3>浮山化工园区ERP管理平台</h3>
+        <div class="user-info">
+          <div class="avatar">
+            <img src="@/assets/images/user_avatar.png" alt="">
+          </div>
+          <el-dropdown class="pointer" trigger="click">
+            <span class="el-dropdown-link">
+              <span>用户昵称</span>
+              <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item class="pointer" :icon="Setting">用户设置</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </el-header>
       <el-container class="container">
         <el-aside width="220px">
           <el-menu :default-active="route.name" class="el-menu-vertical-demo">
-            <el-sub-menu :index="item.label" v-for="(item,index) in menu" :key=index>
+            <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
               <template #title>
                 <el-icon>
                   <component :is="item.icon"></component>
                 </el-icon>
                 <span>{{ item.label }}</span>
               </template>
-              <el-menu-item @click="navigator(children)" :index="children.name" v-for="(children,index) in item.children" :key="index">{{
-                children.label }}</el-menu-item>
+              <el-menu-item @click="navigator(children)" :index="children.name" v-for="(children, index) in item.children"
+                :key="index">{{
+                  children.label }}</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </el-aside>
@@ -28,8 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import { Document, Menu as Setting } from '@element-plus/icons-vue'
+import { Document, } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
+import {
+  ArrowDown,
+  Setting
+} from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -119,14 +140,43 @@ const navigator = function (item: MenuItem) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .layout {
   height: 100vh;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .layout .header {
-  line-height: 60px;
+  height: 60px;
   border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h3 {
+    font-size: 16px;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 10px;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
 }
 
 .container {
