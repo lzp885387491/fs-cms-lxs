@@ -3,8 +3,7 @@
     <div class="main">
       <div class="table-title">园区基础信息管理</div>
       <div class="search mt-2">
-
-        <el-button type="primary" @click="jobReport" size="large">添加厂区信息</el-button>
+        <el-button type="primary" @click="jobReport" size="large"  :class="tableData.name == '' ? '' : 'none'">添加厂区信息</el-button>
         <el-dialog title="添加厂区信息" v-model="dialogFormVisible" width="50%">
           <el-form :model="addForm" size="default">
             <el-form-item label="厂区名称" :required="true" :label-width="formLabelWidth">
@@ -45,36 +44,72 @@
           </template>
         </el-dialog>
       </div>
-      <div class="table mt-2">
-        <el-table :data="tableData" :border="true" class="table-content" style="width: 100%"
-          :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-          <el-table-column prop="name" label="厂区名称" width="auto"></el-table-column>
-          <el-table-column prop="person" label="法定责任人" width="auto"></el-table-column>
-          <el-table-column prop="area" label="厂区面积" width="auto"></el-table-column>
-          <el-table-column prop="description" label="厂区描述" width="auto"></el-table-column>
-          <el-table-column prop="location" label="位置" width="auto"></el-table-column>
-          <el-table-column prop="createTime" label="创建日期" width="auto">
-            <template #default="scoped">{{ Dates(scoped.row.createTime) }}</template>
-          </el-table-column>
-          <el-table-column prop="workPerson" label="办公人数" width="auto"></el-table-column>
-          <el-table-column prop="workerPerson" label="工人人数" width="auto"></el-table-column>
-          <el-table-column prop="totalPerson" label="总数" width="auto"></el-table-column>
-          <el-table-column label="操作" width="auto">
-            <template #default="scope">
-              <el-popover :visible="visible" placement="top" :width="160">
-                <p>确定要删除此数据嘛?</p>
-                <div style="text-align: right; margin: 0">
-                  <el-button size="small" text @click="visible = false">取消</el-button>
-                  <el-button size="small" type="primary" @click="visible = false">确定</el-button>
-                </div>
-                <template #reference>
-                  <el-button @click="deleteRow(scope.$index)" type="text" class="table-clink" size="small">删除</el-button>
-                </template>
-              </el-popover>
+      <!-- 园区信息 -->
+      <el-form label-position="right" label-width="100px" :model="tableData" style="max-width: 50%;margin: 0 auto;">
+        <el-form-item :label="addFormRule.name">
+          <el-input v-model="tableData.name" disabled >
+            <template #append>
+              <el-button :icon="Edit" />
             </template>
-          </el-table-column>
-        </el-table>
-      </div>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.person">
+          <el-input v-model="tableData.person" disabled >
+            <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.area">
+          <el-input v-model="tableData.area" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.description">
+          <el-input v-model="tableData.description" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.createDate">
+          <el-input v-model="tableData.createTime" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.workPerson">
+          <el-input v-model="tableData.workPerson" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.workerPerson">
+          <el-input v-model="tableData.workerPerson" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.totalPerson">
+          <el-input v-model="tableData.totalPerson" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="addFormRule.location">
+          <el-input v-model="tableData.location" disabled >
+          <template #append>
+              <el-button :icon="Edit" />
+            </template>
+          </el-input>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -83,7 +118,7 @@ import { ElMessage } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { getParkInfo, createPark } from '@/api/api';
 import type { cretaePark } from '@/types/xhrPayLoadApi';
-const visible = ref(false);
+import { Edit } from '@element-plus/icons-vue';
 function chek(data: any | undefined) {
   let isType = Object.prototype.toString.call(data)
   let flag = true
@@ -109,7 +144,8 @@ const addFormRule: any = reactive({
   createDate: '创建日期',
   workPerson: '办公人数',
   workerPerson: '工人人数',
-  totalPerson: '总数'
+  totalPerson: '总数',
+  location:'位置'
 })
 const Dates = function (time: any): void {
   var date = new Date(time).toJSON()
@@ -132,23 +168,18 @@ let addForm = reactive({
 })
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref('120px')
-let tableData: any = ref([]);
-const getParkList = function(){
+let tableData: any = ref({
+  name:''
+});
+const getParkList = function () {
   getParkInfo().then((res) => {
-    tableData.value = res.data.data;
+    res.data.data.forEach((el:any) => {
+      tableData.value = el;
+    });
   });
 }
 getParkList();
-let headerCellStyle = reactive({
-  fontSize: '1.7rem',
-  textAlign: 'center',
-  padding: '1rem 0'
-})
-let cellStyle = reactive({
-  textAlign: 'center',
-  fontSize: '1.5rem',
-  padding: '1rem 0'
-})
+
 
 const addInformation = async function () {
   if (chek(addForm)) {
@@ -186,15 +217,6 @@ const jobReport = function () {
   })
 }
 
-const deleteRow = function (index: any) {
-
-  let arr = tableData.value;
-  tableData.value = arr;
-  ElMessage({
-    message: '删除成功',
-    type: 'success'
-  })
-}
 // 创建园区
 const createParkInfo = async function (data: cretaePark) {
   let value = false;
@@ -212,6 +234,10 @@ const createParkInfo = async function (data: cretaePark) {
 :deep(.el-dialog .el-input__inner) {
   flex-grow: 0;
   width: 28rem;
+}
+
+.none{
+  display: none;
 }
 
 .block {
