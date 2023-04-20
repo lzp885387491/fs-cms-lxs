@@ -228,7 +228,7 @@ const submitEditInformation = function () {
         name: editForm.name,
         type: editForm.type,
         description: editForm.description,
-        siteId: editForm.siteId,
+        siteId: Number(editForm.siteId),
         status: editForm.status,
         head: editForm.head,
         phoneNumber: editForm.phoneNumber
@@ -243,7 +243,7 @@ const submitEditInformation = function () {
         type: 'success',
     })
     editDialogFormVisible.value = false;
-    emergencyResourceApi();
+    
 }
 const search = function () {
     console.log(tableData.value);
@@ -313,11 +313,19 @@ async function getEmergencyResourceApi(params: number) {
 
 }
 async function updateEmergencyResourceApi(id: number, params: any) {
-    let res = await updateEmergencyResource(id,params);
-    if (res.status == 200) {
-        console.log('更新后当前数据：', res.data);
+     await updateEmergencyResource(id,params).then((res:any)=>{
+        console.log(111111);      
+        console.log(res);
+        emergencyResourceApi();
+        
+    }).catch((Error:any)=>{
+        console.log(Error);
+        
+    });
+    // if (res.status == 200) {
+    //     console.log('更新后当前数据：', res.data);
 
-    }
+    // }
 
 }
 // 删除
@@ -325,6 +333,7 @@ async function deleteEmergencyResourceApi(params: number) {
     let res = await deleteEmergencyResource(params);
     if (res.status == 200) {
         console.log(res);
+        
     }
 
 }
