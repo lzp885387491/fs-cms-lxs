@@ -556,6 +556,16 @@ let allArr = [
         phoneNumber: '17603592484'
     },
 ]
+
+// const add=function() {
+//     let promises: any = [];
+//     allArr.forEach((params: any) => {
+//         let promise = addEmergencyResource(params);
+//         promises.push(promise)
+//     })
+//     const res = await Promise.all(promises);
+//     console.log(res);
+// }
 emergencyResourceApi();
 </script>
 <style scoped lang="scss">
