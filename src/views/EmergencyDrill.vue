@@ -4,9 +4,9 @@
             <div class="table-title">应急事件管理</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.planName" clearable size="large" class="ipt-search"
+                    <el-input v-model="form.eventName" clearable size="large" class="ipt-search"
                         placeholder="根据事件名称查询"></el-input>
-                    <el-button type="primary" @click="" size="large">搜索</el-button>
+                    <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加事件</el-button>
                 <!-- 添加事件弹层 -->
@@ -16,13 +16,13 @@
                             <el-input type="text" v-model="addForm.name" class="ipt" placeholder="事件名称"></el-input>
                         </el-form-item>
                         <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.site_id" class="ipt" placeholder="事件级别"></el-input>
+                            <el-input type="text" v-model="addForm.level" class="ipt" placeholder="事件级别"></el-input>
                         </el-form-item>
                         <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.level" class="ipt" placeholder="事件描述"></el-input>
+                            <el-input type="text" v-model="addForm.description" class="ipt" placeholder="事件描述"></el-input>
                         </el-form-item>
                         <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="addForm.description" class="ipt" placeholder="事件站点"></el-input>
+                            <el-input type="text" v-model="addForm.site_id" class="ipt" placeholder="事件站点"></el-input>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
                             <el-input type="text" v-model="addForm.type" class="ipt" placeholder="事件类型"></el-input>
@@ -65,13 +65,13 @@
                             <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="事件名称"></el-input>
                         </el-form-item>
                         <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.site_id" class="ipt" placeholder="事件级别"></el-input>
+                            <el-input type="text" v-model="updateForm.level" class="ipt" placeholder="事件级别"></el-input>
                         </el-form-item>
                         <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.level" class="ipt" placeholder="事件描述"></el-input>
+                            <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件描述"></el-input>
                         </el-form-item>
                         <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件站点"></el-input>
+                            <el-input type="text" v-model="updateForm.site_id" class="ipt" placeholder="事件站点"></el-input>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
                             <el-input type="text" v-model="updateForm.type" class="ipt" placeholder="事件类型"></el-input>
@@ -92,7 +92,7 @@ import { emergencyEventList, deleteEmergencyEvent, addEmergencyEvent, updateEmer
 
 let tableData = ref([])
 let form = reactive({
-    planName: ''
+    eventName: ''
 })
 let dialogFormVisible = ref(false)
 let updateDialog = ref(false)
@@ -147,6 +147,12 @@ let newTableData = computed(() => {
         currentPage.value * pagingItem.value
     )
 })
+const handleSizeChange = function (val: any) {
+    pagingItem.value = val
+}
+const handleCurrentChange = function (val: any) {
+    currentPage.value = val
+}
 
 // 获取列表
 emer()
@@ -219,14 +225,7 @@ function chek(data: any | undefined) {
     }
     return flag
 }
-
-const handleSizeChange = function (val: any) {
-    pagingItem.value = val
-}
-const handleCurrentChange = function (val: any) {
-    currentPage.value = val
-}
-
+// 添加
 async function addInformation() {
     if (chek(addForm)) {
         await addEmergencyEvent({
@@ -236,7 +235,7 @@ async function addInformation() {
             description: addForm.description,
             type: addForm.type
         }).then(res => {
-            console.log(res);
+            dialogFormVisible.value = false
             ElMessage.success('添加成功！')
             emer()
         }).catch(res => {
@@ -245,27 +244,27 @@ async function addInformation() {
         })
     }
 }
-// const search = function () {
-//     let list = reactive(JSON.parse(JSON.stringify(tableData)))
-//     let from1: any = reactive({
-//         planName: {
-//             filter: (key: any) => {
-//                 return !form.planName
-//                     ? key
-//                     : key.filter((item: any) => {
-//                         return item.planName.includes(form.planName)
-//                     })
-//             }
-//         }
-//     })
-//     Object.keys(from1).forEach((key1: any) => {
-//         list.values = from1[key1].filter(list)
-//     })
-//     currentPage.value = 1
-//     searchtableData.value = list.values
-// }
-
-
+// 搜索
+const search = function () {
+    let list = reactive(JSON.parse(JSON.stringify(tableData)))
+    let from1: any = reactive({
+        planName: {
+            filter: (key: any) => {
+                console.log(key._value);
+                return !form.eventName
+                    ? key
+                    : key._value.filter((item: any) => {
+                        return item.planName.includes(form.eventName)
+                    })
+            }
+        }
+    })
+    Object.keys(from1).forEach((key1: any) => {
+        list.values = from1[key1].filter(list)
+    })
+    currentPage.value = 1
+    searchtableData.value = list.values
+}
 
 const jobReport = function () {
     dialogFormVisible.value = true
