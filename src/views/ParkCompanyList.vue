@@ -40,13 +40,24 @@
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
-                            <el-button link type="primary" @click="upDate(scope.row)">编辑</el-button>
-                            <el-button link type="primary"
-                                @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+                            <el-button link type="primary" size="mini" @click="upDate(scope.row)">编辑</el-button>
+                            <el-button class="cl-r" link type="primary" @click="deleteList(scope.$index, scope.row)"
+                                size="mini">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
+            <el-dialog v-model="dialogFormVisible3" title="是否删除" width="28%">
+                <span>确定要删除吗？</span>
+                <template #footer>
+                    <span class="dialog-footer">
+                        <el-button @click="dialogFormVisible3 = false">取消</el-button>
+                        <el-button type="primary" @click="deleteRow()">
+                            确定
+                        </el-button>
+                    </span>
+                </template>
+            </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
                     <el-form-item label="公司名称" :label-width="formLabelWidth">
@@ -125,6 +136,9 @@ const upDateForm = reactive({
 })
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
+const dialogFormVisible3 = ref(false)
+const ind = ref()
+const rows = ref()
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
@@ -138,17 +152,23 @@ let headerCellStyle = reactive({
     textAlign: 'center',
     padding: '1rem 0'
 })
-const deleteRow = async (index: number, row: any) => {
-    let res = await deleteEnterpriseList(row.id)
+const deleteList = function (index: number, row: any) {
+    ind.value = index;
+    rows.value = row.id;
+    dialogFormVisible3.value = true
+}
+const deleteRow = async () => {
+    let res = await deleteEnterpriseList(rows.value)
     if (res) {
         let arr = tableData;
-        searchtableData.value.splice((currentPage.value - 1) * pagingItem.value + index, 1)
+        searchtableData.value.splice((currentPage.value - 1) * pagingItem.value + ind.value, 1)
         tableData = arr;
         ElMessage({
             message: '删除成功',
             type: 'success'
         })
     }
+    dialogFormVisible3.value = false
 }
 const upDate = function (row: any) {
     dialogFormVisible2.value = true
@@ -249,7 +269,6 @@ let newTableData = computed(() => {
 .job-list {
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 2rem;
     background-position: center;
     box-sizing: border-box;
 
@@ -318,4 +337,11 @@ let newTableData = computed(() => {
 // :deep(.el-table) {
 //     --el-table-border-color: none
 // }
+.cl-r {
+    color: red;
+}
+
+.cl-r:hover {
+    color: rgb(203, 69, 69);
+}
 </style>
