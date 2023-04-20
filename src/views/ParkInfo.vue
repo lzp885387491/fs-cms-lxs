@@ -72,7 +72,7 @@
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.createDate">
-          <el-input v-model="tableData.createTime" :disabled="disabled">
+          <el-input v-model="tableData.createDate" :disabled="disabled">
 
           </el-input>
         </el-form-item>
@@ -96,10 +96,12 @@
 
           </el-input>
         </el-form-item>
-        <el-button type="primary" @click="determine" size="large"
-            :class="disabled ? 'none' : ''">确定</el-button>
-            <el-button type="primary" @click="cancellation" size="large"
-            :class="disabled ? 'none' : ''">取消</el-button>
+        <div class="df-sa">
+          <el-button type="primary" @click="determine" size="large"
+              :class="disabled ? 'none' : ''">确定</el-button>
+              <el-button type="primary" @click="cancellation" size="large"
+              :class="disabled ? 'none' : ''">取消</el-button>
+        </div>
       </el-form>
       <el-empty description="暂无数据" :class="tableData.name == '' ? '' : 'none'"/>
     </div>
@@ -167,7 +169,6 @@ const getParkList = function () {
   getParkInfo().then((res) => {
     res.data.data.forEach((el: any) => {
       tableData.value = el;
-      console.log(tableData.value);
     });
   });
 }
@@ -177,7 +178,7 @@ const addInformation = async function () {
   if (chek(addForm)) {
     dialogFormVisible.value = false
     let froms = JSON.parse(JSON.stringify(addForm))
-    tableData.value.push(froms);
+    tableData.value = froms;
     let flag = await createParkInfo(froms);
     if (flag) {
       ElMessage({
@@ -224,7 +225,7 @@ const upDate = function(){
 const determine = async function(){
   let res = await updateParkInfo(tableData.value);
   if (res.data.code == 200) {
-    disabled.value = false;
+    disabled.value = true;
     ElMessage({
           message: "修改成功",
           type: 'success'
@@ -247,6 +248,11 @@ const cancellation = function(){
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.df-sa{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 :deep(.el-dialog .el-input__inner) {
   flex-grow: 0;
