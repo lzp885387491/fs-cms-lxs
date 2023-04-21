@@ -121,7 +121,7 @@
                     <el-table-column prop="unit" label="单位" width="60"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
                     <el-table-column prop="description" label="资源描述" width="auto" :show-overflow-tooltip='true'></el-table-column>
-                    <el-table-column label="部署地点" width="auto">
+                    <el-table-column label="部署地点" width="100">
                         <template #default="scope">
                             <div>{{ getSiteName(scope.row.siteId) }}</div>
                         </template>
@@ -131,7 +131,7 @@
                             <div>{{ getStatusName(scope.row.status) }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="head" label="负责人" width="auto"></el-table-column>
+                    <el-table-column prop="head" label="负责人" width="70"></el-table-column>
                     <el-table-column prop="phoneNumber" label="负责人电话" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
