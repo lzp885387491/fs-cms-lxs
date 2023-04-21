@@ -12,15 +12,15 @@
                 <el-button type="primary" @click="addResource" size="large">添加物资</el-button>
                 <el-dialog title="添加物资" v-model="dialogFormVisible" width="50%">
                     <el-form :model="addForm" size="mini">
-                        <el-form-item label="事件" :label-width="formLabelWidth">
-                            <el-select v-model="addForm.eventId" class="m-2" placeholder="请选择事件名称">
-                                <el-option v-for="item in eventList" :key="item.id" :label="item.name" :value="item.id" />
-                            </el-select>
-                        </el-form-item>
                         <el-form-item label="资源" :label-width="formLabelWidth">
                             <el-select v-model="addForm.resourceId" class="m-2" placeholder="请选择资源名称">
                                 <el-option v-for="item in resourceList" :key="item.id" :label="item.name"
                                     :value="item.id" />
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="事件" :label-width="formLabelWidth">
+                            <el-select v-model="addForm.eventId" class="m-2" placeholder="请选择事件名称">
+                                <el-option v-for="item in eventList" :key="item.id" :label="item.name" :value="item.id" />
                             </el-select>
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
@@ -57,18 +57,18 @@
                 </el-dialog>
                 <el-dialog title="修改物资" v-model="editDialogFormVisible" width="50%">
                     <el-form :model="editForm" size="mini">
-                        <el-form-item label="事件" :label-width="formLabelWidth">
-                            <el-select v-model="editForm.eventId" class="m-2" placeholder="请选择事件名称">
-                                <el-option v-for="item in eventList" :key="item.id" :label="item.name" :value="item.id" />
-                            </el-select>
-                        </el-form-item>
-
                         <el-form-item label="资源" :label-width="formLabelWidth">
                             <el-select v-model="editForm.resourceId" class="m-2" placeholder="请选择资源名称">
                                 <el-option v-for="item in resourceList" :key="item.id" :label="item.name"
                                     :value="item.id" />
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="事件" :label-width="formLabelWidth">
+                            <el-select v-model="editForm.eventId" class="m-2" placeholder="请选择事件名称">
+                                <el-option v-for="item in eventList" :key="item.id" :label="item.name" :value="item.id" />
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item label="负责人" :label-width="formLabelWidth">
                             <el-select v-model="editForm.workerId" class="m-2" placeholder="请选择负责人">
                                 <el-option v-for="item in userList" :key="item.id" :label="item.avatarName"
@@ -101,16 +101,22 @@
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column type="index" label="序号" width="100" />
+                    <el-table-column prop="resource.name" label="资源" width="auto"></el-table-column>
                     <el-table-column prop="event.name" label="事件" width="auto">
 
                     </el-table-column>
-                    <el-table-column prop="resource.name" label="资源" width="auto"></el-table-column>
                     <el-table-column prop="worker.avatarName" label="负责人" width="auto"></el-table-column>
                     <el-table-column prop="taskStatus" label="任务状态" width="auto">
                     </el-table-column>
-                    <el-table-column prop="dispatchTime" label="派发时间" width="auto">
+                    <el-table-column label="派发时间" width="auto">
+                        <template #default="scope">
+                            <div>{{ getTime(scope.row.dispatchTime) }}</div>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="finishTime" label="完成时间" width="auto">
+                    <el-table-column  label="完成时间" width="auto">
+                        <template #default="scope">
+                            <div>{{ getTime(scope.row.finishTime) }}</div>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
@@ -157,13 +163,7 @@ let resourceStatusList = reactive([
         status: 'rejected'
     },
 ])
-const getStatusName = function (status: any) {
-    return resourceStatusList.find(item => {
-        console.log(item.status, status)
-        return item.status == status
-    })?.name
-}
-let factoryValue = ref('')
+
 function check(data: any | undefined) {
     let isType = Object.prototype.toString.call(data)
     let flag = true
@@ -181,28 +181,16 @@ function check(data: any | undefined) {
     }
     return flag
 }
+const getTime=function(time:any){
+    return time.replace('T',' ').replace('Z','')
+}
 // 应急资源
 let resourceList: any = ref([])
 // 应急事件
 let eventList: any = ref([])
 // 用户信息
 let userList: any = ref([])
-// 获取地点名称
-// const getSiteName = function (id: any) {
-//     return factoryInfo.value.find((item: any) => {
-//         return item.id == id
-//     }).name
-// }
-// let factoryInfo: any = ref([])
-// getFactorySite()
-// async function getFactorySite() {
-//     await factorySiteApi().then(response => {
-//         factoryInfo.value = response.data;
-//     }).catch(error => {
-//         console.log(error);
 
-//     })
-// }
 // 添加规则
 const addFormRule: any = reactive({
     eventId: '事件',
@@ -265,7 +253,7 @@ const handleCurrentChange = function (val: any) {
 
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
-    console.log('计算属性成功：', tableData.value);
+    console.log('计算属性成功：', searchtableData.value);
     return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
@@ -294,14 +282,12 @@ const search = function () {
                     ? list
                     : list.filter((item: any) => {
                         console.log(item, searchForm.name);
-                        return item.event.name.includes(searchForm.name)
+                        return item.resource.name.includes(searchForm.name)
                     })
             }
         }
     })
-
     Object.keys(form.value).forEach((key: any) => {
-
         list = form.value[key].filter(list)
     })
     currentPage.value = 1
@@ -365,16 +351,6 @@ async function submitEditInformation() {
     })
     editDialogFormVisible.value = false;
 }
-// 查看详情
-// async function getEmergencyResourceApi(params: number) {
-//     let res = await getEmergencyResource(params);
-//     if (res.status == 200) {
-//         console.log(res.data, '查询成功');
-//     }
-//     arr.value = res.data;
-//     console.log('arr的value', arr.value);
-
-// }
 
 // 删除某条记录
 async function deleteRow(row: any) {
@@ -400,18 +376,6 @@ const open = function (row: any) {
             deleteRow(row)
         })
 }
-// 获取应急资源列表
-// async function emergencyResourceApi() {
-//     await emergencyResource().then(response => {
-//         tableData.value = response.data;
-//         searchtableData.value = response.data;
-//         console.log(tableData.value);
-
-//     }).catch(error => {
-//         ElMessage.warning(error.message)
-//     })
-
-// }
 async function getResourceRecord() {
     await getResourceRecordApi().then(response => {
         tableData.value = response.data.data;
@@ -422,6 +386,7 @@ async function getResourceRecord() {
         console.log(error);
     })
 }
+
 getResourceRecord()
 // 获取应急资源列表
 async function emergencyResourceApi() {
