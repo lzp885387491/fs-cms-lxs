@@ -23,8 +23,7 @@
                         </el-form-item>
                         <el-form-item label="部署地点" :label-width="formLabelWidth">
                             <el-select v-model="addForm.site_id" class="m-2" placeholder="请选择厂区">
-                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
-                                    :value="item.id" />
+                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name" :value="item.id" />
                             </el-select>
                         </el-form-item>
                         <el-form-item label="事件类型" :label-width="formLabelWidth">
@@ -40,63 +39,79 @@
                 </el-dialog>
             </div>
             <div class="table mt-2">
-                <el-table :data="newTableData" class="table-content" style="width: 100%" :header-cell-style="headerCellStyle"
-                    :cell-style="cellStyle">
+                <el-table :data="newTableData" class="table-content" style="width: 100%"
+                    :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column prop="name" label="应急事件名称" width="auto"></el-table-column>
                     <el-table-column prop="level" label="应急事件级别" width="auto"></el-table-column>
                     <el-table-column prop="description" label="应急事件描述" width="auto"></el-table-column>
                     <el-table-column label="事件站点" width="auto">
-                        <template #default="scope">
+                        <template #default="scope: any">
                             <div>{{ getSiteName(scope.row.siteId) }}</div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="type" label="事件类型" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
-                        <template #default="scope">
-                            <el-button link type="primary" size="small" @click.prevent="modify(scope.row)">修改</el-button>
-                            <!-- <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button> -->
-                            <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
+                        <template #default=" scope: any ">
+                            <el-button link type="primary" size="small" @click.prevent=" modify(scope.row) ">修改</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button>
+                            <el-button link type="primary" size="small" @click.prevent=" deleteRow(scope.row) ">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
             <div class="block">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                    :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pagingItem"
-                    layout="total, sizes, prev, pager, next, jumper" :total="val"></el-pagination>
+                <el-pagination @size-change=" handleSizeChange " @current-change=" handleCurrentChange "
+                    :current-page=" currentPage " :page-sizes=" [5, 10, 15, 20] " :page-size=" pagingItem "
+                    layout="total, sizes, prev, pager, next, jumper" :total=" val "></el-pagination>
             </div>
         </div>
     </div>
-    <el-dialog title="修改应急事件信息" v-model="updateDialog" width="30%">
-                    <el-form :model="updateForm" size="mini">
-                        <el-form-item label="事件名称" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="事件名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.level" class="ipt" placeholder="事件级别"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.description" class="ipt" placeholder="事件描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="部署地点" :label-width="formLabelWidth">
-                            <el-select v-model="updateForm.siteId" class="ipt" placeholder="请选择厂区">
-                                <el-option v-for="item in factoryInfo" :key="item.id" :label="item.name"
-                                    :value="item.id" />
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="事件类型" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.type" class="ipt" placeholder="事件类型"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <template #footer>
-                        <span class="dialog-footer">
-                            <el-button @click="updateDialog = false">取 消</el-button>
-                            <el-button type="primary" @click="updateRow">确 定</el-button>
-                        </span>
-                    </template>
-                </el-dialog>
-                <!-- 详情 -->
-                <!-- <el-dialog title="当前详情" v-model="updateDialog" width="30%">
+    <el-dialog title="修改应急事件信息" v-model=" updateDialog " width="30%">
+        <el-form :model=" updateForm " size="mini">
+            <el-form-item label="事件名称" :label-width=" formLabelWidth ">
+                <el-input type="text" v-model=" updateForm.name " class="ipt" placeholder="事件名称"></el-input>
+            </el-form-item>
+            <el-form-item label="事件级别" :label-width=" formLabelWidth ">
+                <el-input type="text" v-model=" updateForm.level " class="ipt" placeholder="事件级别"></el-input>
+            </el-form-item>
+            <el-form-item label="事件描述" :label-width=" formLabelWidth ">
+                <el-input type="text" v-model=" updateForm.description " class="ipt" placeholder="事件描述"></el-input>
+            </el-form-item>
+            <el-form-item label="部署地点" :label-width=" formLabelWidth ">
+                <el-select v-model=" updateForm.siteId " class="ipt" placeholder="请选择厂区">
+                    <el-option v-for=" item  in  factoryInfo " :key=" item.id " :label=" item.name " :value=" item.id " />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="事件类型" :label-width=" formLabelWidth ">
+                <el-input type="text" v-model=" updateForm.type " class="ipt" placeholder="事件类型"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click=" updateDialog = false ">取 消</el-button>
+                <el-button type="primary" @click=" updateRow ">确 定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <!-- 详情 -->
+    <el-dialog title="当前详情" v-model=" detailDialog " width="30%">
+        <div class="m-20">{{ detailsForm.name }}</div>
+        <div class="m-20">{{ detailsForm.level }}</div>
+        <div class="m-20">{{ detailsForm.siteId }}</div>
+        <div class="m-20">{{ detailsForm.type }}</div>
+        <div class="m-20">{{ detailsForm.description }}</div>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click=" detailDialog = false ">取 消</el-button>
+                <el-button type="primary" @click=" updateRow ">确 定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+
+    <!-- 详情 -->
+    <!-- <el-dialog title="当前详情" v-model="updateDialog" width="30%">
                     <el-form :model="detailsForm" size="mini">
                         <el-form-item label="事件名称" :label-width="formLabelWidth">
                             <el-input type="text" :value="detailsForm.name" v-model="detailsForm.name" class="ipt" placeholder="事件名称"></el-input>
@@ -125,15 +140,15 @@
 <!-- details -->
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import { reactive, ref, computed } from 'vue'
-import { 
-    emergencyEventList, 
-    deleteEmergencyEvent, 
-    addEmergencyEvent, 
-    updateEmergencyEvent, 
+import { reactive, ref, computed, onMounted } from 'vue'
+import {
+    emergencyEventList,
+    deleteEmergencyEvent,
+    addEmergencyEvent,
+    updateEmergencyEvent,
     getEmergencyEvent,
     factorySiteApi
- } from '@/api/api'
+} from '@/api/api'
 
 let tableData = ref([])
 let form = reactive({
@@ -141,6 +156,7 @@ let form = reactive({
 })
 let dialogFormVisible = ref(false)
 let updateDialog = ref(false)
+let detailDialog = ref(false)
 let formLabelWidth = ref('15rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
@@ -166,7 +182,7 @@ let updateForm = reactive({
     level: '',
     description: '',
     type: '',
-    id:1
+    id: 1
 })
 let detailsForm = reactive({
     name: '',
@@ -174,7 +190,7 @@ let detailsForm = reactive({
     level: '',
     description: '',
     type: '',
-    id:1
+    id: 1
 })
 
 let searchtableData = ref([])
@@ -193,14 +209,18 @@ let cellStyle = reactive({
     padding: '1rem 0'
 })
 
+onMounted(async ()=>{
+   await getFactorySite()
+   emer()
+})
+
 // 获取地点名称
 const getSiteName = function (id: any) {
     return factoryInfo.value.find((item: any) => {
         return item.id == id
-    }).name
+    }).name 
 }
 let factoryInfo: any = ref([])
-getFactorySite()
 async function getFactorySite() {
     await factorySiteApi().then(response => {
         factoryInfo.value = response.data;
@@ -212,7 +232,7 @@ async function getFactorySite() {
 
 
 //   //计算属性计算出分页后需要的用户信息
-let newTableData:any = computed(() => {
+let newTableData: any = computed(() => {
     return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
@@ -226,12 +246,10 @@ const handleCurrentChange = function (val: any) {
 }
 
 // 获取列表
-emer()
 async function emer() {
     await emergencyEventList({}).then(res => {
         tableData.value = res.data
         searchtableData.value = res.data
-        console.log(tableData);
     }).catch(res => {
         ElMessage.warning(res.message)
     })
@@ -247,15 +265,15 @@ async function deleteRow(row: any) {
     })
 }
 // 更新
-const modify = function(row: any){
+const modify = function (row: any) {
     updateDialog.value = true
-    Object.assign(updateForm,{
+    Object.assign(updateForm, {
         name: row.name,
         siteId: row.siteId,
         level: row.level,
         description: row.description,
         type: row.type,
-        id : row.id 
+        id: row.id
     })
 }
 
@@ -266,11 +284,11 @@ async function updateRow() {
         level: updateForm.level,
         description: updateForm.description,
         type: updateForm.type
-    }).then(res=>{
+    }).then(res => {
         ElMessage.success('修改成功')
         updateDialog.value = false
         emer()
-    }).catch(res=>{
+    }).catch(res => {
         ElMessage.warning('修改失败！')
     })
 }
@@ -338,10 +356,11 @@ const search = function () {
     searchtableData.value = list
 }
 // 详情
-const detail = async function (row : any){
-    await getEmergencyEvent(row.id,{}).then(res=>{
+const detail = async function (row: any) {
+    detailDialog.value = true
+    await getEmergencyEvent(row.id, {}).then(res => {
         console.log(res);
-    }).catch(err=>{
+    }).catch(err => {
         console.log(err);
     })
 }
@@ -361,9 +380,11 @@ const jobReport = function () {
 .job-list {
     padding: 20px;
     box-sizing: border-box;
+
     .main {
         height: 100%;
         box-sizing: border-box;
+
         .search {
             display: flex;
             justify-content: space-between;
@@ -372,12 +393,17 @@ const jobReport = function () {
             .search-left {
                 display: flex;
                 gap: 1rem;
+
                 .ipt-search {
                     width: 30rem;
                 }
             }
-           
+
         }
     }
+}
+
+.block {
+    margin-top: 2rem;
 }
 </style>
