@@ -244,4 +244,8 @@ export const  addRoleListApi=function(payload={}){
 export const  getRoleListApi=function(payload={}){
     return $axios.get('/role',payload)
 }
+//删除角色
+export const  deleteRoleListApi=function(id:any,payload={}){
+    return $axios.delete('/role/'+id,payload)
+}
 export default $axios
