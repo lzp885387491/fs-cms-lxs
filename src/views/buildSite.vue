@@ -33,7 +33,7 @@
                         <template #default="scope :any">
                             <el-button link type="primary" size="small" @click.prevent="modify(scope.row)">修改</el-button>
                             <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button>
-                            <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
+                            <el-button link type="primary" size="small" @click.prevent="open(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -67,7 +67,7 @@
 </template>
 <!-- details -->
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import { ElMessage,ElMessageBox } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 import { 
     siteList, 
@@ -144,6 +144,21 @@ async function emer() {
     }).catch(res => {
         ElMessage.warning(res.message)
     })
+}
+
+const open = function (row: any) {
+    ElMessageBox.confirm(
+        '确认要删除吗？',
+        '是否删除',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            deleteRow(row)
+        })
 }
 
 // 删除

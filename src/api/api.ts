@@ -1,9 +1,9 @@
 import axios from 'axios';
 import type { cretaePark, updatePark } from '@/types/xhrPayLoadApi';
 const BASE_URL = '/api'
-
+let serveUrl = import.meta.env.MODE == "production" ? "http://8.131.89.181:3030/" : "/api";
 const $axios = axios.create({
-    baseURL: '/api',
+    baseURL:serveUrl,
     timeout: 5000,  //如果接口一秒都没有返回结果，则axios会自动帮我们做一个失败(reject)的处理
     // headers: { 'token': token },  //在发送服务端之前，前端设置请求头信息；
     // headers: { 'token': token },  //在发送服务端之前，前端设置请求头信息；

@@ -154,7 +154,7 @@
 </template>
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed,onMounted} from 'vue'
 import { factorySiteApi, emergencyResource, addEmergencyResource, deleteEmergencyResource, updateEmergencyResource, getEmergencyResource } from '@/api/api'
 let searchForm = reactive({
     name: ''
@@ -199,14 +199,19 @@ function check(data: any | undefined) {
     }
     return flag
 }
+let factoryInfo: any = ref([])
+onMounted(async () => {
+    await getFactorySite()
+    emergencyResourceApi();
+})
+
 // 获取地点名称
 const getSiteName = function (id: any) {
     return factoryInfo.value.find((item: any) => {
         return item.id == id
     }).name
 }
-let factoryInfo: any = ref([])
-getFactorySite()
+
 async function getFactorySite() {
     await factorySiteApi().then(response => {
         factoryInfo.value = response.data;
@@ -643,7 +648,7 @@ let allArr = [
 //     const res = await Promise.all(promises);
 //     console.log(res);
 // }
-emergencyResourceApi();
+
 
 </script>
 <style scoped lang="scss">
