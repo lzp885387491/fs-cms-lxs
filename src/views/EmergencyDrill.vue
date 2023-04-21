@@ -103,10 +103,6 @@
         <div class="m-20">事件类型：{{ detailsForm.type }}</div>
         <div class="m-20">事件描述：{{ detailsForm.description }}</div>
         <template #footer>
-            <span class="dialog-footer">
-                <el-button @click=" detailDialog = false ">取 消</el-button>
-                <el-button type="primary" @click=" updateRow ">确 定</el-button>
-            </span>
         </template>
     </el-dialog>
 </template>
