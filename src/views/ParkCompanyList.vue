@@ -13,6 +13,12 @@
                         <el-form-item label="公司名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
                         </el-form-item>
+                        <el-form-item label="公司状态" :label-width="formLabelWidth">
+                            <el-input v-model="addForm.type" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="描述" :label-width="formLabelWidth">
+                            <el-input v-model="addForm.describe" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                        </el-form-item>
                         <el-form-item label="公司地址" :label-width="formLabelWidth">
                             <el-input v-model="addForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
                         </el-form-item>
@@ -35,6 +41,8 @@
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column prop="id" label="id" width="auto"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
+                    <el-table-column prop="type" label="公司状态" width="auto"></el-table-column>
+                    <el-table-column prop="describe" label="描述" width="auto"></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
                     <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
@@ -51,6 +59,12 @@
                 <el-form :model="upDateForm">
                     <el-form-item label="公司名称" :label-width="formLabelWidth">
                         <el-input v-model="upDateForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="公司状态" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.type" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="描述" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.describe" autocomplete="off" placeholder="请输入公司名称"></el-input>
                     </el-form-item>
                     <el-form-item label="公司地址" :label-width="formLabelWidth">
                         <el-input v-model="upDateForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
@@ -106,12 +120,16 @@ function chek(data: any | undefined) {
 
 const addFormRule: any = reactive({
     name: '公司名称',
+    type:'公司状态',
+    describe:'描述',
     address: '公司地址',
     contactPerson: '联系人',
     contactTel: '联系电话',
 })
 const addForm = reactive({
     name: '',
+    type:'',
+    describe:'',
     address: '',
     contactPerson: '',
     contactTel: '',
@@ -119,6 +137,8 @@ const addForm = reactive({
 const upDateForm = reactive({
     id: 0,
     name: '',
+    type:'',
+    describe:'',
     address: '',
     contactPerson: '',
     contactTel: '',
