@@ -41,18 +41,18 @@
             <div class="table">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="id" label="id" width="100"></el-table-column>
+                    <el-table-column label="序号" type="index" width="60"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"  :show-overflow-tooltip='true'></el-table-column>
-                    <el-table-column label="公司状态" width="auto">
+                    <el-table-column label="公司状态" width="120">
                         <template #default="scope">
                             {{ filType(scope.row.status) }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="description" label="描述" width="auto" :show-overflow-tooltip='true'></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"  :show-overflow-tooltip='true'></el-table-column>
-                    <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
+                    <el-table-column prop="contactPerson" label="联系人" width="100"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
-                    <el-table-column prop="operate" label="公司简介" width="auto">
+                    <el-table-column prop="operate" label="公司简介" width="100">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click="view(scope.row)">查看</el-button>
                         </template>
