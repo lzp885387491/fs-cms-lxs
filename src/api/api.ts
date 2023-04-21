@@ -111,13 +111,6 @@ export const getEnterpriseList = function (payload = {}) {
     return $axios.get('/enterprise', payload);
 }
 /**
- * @description 查询企业详情
- * @param payload ""
- */
-export const queryEnterpriseList = function (id: any, payload = {}) {
-    return $axios.get('/enterprise' + '/' + id, payload);
-}
-/**
  * @description 删除企业信息
  * @param payload ""
  */
@@ -130,6 +123,13 @@ export const deleteEnterpriseList = function (id: number, payload = {}) {
  */
 export const updateEnterpriseList = function (id: number, payload = {}) {
     return $axios.patch('/enterprise' + '/' + id, payload);
+}
+/**
+ * @description 查看企业详情
+ * @param payload ""
+ */
+export const getDetailEnterpriseList = function (id: number, payload = {}) {
+    return $axios.get('/enterprise' + '/' + id, payload);
 }
 
 /**

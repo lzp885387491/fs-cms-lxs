@@ -17,8 +17,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         // http://8.131.89.181:8080
-        // target: 'http://192.168.1.22:3000',// 正阳的
-        target: 'http://192.168.1.39:3000',// 磊哥的
+        target: 'http://192.168.1.22:3000',// 正阳的
+        // target: 'http://192.168.1.39:3000',// 磊哥的
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
