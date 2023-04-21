@@ -114,7 +114,6 @@ let cellStyle = reactive({
   padding: '1rem 0'
 })
 onMounted(async () => {
-
   await getRoleList()
   getUserList()
   EnterpriseList()
@@ -146,6 +145,8 @@ const handleSizeChange = function (val: any) {
 const handleCurrentChange = function (val: any) {
   currentPage.value = val
 }
+
+//获取职位ID所对应的职位名称
 const positionName = function (deptNo: any) {
   if (deptNo == 0) return "暂无"
   return roleList.value.find((element: any) => deptNo == element.id).name
