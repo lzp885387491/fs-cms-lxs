@@ -27,7 +27,7 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%" :header-cell-style="headerCellStyle"
                     :cell-style="cellStyle">
-                    <el-table-column prop="id" label="厂区位置id" width="auto"></el-table-column>
+                    <el-table-column prop="i" label="序号" width="60"></el-table-column>
                     <el-table-column prop="name" label="厂区位置名称" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default="scope :any">
@@ -138,9 +138,12 @@ const handleCurrentChange = function (val: any) {
 emer()
 async function emer() {
     await siteList({}).then(res => {
-        tableData.value = res.data
-        searchtableData.value = res.data
-        console.log(tableData);
+        let data = JSON.parse(JSON.stringify(res.data))
+        data.forEach((e: any, i: number) => {
+            e.i = i + 1;
+        });
+        tableData.value = data;
+        searchtableData.value = data;
     }).catch(res => {
         ElMessage.warning(res.message)
     })
@@ -224,7 +227,6 @@ async function addInformation() {
             ElMessage.success('添加成功！')
             emer()
         }).catch(res => {
-            console.log(res);
             ElMessage.warning('添加失败请重试！')
         })
 }
@@ -234,7 +236,6 @@ const search = function () {
     let from1: any = ref({
         planName: {
             filter: (key: any) => {
-                console.log(key);
                 return !form.siteName
                     ? key
                     : key.filter((item: any) => {
@@ -257,7 +258,7 @@ const detail = async function (row : any){
         name: res.data.name,
     })
     }).catch(err=>{
-        console.log(err);
+        ElMessage.warning('查看失败！请稍后再试！')
     })
 }
 
