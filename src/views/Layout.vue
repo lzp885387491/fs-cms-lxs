@@ -155,7 +155,6 @@ async function getUserInfo() {
   const res: any = await getUserInfoApi();
   if (res.data.code == 200) {
     userInfo.value = JSON.parse(JSON.stringify(res.data.data));
-
     userStorePinia.setUserStore('userinfo', userInfo.value);
   }
 }
