@@ -55,7 +55,7 @@
                             <el-button link type="primary" size="small" @click.prevent=" modify(scope.row) ">修改</el-button>
                             <el-button link type="primary" size="small" @click.prevent=" detail(scope.row) ">详情</el-button>
                             <el-button link type="primary" size="small"
-                                @click.prevent=" deleteRow(scope.row) ">删除</el-button>
+                                @click.prevent=" open(scope.row) ">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -103,16 +103,12 @@
         <div class="m-20">事件类型：{{ detailsForm.type }}</div>
         <div class="m-20">事件描述：{{ detailsForm.description }}</div>
         <template #footer>
-            <span class="dialog-footer">
-                <el-button @click=" detailDialog = false ">取 消</el-button>
-                <el-button type="primary" @click=" updateRow ">确 定</el-button>
-            </span>
         </template>
     </el-dialog>
 </template>
 <!-- details -->
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import { ElMessage,ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 import {
     emergencyEventList,
@@ -226,6 +222,21 @@ async function emer() {
     }).catch(res => {
         ElMessage.warning(res.message)
     })
+}
+
+const open = function (row: any) {
+    ElMessageBox.confirm(
+        '确认要删除吗？',
+        '是否删除',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            deleteRow(row)
+        })
 }
 
 // 删除
