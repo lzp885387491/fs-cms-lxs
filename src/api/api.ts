@@ -25,6 +25,7 @@ $axios.interceptors.response.use(function (response) {
     // }
     return response;
 }, function (error) {
+    console.log('拦截器里的error',error)
     if (error.response.data.status == 401) {
         window.location.href = '/login'
     }
@@ -242,5 +243,9 @@ export const  addRoleListApi=function(payload={}){
 //获取角色
 export const  getRoleListApi=function(payload={}){
     return $axios.get('/role',payload)
+}
+//删除角色
+export const  deleteRoleListApi=function(id:any,payload={}){
+    return $axios.delete('/role/'+id,payload)
 }
 export default $axios

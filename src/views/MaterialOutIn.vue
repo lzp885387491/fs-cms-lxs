@@ -101,7 +101,7 @@
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column type="index" label="序号" width="100" />
-                    <el-table-column prop="resource.name" label="资源" width="auto"></el-table-column>
+                    <el-table-column prop="resource.name" label="物资" width="auto"></el-table-column>
                     <el-table-column prop="event.name" label="事件" width="auto">
 
                     </el-table-column>
