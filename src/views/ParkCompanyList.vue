@@ -48,7 +48,7 @@
                             {{ filType(scope.row.status) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="description" label="描述" width="auto"></el-table-column>
+                    <el-table-column prop="description" label="描述" width="auto" :show-overflow-tooltip='true'></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
                     <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
