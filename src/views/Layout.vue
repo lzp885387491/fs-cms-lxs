@@ -84,7 +84,12 @@ const menu = [
       {
         label: '园区建筑位置',
         name: 'buildSite'
+      },
+      {
+        label: '角色管理',
+        name: 'roleManagement'     
       }
+      
     ]
   },
   {
