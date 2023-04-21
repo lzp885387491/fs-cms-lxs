@@ -80,7 +80,16 @@ const menu = [
       {
         label: '人员管理',
         name: 'Personnel'
+      },
+      {
+        label: '园区建筑位置',
+        name: 'buildSite'
+      },
+      {
+        label: '角色管理',
+        name: 'roleManagement'     
       }
+      
     ]
   },
   {
@@ -151,10 +160,7 @@ async function getUserInfo() {
   const res: any = await getUserInfoApi();
   if (res.data.code == 200) {
     userInfo.value = JSON.parse(JSON.stringify(res.data.data));
-
     userStorePinia.setUserStore('userinfo', userInfo.value);
-    let piniaRes = userStorePinia.getUserStore('userinfo')
-    console.log('这是pinia存好并获取返回的值：',piniaRes);
   }
 }
 getUserInfo()

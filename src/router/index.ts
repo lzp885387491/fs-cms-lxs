@@ -87,14 +87,20 @@ const router = createRouter({
           component: () => import('../views/EmergencyDrill.vue')
         },
         {
-          path: '/factorySite',
-          name: 'factorySite',
-          component: () => import('../views/FactorySite.vue')
+          path: '/buildSite',
+          name: 'buildSite',
+          component: () => import('../views/buildSite.vue')
         },
         {
           path: '/materialOutIn',
           name: 'materialOutIn',
           component: () => import('../views/MaterialOutIn.vue')
+        },
+        //角色管理
+        {
+          path: '/roleManagement',
+          name: 'roleManagement',
+          component: () => import('../views/RoleManagement.vue')
         },
       ]
     },
