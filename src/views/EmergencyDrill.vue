@@ -41,6 +41,7 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
+                    <el-table-column class="chao" prop="i" label="序号" width="60"></el-table-column>
                     <el-table-column class="chao" prop="name" label="应急事件名称" width="auto"></el-table-column>
                     <el-table-column class="chao" prop="level" label="应急事件级别" width="auto"></el-table-column>
                     <el-table-column class="chao" prop="description" label="应急事件描述" width="auto"></el-table-column>
@@ -194,8 +195,7 @@ async function getFactorySite() {
     await factorySiteApi().then(response => {
         factoryInfo.value = response.data;
     }).catch(error => {
-        console.log(error);
-
+        ElMessage.warning('稍后再试！！')
     })
 }
 
@@ -217,8 +217,12 @@ const handleCurrentChange = function (val: any) {
 // 获取列表
 async function emer() {
     await emergencyEventList({}).then(res => {
-        tableData.value = res.data
-        searchtableData.value = res.data
+        let data = JSON.parse(JSON.stringify(res.data))
+        data.forEach((e: any, i: number) => {
+            e.i = i + 1;
+        });
+        tableData.value = data;
+        searchtableData.value = data;
     }).catch(res => {
         ElMessage.warning(res.message)
     })
@@ -288,7 +292,6 @@ function chek(data: any | undefined) {
         for (const key in data) {
             if (data[key] === undefined || data[key] === '') {
                 flag = false
-                console.log(key)
                 ElMessage({
                     message: '请填写' + addFormRule[key],
                     type: 'warning'
@@ -313,7 +316,6 @@ async function addInformation() {
             ElMessage.success('添加成功！')
             emer()
         }).catch(res => {
-            console.log(res);
             ElMessage.warning('添加失败请重试！')
         })
     }
@@ -324,7 +326,6 @@ const search = function () {
     let from1: any = ref({
         planName: {
             filter: (key: any) => {
-                console.log(key);
                 return !form.eventName
                     ? key
                     : key.filter((item: any) => {
@@ -345,7 +346,7 @@ const detail = async function (row: any) {
     await factorySiteApi().then(response => {
         factoryInfo.value = response.data;
     }).catch(error => {
-        console.log(error);
+        ElMessage.warning('查看失败！请稍后再试！')
     })
     const getSiteName = function (id: any) {
     return factoryInfo.value.find((item: any) => {
