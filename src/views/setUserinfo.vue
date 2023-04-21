@@ -16,11 +16,11 @@
                 </el-form-item>
 
                 <el-form-item label="职位">
-                    <el-input disabled v-model="form.position" :placeholder="form.position" />
+                    <el-input disabled v-model="form.position" :placeholder="form.position ? form.position : '无信息'" />
                 </el-form-item>
 
                 <el-form-item label="公司">
-                    <el-select v-model="form.enterprise" placeholder="please select your zone">
+                    <el-select v-model="form.enterprise" placeholder="请选择公司...">
                         <el-option label="公司1" value="公司1Val" />
                         <el-option label="公司2" value="公司2Val" />
                     </el-select>
@@ -38,7 +38,9 @@
 import { reactive } from 'vue'
 import { UpdateUserInfoApi } from '@/api/api'
 import { userStore } from '@/stores/userInfo'
+import list from '@/assets/js/list'
 
+console.log(list);
 
 
 interface fromType {
@@ -57,10 +59,11 @@ const form: fromType = reactive({
     enterprise: ''
 })
 
-const userStorePinia = userStore();
-const piniaRes = JSON.parse(JSON.stringify(userStorePinia.getUserStore('userinfo')));
-Object.assign(form, piniaRes);// 合并数组
-console.log(form);
+// const userStorePinia = userStore();
+// const piniaRes = JSON.parse(JSON.stringify(userStorePinia.getUserStore('userinfo')));
+
+//     Object.assign(form, piniaRes);// 合并数组
+//     console.log(form);
 
 const onSubmit = () => {
     console.log('form', form)
