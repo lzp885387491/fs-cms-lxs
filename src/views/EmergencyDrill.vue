@@ -41,20 +41,21 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="name" label="应急事件名称" width="auto"></el-table-column>
-                    <el-table-column prop="level" label="应急事件级别" width="auto"></el-table-column>
-                    <el-table-column prop="description" label="应急事件描述" width="auto"></el-table-column>
-                    <el-table-column label="事件站点" width="auto">
+                    <el-table-column class="chao" prop="name" label="应急事件名称" width="auto"></el-table-column>
+                    <el-table-column class="chao" prop="level" label="应急事件级别" width="auto"></el-table-column>
+                    <el-table-column class="chao" prop="description" label="应急事件描述" width="auto"></el-table-column>
+                    <el-table-column class="chao" label="事件站点" width="auto">
                         <template #default="scope: any">
                             <div>{{ getSiteName(scope.row.siteId) }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="type" label="事件类型" width="auto"></el-table-column>
+                    <el-table-column class="chao" prop="type" label="事件类型" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
                         <template #default=" scope: any ">
                             <el-button link type="primary" size="small" @click.prevent=" modify(scope.row) ">修改</el-button>
-                            <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button>
-                            <el-button link type="primary" size="small" @click.prevent=" deleteRow(scope.row) ">删除</el-button>
+                            <el-button link type="primary" size="small" @click.prevent=" detail(scope.row) ">详情</el-button>
+                            <el-button link type="primary" size="small"
+                                @click.prevent=" deleteRow(scope.row) ">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -79,7 +80,7 @@
             </el-form-item>
             <el-form-item label="部署地点" :label-width=" formLabelWidth ">
                 <el-select v-model=" updateForm.siteId " class="ipt" placeholder="请选择厂区">
-                    <el-option v-for=" item  in  factoryInfo " :key=" item.id " :label=" item.name " :value=" item.id " />
+                    <el-option v-for="  item   in   factoryInfo  " :key=" item.id " :label=" item.name " :value=" item.id " />
                 </el-select>
             </el-form-item>
             <el-form-item label="事件类型" :label-width=" formLabelWidth ">
@@ -96,11 +97,11 @@
 
     <!-- 详情 -->
     <el-dialog title="当前详情" v-model=" detailDialog " width="30%">
-        <div class="m-20">{{ detailsForm.name }}</div>
-        <div class="m-20">{{ detailsForm.level }}</div>
-        <div class="m-20">{{ detailsForm.siteId }}</div>
-        <div class="m-20">{{ detailsForm.type }}</div>
-        <div class="m-20">{{ detailsForm.description }}</div>
+        <div class="m-20">事件名称：{{ detailsForm.name }}</div>
+        <div class="m-20">事件级别：{{ detailsForm.level }}</div>
+        <div class="m-20">事件位置：{{ detailsForm.siteId }}</div>
+        <div class="m-20">事件类型：{{ detailsForm.type }}</div>
+        <div class="m-20">事件描述：{{ detailsForm.description }}</div>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click=" detailDialog = false ">取 消</el-button>
@@ -209,16 +210,16 @@ let cellStyle = reactive({
     padding: '1rem 0'
 })
 
-onMounted(async ()=>{
-   await getFactorySite()
-   emer()
+onMounted(async () => {
+    await getFactorySite()
+    emer()
 })
 
 // 获取地点名称
 const getSiteName = function (id: any) {
     return factoryInfo.value.find((item: any) => {
         return item.id == id
-    }).name 
+    }).name
 }
 let factoryInfo: any = ref([])
 async function getFactorySite() {
@@ -358,10 +359,26 @@ const search = function () {
 // 详情
 const detail = async function (row: any) {
     detailDialog.value = true
+    await factorySiteApi().then(response => {
+        factoryInfo.value = response.data;
+    }).catch(error => {
+        console.log(error);
+    })
+    const getSiteName = function (id: any) {
+    return factoryInfo.value.find((item: any) => {
+        return item.id == id
+    }).name
+}
     await getEmergencyEvent(row.id, {}).then(res => {
-        console.log(res);
+        Object.assign(detailsForm,{
+        name: res.data.name,
+        level: res.data.level,
+        siteId: getSiteName(res.data.siteId),
+        type: res.data.type,
+        description: res.data.description,
+    })
     }).catch(err => {
-        console.log(err);
+        ElMessage.warning('暂不支持查看详情，请查看问题！！！')
     })
 }
 
@@ -377,6 +394,10 @@ const jobReport = function () {
 }
 </script>
 <style scoped lang="scss">
+.m-20{
+    margin: 2rem;
+    word-wrap: break-word;
+}
 .job-list {
     padding: 20px;
     box-sizing: border-box;
@@ -405,5 +426,12 @@ const jobReport = function () {
 
 .block {
     margin-top: 2rem;
+}
+
+::v-deep(.cell) {
+    overflow: hidden; //超出的文本隐藏
+    display: -webkit-box;
+    -webkit-line-clamp: 1; // 超出多少行
+    -webkit-box-orient: vertical;
 }
 </style>
