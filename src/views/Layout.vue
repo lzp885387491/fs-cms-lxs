@@ -153,8 +153,6 @@ async function getUserInfo() {
     userInfo.value = JSON.parse(JSON.stringify(res.data.data));
 
     userStorePinia.setUserStore('userinfo', userInfo.value);
-    let piniaRes = userStorePinia.getUserStore('userinfo')
-    console.log('这是pinia存好并获取返回的值：',piniaRes);
   }
 }
 getUserInfo()
