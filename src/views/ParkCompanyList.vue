@@ -14,10 +14,12 @@
                             <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
                         </el-form-item>
                         <el-form-item label="公司状态" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.type" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                            <el-radio v-model="addForm.status" label="1">已投产</el-radio>
+                            <el-radio v-model="addForm.status" label="2">施工中</el-radio>
+                            <el-radio v-model="addForm.status" label="3">预购建</el-radio>
                         </el-form-item>
                         <el-form-item label="描述" :label-width="formLabelWidth">
-                            <el-input v-model="addForm.describe" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                            <el-input v-model="addForm.description" autocomplete="off" placeholder="请输入描述"></el-input>
                         </el-form-item>
                         <el-form-item label="公司地址" :label-width="formLabelWidth">
                             <el-input v-model="addForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
@@ -41,8 +43,12 @@
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column prop="id" label="id" width="auto"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
-                    <el-table-column prop="type" label="公司状态" width="auto"></el-table-column>
-                    <el-table-column prop="describe" label="描述" width="auto"></el-table-column>
+                    <el-table-column label="公司状态" width="auto">
+                        <template #default="scope">
+                            {{ filType(scope.row.status) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="description" label="描述" width="auto"></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
                     <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
@@ -61,10 +67,12 @@
                         <el-input v-model="upDateForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
                     </el-form-item>
                     <el-form-item label="公司状态" :label-width="formLabelWidth">
-                        <el-input v-model="upDateForm.type" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                        <el-radio v-model="upDateForm.status" :label="1">已投产</el-radio>
+                        <el-radio v-model="upDateForm.status" :label="2">施工中</el-radio>
+                        <el-radio v-model="upDateForm.status" :label="3">预购建</el-radio>
                     </el-form-item>
                     <el-form-item label="描述" :label-width="formLabelWidth">
-                        <el-input v-model="upDateForm.describe" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                        <el-input v-model="upDateForm.description" autocomplete="off" placeholder="请输入描述"></el-input>
                     </el-form-item>
                     <el-form-item label="公司地址" :label-width="formLabelWidth">
                         <el-input v-model="upDateForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
@@ -91,7 +99,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
@@ -120,16 +128,16 @@ function chek(data: any | undefined) {
 
 const addFormRule: any = reactive({
     name: '公司名称',
-    type: '公司状态',
-    describe: '描述',
+    status: '公司状态',
+    description: '描述',
     address: '公司地址',
     contactPerson: '联系人',
     contactTel: '联系电话',
 })
 const addForm = reactive({
     name: '',
-    type: '',
-    describe: '',
+    status: '',
+    description: '',
     address: '',
     contactPerson: '',
     contactTel: '',
@@ -137,8 +145,8 @@ const addForm = reactive({
 const upDateForm = reactive({
     id: 0,
     name: '',
-    type: '',
-    describe: '',
+    status: '',
+    description: '',
     address: '',
     contactPerson: '',
     contactTel: '',
@@ -158,6 +166,18 @@ let headerCellStyle = reactive({
     textAlign: 'center',
     padding: '1rem 0'
 })
+const filType = function (status: any) {
+    if (status == 1) {
+        status = '已投产'
+    }
+    if (status == 2) {
+        status = '施工中'
+    }
+    if (status == 3) {
+        status = '预购建'
+    }
+    return status
+}
 const deleteList = function (index: number, row: any) {
     ElMessageBox.confirm(
         '确定要删除吗?',
@@ -191,18 +211,22 @@ const upDate = function (row: any) {
     upDateForm.address = row.address
     upDateForm.contactPerson = row.contactPerson
     upDateForm.contactTel = row.contactTel
+    upDateForm.status = row.status
+    upDateForm.description = row.description
 }
 const upDateFormList = async function () {
-    let { name, address, contactPerson, contactTel } = upDateForm
+    let { name, address, contactPerson, contactTel, status, description } = upDateForm
     await updateEnterpriseList(upDateForm.id, {
         name,
         address,
         contactPerson,
-        contactTel
+        contactTel,
+        status,
+        description
     }).then(res => {
         dialogFormVisible2.value = false
-        getEnterpriseInfo()
         ElMessage.success('修改成功')
+        getEnterpriseInfo()
     })
 }
 let cellStyle = reactive({
@@ -218,12 +242,14 @@ const handleCurrentChange = function (val: any) {
 }
 
 const addInformation = async function () {
-    let { name, address, contactPerson, contactTel } = addForm
+    let { name, address, contactPerson, contactTel, status, description } = addForm
     let res = await createEnterpriseList({
         name,
         address,
         contactPerson,
-        contactTel
+        contactTel,
+        status,
+        description
     })
     if (res) {
         if (chek(addForm)) {
