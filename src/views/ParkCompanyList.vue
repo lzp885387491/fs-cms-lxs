@@ -41,7 +41,7 @@
             <div class="table">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="id" label="id" width="auto"></el-table-column>
+                    <el-table-column prop="id" label="id" width="100"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
                     <el-table-column label="公司状态" width="auto">
                         <template #default="scope">
