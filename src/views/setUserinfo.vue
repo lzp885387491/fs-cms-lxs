@@ -77,7 +77,6 @@ getEnterpriseListApi()
 
 
 const onSubmit = () => {
-    console.log('这是先获取的form表单输入的值：', form)
     let { id, avatarName, deptNo, phoneNumber, identityCard, enterpriseId } = form;
     setUserInfo(id, {
         avatarName, deptNo, phoneNumber, identityCard, enterpriseId
@@ -87,8 +86,6 @@ const onSubmit = () => {
 async function setUserInfo(id: any, params: any) {
     const res: any = await UpdateUserInfoApi(id, params);
     if (res.code == 200 || res.status == 200) {
-        console.log('修改接口返回值', res);
-        console.log('修改完信息了，现在重新调取获取用户信息接口！');
         reRunGetUserInfo()
     }
 }

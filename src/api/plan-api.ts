@@ -19,19 +19,19 @@ export const getEmergencyPlanList = function (payload = {}) {
 
 // 获取应急预案详情
 export const getEmergencyPlanDetail = function (payload: playoad = {}) {
-    return axios.get('/emergency/' + payload.id);
+    return axios.get('/emergency-plan/' + payload.id);
 }
 
 
 // 修改应急预案
-export const updateEmergencyPlan = function (payload: playoad = {}) {
-    return axios.patch('/emergency/' + payload.id);
+export const updateEmergencyPlan = function (id:number,playoad:any = {}) {
+    return axios.patch('/emergency-plan/' + id,playoad);
 }
 
 
 // 删除应急预案
 export const deleteEmergencyPlan = function (payload: playoad = {}) {
-    return axios.delete('/emergency/' + payload.id);
+    return axios.delete('/emergency-plan/' + payload.id);
 }
 
 //获取地区列表
