@@ -98,7 +98,7 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="id" label="id" width="100" />
+                    <el-table-column prop="i" label="ID" width="100" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
                     <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
                     <el-table-column prop="unit" label="单位" width="auto"></el-table-column>
@@ -269,10 +269,11 @@ const handleCurrentChange = function (val: any) {
 
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
-    return searchtableData.value.slice(
+    let res = searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
     )
+    return res
 })
 
 // interface resource {
@@ -340,8 +341,8 @@ const editRow = (row: any) => {
     editDialogFormVisible.value = true;
     editForm.id = row.id;
     editForm.name = row.name;
-    editForm.stock=row.stock;
-    editForm.unit=row.unit;
+    editForm.stock = row.stock;
+    editForm.unit = row.unit;
     editForm.type = row.type;
     editForm.description = row.description;
     editForm.siteId = row.siteId;
@@ -352,8 +353,8 @@ const editRow = (row: any) => {
 async function submitEditInformation() {
     let params = {
         name: editForm.name,
-        stock:editForm.stock,
-        unit:editForm.unit,
+        stock: editForm.stock,
+        unit: editForm.unit,
         type: editForm.type,
         description: editForm.description,
         siteId: +editForm.siteId,
@@ -403,11 +404,18 @@ const open = function (row: any) {
             deleteRow(row)
         })
 }
+
 // 获取应急资源列表
 async function emergencyResourceApi() {
     await emergencyResource().then(response => {
-        tableData.value = response.data;
-        searchtableData.value = response.data;
+        let data = JSON.parse(JSON.stringify(response.data))
+        data.forEach((e: any, i: number) => {
+            e.i = i + 1;
+        });
+        console.log(data)
+        // 给每一项添加一个字段 代表编号 要连贯的
+        tableData.value = data;
+        searchtableData.value = data;
         console.log(tableData.value);
 
     }).catch(error => {
@@ -415,6 +423,7 @@ async function emergencyResourceApi() {
     })
 
 }
+
 let allArr = [
     {
         name: '呼吸过滤防毒面具',
