@@ -115,10 +115,10 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="i" label="序号" width="100" />
+                    <el-table-column prop="i" label="序号" width="60" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
-                    <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
-                    <el-table-column prop="unit" label="单位" width="auto"></el-table-column>
+                    <el-table-column prop="stock" label="数量" width="60"></el-table-column>
+                    <el-table-column prop="unit" label="单位" width="60"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
                     <el-table-column prop="description" label="资源描述" width="auto" :show-overflow-tooltip='true'></el-table-column>
                     <el-table-column label="部署地点" width="auto">
@@ -216,7 +216,7 @@ async function getFactorySite() {
     await factorySiteApi().then(response => {
         factoryInfo.value = response.data;
     }).catch(error => {
-        console.log(error);
+        // console.log(error);
 
     })
 }
@@ -383,7 +383,7 @@ const addResource = function () {
 }
 async function addInformation() {
     if (check(addForm)) {
-        console.log(addForm);
+   
         await addEmergencyResource(addForm).then(response => {
             ElMessage.success('添加成功！')
             emergencyResourceApi()
@@ -391,7 +391,6 @@ async function addInformation() {
         }).catch(error => {
             ElMessage.warning('添加失败！')
         })
-        console.log(factoryValue);
         dialogFormVisible.value = false;
     }
 }
@@ -425,7 +424,7 @@ async function submitEditInformation() {
         ElMessage.success('更新成功！')
         emergencyResourceApi();
     }).catch((error: any) => {
-        console.log(error);
+        // console.log(error);
     });
     editDialogFormVisible.value = false;
 }
@@ -462,11 +461,10 @@ async function emergencyResourceApi() {
         data.forEach((e: any, i: number) => {
             e.i = i + 1;
         });
-        console.log(data)
         // 给每一项添加一个字段 代表编号 要连贯的
         tableData.value = data;
         searchtableData.value = data;
-        console.log(tableData.value);
+
 
     }).catch(error => {
         ElMessage.warning(error.message)
