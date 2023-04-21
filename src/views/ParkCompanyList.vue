@@ -60,6 +60,7 @@
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click="upDate(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small" @click="getDetail(scope.row)">详情</el-button>
                             <el-button class="cl-r" link type="primary" @click="deleteList(scope.$index, scope.row)"
                                 size="small">删除</el-button>
                         </template>
@@ -69,6 +70,14 @@
             <el-dialog width="50%" v-model="dialogFormVisible3">
                 <img v-if="flag == 2" src="@/assets/images/introduction.jpg" class="img" alt="">
                 <img v-if="flag == 3" src="@/assets/images/introduction2.jpg" class="img" alt="">
+            </el-dialog>
+            <el-dialog title="当前详情" v-model="dialogFormVisible4" width="30%">
+                <div class="m-20">公司名称：{{ getDetailList.name }}</div>
+                <div class="m-20">公司状态：{{ filType(getDetailList.status) }}</div>
+                <div class="m-20">描述：{{ getDetailList.description }}</div>
+                <div class="m-20">地址：{{ getDetailList.address }}</div>
+                <div class="m-20">联系人：{{ getDetailList.contactPerson }}</div>
+                <div class="m-20">联系电话：{{ getDetailList.contactTel }}</div>
             </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
@@ -90,7 +99,7 @@
                         <el-input v-model="upDateForm.contactPerson" autocomplete="off" placeholder="请输入联系人"></el-input>
                     </el-form-item>
                     <el-form-item label="联系电话" :label-width="formLabelWidth">
-                        <el-input type="number" v-model="upDateForm.contactTel" autocomplete="off"
+                        <el-input type="text" v-model="upDateForm.contactTel" autocomplete="off"
                             placeholder="请输入联系电话"></el-input>
                     </el-form-item>
                 </el-form>
@@ -108,7 +117,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList, getDetailEnterpriseList } from '@/api/api';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
@@ -151,7 +160,6 @@ const addForm = reactive({
     contactPerson: '',
     contactTel: '',
 })
-const introduction: any = ref([])
 let flag: any = ref([])
 const upDateForm = reactive({
     id: 0,
@@ -165,10 +173,12 @@ const upDateForm = reactive({
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
 const dialogFormVisible3 = ref(false)
+const dialogFormVisible4 = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
+let getDetailList = ref()
 let searchtableData: any = ref([])
 let val = computed(() => {
     return searchtableData.value.length
@@ -204,6 +214,12 @@ const deleteList = function (index: number, row: any) {
             deleteRow(index, row)
         })
 }
+const getDetail = async function (row: any) {
+    await getDetailEnterpriseList(row.id).then(res => {
+        getDetailList.value = res.data
+        dialogFormVisible4.value = true
+    })
+}
 const deleteRow = async (index: number, row: any) => {
     let res = await deleteEnterpriseList(row.id)
     if (res) {
@@ -225,6 +241,7 @@ const view = function (row: any) {
     }
 }
 const upDate = function (row: any) {
+    console.log(row);
     dialogFormVisible2.value = true
     upDateForm.id = row.id
     upDateForm.name = row.name
@@ -432,5 +449,10 @@ let newTableData = computed(() => {
 .img {
     width: 100%;
     height: 100%;
+}
+
+.m-20 {
+    margin: 2rem;
+    word-wrap: break-word;
 }
 </style>
