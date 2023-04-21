@@ -48,15 +48,14 @@
 import { Document, } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Setting } from '@element-plus/icons-vue'
-import { getUserInfoApi } from '@/api/api'
 import { ref } from 'vue'
-import { userStore } from '@/stores/userInfo'
+import { useUserStore } from '@/stores/useUserStore'
+const { getUserInfo } = useUserStore();
+
+const userInfo: any = ref({});
 
 const route = useRoute()
 const router = useRouter()
-let userInfo: any = ref({})
-
-let userStorePinia = userStore();
 
 
 interface MenuItem {
@@ -87,9 +86,9 @@ const menu = [
       },
       {
         label: '角色管理',
-        name: 'roleManagement'     
+        name: 'roleManagement'
       }
-      
+
     ]
   },
   {
@@ -154,16 +153,12 @@ const menu = [
 
 const navigator = function (item: MenuItem) {
   router.push(item.name)
-}
+};
 
-async function getUserInfo() {
-  const res: any = await getUserInfoApi();
-  if (res.data.code == 200) {
-    userInfo.value = JSON.parse(JSON.stringify(res.data.data));
-    userStorePinia.setUserStore('userinfo', userInfo.value);
-  }
-}
-getUserInfo()
+(async function () {
+  userInfo.value = await getUserInfo();
+})()
+
 
 function nav(name: string): void {
   router.push(name);

@@ -25,6 +25,7 @@ $axios.interceptors.response.use(function (response) {
     // }
     return response;
 }, function (error) {
+    console.log('拦截器里的error',error)
     if (error.response.data.status == 401) {
         window.location.href = '/login'
     }
