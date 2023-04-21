@@ -4,7 +4,7 @@
             <div class="table-title">园区公司列表</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.id" clearable class="ipt-search" placeholder="根据id查找"></el-input>
+                    <el-input v-model="form.name" clearable class="ipt-search" placeholder="根据公司名称查找"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加园区公司</el-button>
@@ -95,7 +95,7 @@ import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnt
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
-    id: ''
+    name: ''
 })
 function chek(data: any | undefined) {
     // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
@@ -120,16 +120,16 @@ function chek(data: any | undefined) {
 
 const addFormRule: any = reactive({
     name: '公司名称',
-    type:'公司状态',
-    describe:'描述',
+    type: '公司状态',
+    describe: '描述',
     address: '公司地址',
     contactPerson: '联系人',
     contactTel: '联系电话',
 })
 const addForm = reactive({
     name: '',
-    type:'',
-    describe:'',
+    type: '',
+    describe: '',
     address: '',
     contactPerson: '',
     contactTel: '',
@@ -137,8 +137,8 @@ const addForm = reactive({
 const upDateForm = reactive({
     id: 0,
     name: '',
-    type:'',
-    describe:'',
+    type: '',
+    describe: '',
     address: '',
     contactPerson: '',
     contactTel: '',
@@ -149,7 +149,7 @@ let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
-let searchtableData: any = ref(tableData)
+let searchtableData: any = ref([])
 let val = computed(() => {
     return searchtableData.value.length
 })
@@ -240,6 +240,7 @@ const getEnterpriseInfo = async function () {
     let res = await getEnterpriseList()
     if (res) {
         tableData.value = res.data
+        searchtableData.value = res.data
         return tableData.value
     }
 }
@@ -247,20 +248,40 @@ onMounted(async () => {
     await getEnterpriseInfo()
 })
 
-const search = async function () {
-    await queryEnterpriseList(form.id).then((res) => {
-        if (form.id == '') {
-            getEnterpriseInfo()
-            return ElMessage.warning('关键词不能为空！！！')
-        } else {
-            ElMessage.success('搜索成功')
-            searchtableData.value = [res.data]
-            return searchtableData.value
-        }
-    }).catch((error) => {
-        getEnterpriseInfo()
-        return ElMessage.warning('没有查找到此内容')
+// const search = async function () {
+//     await queryEnterpriseList(form.id).then((res) => {
+//         if (form.id == '') {
+//             getEnterpriseInfo()
+//             return ElMessage.warning('关键词不能为空！！！')
+//         } else {
+//             ElMessage.success('搜索成功')
+//             searchtableData.value = [res.data]
+//             return searchtableData.value
+//         }
+//     }).catch((error) => {
+//         getEnterpriseInfo()
+//         return ElMessage.warning('没有查找到此内容')
+//     })
+// }
+const search = function () {
+    let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
+    let name: any = reactive({
+        avatarName: {
+            filter: (key: any) => {
+                return !form.name
+                    ? key
+                    : key.filter((item: any) => {
+                        return item.name.includes(form.name)
+                    })
+            }
+        },
+
     })
+    Object.keys(name).forEach((key1: any) => {
+        list = name[key1].filter(list)
+    })
+    currentPage.value = 1
+    searchtableData.value = list
 }
 const jobReport = function () {
     dialogFormVisible.value = true
