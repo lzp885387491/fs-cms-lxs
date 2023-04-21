@@ -23,7 +23,7 @@
         </div>
         <div class="role-content mt-2">
             <el-tag v-for="tag in roleList" size="large" :key="tag.name" class="tag" closable :type="tag.type"
-                @close="handleClose(tag)">
+                @close="handleClose(tag)" @click="update">
                 {{ tag.name }}
             </el-tag>
         </div>
@@ -33,7 +33,8 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { addRoleListApi, getRoleListApi } from '@/api/api'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { addRoleListApi, getRoleListApi, deleteRoleListApi } from '@/api/api'
 let roleList: any = ref([])
 const defaultProps = {
     children: 'children',
@@ -54,18 +55,47 @@ const addRole = function () {
 }
 async function add() {
     dialogFormVisible.value = false
-    let res = addRoleListApi(roleInfo)
-    console.log(res);
+    console.log(roleInfo.value);
+    addRoleListApi({
+        name: roleInfo.value.name,
+        description: roleInfo.value.description
+    }).then((res: any) => {
+        console.log(res);
+        getRoleList()
+    }).catch((error) => {
+        console.log(error);
+    })
 }
 //获取角色
 async function getRoleList() {
     let res = await getRoleListApi()
-    console.log(res);
     roleList.value = JSON.parse(JSON.stringify(res.data.data))
 }
+//删除角色
 const handleClose = function (val: any) {
-    console.log(val);
+    ElMessageBox.confirm(
+        '确定要删除此条信息?',
+        '提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ) .then(() => {
+            deleteRoleListApi(val.id).then((res: any) => {
+                console.log(res);
+                getRoleList()
+                ElMessage({
+                    type: 'success',
+                    message: '删除成功',
+                })
+            })
 
+        }) 
+
+}
+const update=function(){
+    console.log(1111);    
 }
 </script>
 <style scoped lang="scss">
@@ -81,6 +111,9 @@ const handleClose = function (val: any) {
         .tag {
             display: flex;
             justify-content: space-between;
+           :deep(.el-tag__content) {
+                cursor: pointer;
+            }
         }
     }
 

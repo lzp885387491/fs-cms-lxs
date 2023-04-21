@@ -60,6 +60,7 @@
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click="upDate(scope.row)">编辑</el-button>
+                            <el-button type="text" size="small" @click="getDetail(scope.row)">详情</el-button>
                             <el-button class="cl-r" link type="primary" @click="deleteList(scope.$index, scope.row)"
                                 size="small">删除</el-button>
                         </template>
@@ -69,6 +70,21 @@
             <el-dialog width="50%" v-model="dialogFormVisible3">
                 <img v-if="flag == 2" src="@/assets/images/introduction.jpg" class="img" alt="">
                 <img v-if="flag == 3" src="@/assets/images/introduction2.jpg" class="img" alt="">
+            </el-dialog>
+            <el-dialog title="详情信息" width="80%" v-model="dialogFormVisible4">
+                <el-table class="table-content" :data="getDetailList" style="width: 100%"
+                    :header-cell-style="headerCellStyle" :cell-style="cellStyle">
+                    <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
+                    <el-table-column label="公司状态" width="auto">
+                        <template #default="scope">
+                            {{ filType(scope.row.status) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="description" label="描述" width="auto"></el-table-column>
+                    <el-table-column prop="address" label="地址" width="auto"></el-table-column>
+                    <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
+                    <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
+                </el-table>
             </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
@@ -90,8 +106,7 @@
                         <el-input v-model="upDateForm.contactPerson" autocomplete="off" placeholder="请输入联系人"></el-input>
                     </el-form-item>
                     <el-form-item label="联系电话" :label-width="formLabelWidth">
-                        <el-input type="number" v-model="upDateForm.contactTel" autocomplete="off"
-                            placeholder="请输入联系电话"></el-input>
+                        <el-input type="text" v-model="upDateForm.contactTel" autocomplete="off" placeholder="请输入联系电话"></el-input>
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -108,7 +123,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList, getDetailEnterpriseList } from '@/api/api';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
@@ -151,7 +166,6 @@ const addForm = reactive({
     contactPerson: '',
     contactTel: '',
 })
-const introduction: any = ref([])
 let flag: any = ref([])
 const upDateForm = reactive({
     id: 0,
@@ -165,10 +179,12 @@ const upDateForm = reactive({
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
 const dialogFormVisible3 = ref(false)
+const dialogFormVisible4 = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
+let getDetailList = ref()
 let searchtableData: any = ref([])
 let val = computed(() => {
     return searchtableData.value.length
@@ -204,6 +220,12 @@ const deleteList = function (index: number, row: any) {
             deleteRow(index, row)
         })
 }
+const getDetail = async function (row: any) {
+    await getDetailEnterpriseList(row.id).then(res => {
+        getDetailList.value = [res.data]
+        dialogFormVisible4.value = true
+    })
+}
 const deleteRow = async (index: number, row: any) => {
     let res = await deleteEnterpriseList(row.id)
     if (res) {
@@ -225,6 +247,7 @@ const view = function (row: any) {
     }
 }
 const upDate = function (row: any) {
+    console.log(row);
     dialogFormVisible2.value = true
     upDateForm.id = row.id
     upDateForm.name = row.name

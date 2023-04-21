@@ -98,7 +98,7 @@
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column type="index" label="序号" width="100" />
+                    <el-table-column prop="id" label="id" width="100" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
                     <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
                     <el-table-column prop="unit" label="单位" width="auto"></el-table-column>

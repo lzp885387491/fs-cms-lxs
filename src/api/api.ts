@@ -112,13 +112,6 @@ export const getEnterpriseList = function (payload = {}) {
     return $axios.get('/enterprise', payload);
 }
 /**
- * @description 查询企业详情
- * @param payload ""
- */
-export const queryEnterpriseList = function (id: any, payload = {}) {
-    return $axios.get('/enterprise' + '/' + id, payload);
-}
-/**
  * @description 删除企业信息
  * @param payload ""
  */
@@ -131,6 +124,13 @@ export const deleteEnterpriseList = function (id: number, payload = {}) {
  */
 export const updateEnterpriseList = function (id: number, payload = {}) {
     return $axios.patch('/enterprise' + '/' + id, payload);
+}
+/**
+ * @description 查看企业详情
+ * @param payload ""
+ */
+export const getDetailEnterpriseList = function (id: number, payload = {}) {
+    return $axios.get('/enterprise' + '/' + id, payload);
 }
 
 /**
@@ -243,5 +243,9 @@ export const  addRoleListApi=function(payload={}){
 //获取角色
 export const  getRoleListApi=function(payload={}){
     return $axios.get('/role',payload)
+}
+//删除角色
+export const  deleteRoleListApi=function(id:any,payload={}){
+    return $axios.delete('/role/'+id,payload)
 }
 export default $axios
