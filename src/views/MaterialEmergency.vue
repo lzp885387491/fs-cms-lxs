@@ -88,6 +88,8 @@
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column type="index" label="序号" width="100" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
+                    <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
+                    <el-table-column prop="unit" label="单位" width="auto"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
                     <el-table-column prop="description" label="资源描述" width="auto"></el-table-column>
                     <el-table-column label="部署地点" width="auto">
@@ -583,7 +585,6 @@ body {
 
 .job-list {
     box-sizing: border-box;
-    padding: 20px;
 
     .main {
         box-sizing: border-box;
