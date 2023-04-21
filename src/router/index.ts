@@ -96,6 +96,12 @@ const router = createRouter({
           name: 'materialOutIn',
           component: () => import('../views/MaterialOutIn.vue')
         },
+        //角色管理
+        {
+          path: '/roleManagement',
+          name: 'roleManagement',
+          component: () => import('../views/RoleManagement.vue')
+        },
       ]
     },
     {
