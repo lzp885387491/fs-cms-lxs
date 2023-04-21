@@ -20,6 +20,7 @@
             {{ positionName(scope.row.deptNo) }}
           </template>
         </el-table-column>
+        <el-table-column prop="enterprise.name" label="企业名称" align="center" width="auto"></el-table-column>
         <el-table-column prop="identityCard" label="身份证号" align="center" width="auto">
         </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
@@ -39,6 +40,11 @@
         <el-form-item label="职位" :label-width="formLabelWidth">
           <el-select v-model="patchForm.deptNo" class="m-2" placeholder="请选择职位">
             <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="企业名称" :label-width="formLabelWidth">
+          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择职位">
+            <el-option v-for="item in enterprise" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="手机号" :label-width="formLabelWidth">
@@ -88,7 +94,7 @@ let currentPage = ref(1)
 let pagingItem = ref(10)
 let tableData = ref([])
 let searchtableData = ref([])
-let enterprise=ref([])
+let enterprise:any=ref([])
 let val = computed(() => {
   return searchtableData.value.length
 })
@@ -118,25 +124,22 @@ onMounted(() => {
 //调用接口获取人员信息
 let getUserList = async function () {
   await getUserListApi().then(res => {
-    console.log(1111);
-    console.log(res);
-    tableData.value = JSON.parse(JSON.stringify(res.data.data))
-    searchtableData.value= JSON.parse(JSON.stringify(res.data.data))
+    tableData.value = res.data.data
+    searchtableData.value= res.data.data
   }).catch(error => {
     console.log(error);
   })
 }
+//获取职位角色信息
 const getRoleList=function(){
     getRoleListApi().then((res: any) => {
-        console.log(res);
-        roleList.value=JSON.parse(JSON.stringify(res.data.data))
+        roleList.value=res.data.data
     })
 }
+//获取企业信息
 let EnterpriseList=async function () {
   await getEnterpriseList().then(res => {
-    console.log(1111);
-    console.log(res);
-    enterprise.value = JSON.parse(JSON.stringify(res.data.data))
+    enterprise.value = res.data    
   }).catch(error => {
     console.log(error);
   })
@@ -208,7 +211,6 @@ const update = async function () {
     identityCard:patchForm.value.identityCard,
     enterprise:patchForm.value.enterprise
   }).then(res => {
-    console.log(res)
     getUserList()
     ElMessage.success('修改成功')
   }).catch((error: any) => {
