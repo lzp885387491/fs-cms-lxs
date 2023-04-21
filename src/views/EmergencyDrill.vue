@@ -109,34 +109,6 @@
             </span>
         </template>
     </el-dialog>
-
-
-    <!-- 详情 -->
-    <!-- <el-dialog title="当前详情" v-model="updateDialog" width="30%">
-                    <el-form :model="detailsForm" size="mini">
-                        <el-form-item label="事件名称" :label-width="formLabelWidth">
-                            <el-input type="text" :value="detailsForm.name" v-model="detailsForm.name" class="ipt" placeholder="事件名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.level" class="ipt" placeholder="事件级别"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.description" class="ipt" placeholder="事件描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.siteId" class="ipt" placeholder="事件站点"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件类型" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.type" class="ipt" placeholder="事件类型"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <template #footer>
-                        <span class="dialog-footer">
-                            <el-button @click="updateDialog = false">取 消</el-button>
-                            <el-button type="primary" @click="updateRow">确 定</el-button>
-                        </span>
-                    </template>
-                </el-dialog> -->
 </template>
 <!-- details -->
 <script setup lang="ts">
