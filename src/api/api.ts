@@ -236,5 +236,12 @@ export const  deleteResourceRecordApi=function(id:any,payload={}){
 export const  updateResourceRecordApi=function(id:any,payload={}){
     return $axios.patch('/emergency-dispatch/'+id,payload)
 }
-
+//创建角色
+export const  addRoleListApi=function(payload={}){
+    return $axios.post('/role',payload)
+}
+//获取角色
+export const  getRoleListApi=function(payload={}){
+    return $axios.get('/role',payload)
+}
 export default $axios

@@ -80,7 +80,12 @@ const menu = [
       {
         label: '人员管理',
         name: 'Personnel'
+      },
+      {
+        label: '角色管理',
+        name: 'roleManagement'
       }
+      
     ]
   },
   {
