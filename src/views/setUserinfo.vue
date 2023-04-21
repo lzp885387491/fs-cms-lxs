@@ -16,7 +16,7 @@
                 </el-form-item>
 
                 <el-form-item label="职位">
-                    <el-input disabled v-model="form.position" :placeholder="form.position ? form.position : '无信息'" />
+                    <el-input disabled v-model="form.position" :placeholder="form.position ? form.position : '暂无信息'" />
                 </el-form-item>
 
                 <el-form-item label="公司">
@@ -37,10 +37,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { UpdateUserInfoApi, getUserInfoApi, getEnterpriseList } from '@/api/api'
-import { userStore } from '@/stores/userInfo'
-// import list from '@/assets/js/list'
-const userStorePinia = userStore();
-
+import { useUserStore } from '@/stores/useUserStore'
+const { getUserInfo } = useUserStore();
 
 interface fromType {
     avatarName: string | number,
@@ -60,10 +58,11 @@ const form: fromType = reactive({
     position: '',  // 职位
     enterpriseId: '' // 企业
 });
-let userInfo = ref()
 
-const abcd = ref()
+let userInfo:any = ref()
+
 let enterpriseList: any = ref();
+
 async function getEnterpriseListApi() {
     const res: any = await getEnterpriseList();
     if (res.status == 200 || res.code == 200) {
@@ -73,6 +72,7 @@ async function getEnterpriseListApi() {
         getEnterpriseListApi()
     }
 }
+
 getEnterpriseListApi()
 
 
@@ -89,20 +89,16 @@ async function setUserInfo(id: any, params: any) {
     if (res.code == 200 || res.status == 200) {
         console.log('修改接口返回值', res);
         console.log('修改完信息了，现在重新调取获取用户信息接口！');
-        getUserInfo()
+        reRunGetUserInfo()
     }
 }
 
-async function getUserInfo() {
-    const res: any = await getUserInfoApi();
-    if (res.data.code == 200) {
-        Object.assign(form, res.data.data); // 合并数组
-        console.log('这是重新获取的值', form);
-        form.enterpriseId = res.data.data.enterprise.id;
-        userInfo.value = JSON.parse(JSON.stringify(res.data.data));
-        userStorePinia.setUserStore('userinfo', userInfo.value);
-    }
+async function reRunGetUserInfo () {
+  userInfo.value = await getUserInfo();
+  Object.assign(form, userInfo.value); // 合并数组
+  form.enterpriseId = userInfo.value.enterprise.id;
 }
+reRunGetUserInfo()
 </script>
 
 <style scoped lang="scss">
