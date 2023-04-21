@@ -62,10 +62,6 @@
                 <el-dialog title="当前详情" v-model="detailDialog" width="30%">
                     <div class="m-20">{{ detailsForm.name }}</div>
                     <template #footer>
-                        <span class="dialog-footer">
-                            <el-button @click="detailDialog = false">取 消</el-button>
-                            <el-button type="primary" @click="updateRow">确 定</el-button>
-                        </span>
                     </template>
                 </el-dialog>
 </template>

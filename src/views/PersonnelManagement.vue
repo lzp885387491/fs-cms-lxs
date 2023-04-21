@@ -27,6 +27,7 @@
         <el-table-column align="center" label="操作" width="150">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="patch(scope.row)">修改</el-button>
+            <el-button link type="primary" size="small" @click="detail(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,6 +61,20 @@
         </span>
       </template>
     </el-dialog>
+     <!-- 详情 -->
+     <el-dialog title="当前详情" v-model=" detailDialog " width="30%">
+        <div class="m-20">姓名：{{ detailForm.avatarName }}</div>
+        <div class="m-20">职位：{{positionName(detailForm.deptNo)  }}</div>
+        <div class="m-20">手机号：{{ detailForm.phoneNumber }}</div>
+        <div class="m-20">身份证号：{{ detailForm.identityCard }}</div>
+        <div class="m-20">公司：{{ detailForm.enterprise.name }}</div>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click=" detailDialog = false ">取 消</el-button>
+                <el-button type="primary" @click=" detailDialog = false">确 定</el-button>
+            </span>
+        </template>
+    </el-dialog>
     <div class="block mt-2">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
         :page-sizes="[1, 2, 5, 10, 20]" :page-size="pagingItem" layout="total, sizes, prev, pager, next, jumper"
@@ -71,7 +86,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-import { getUserListApi, patchUserListApi, getEnterpriseList, getRoleListApi } from '@/api/api'
+import { getUserListApi, patchUserListApi,getUserApi, getEnterpriseList, getRoleListApi } from '@/api/api'
 let from = reactive({
   id: '',
   avatarName: '',
@@ -83,10 +98,23 @@ let patchForm = ref({
   deptNo: '',
   phoneNumber: "",
   identityCard: '',
-  enterprise: ''
+  enterprise: {
+    name:''
+  },
+})
+let detailForm = ref({
+  id: '',
+  avatarName: "",
+  deptNo: '',
+  phoneNumber: "",
+  identityCard: '',
+  enterprise: {
+    name:''
+  }
 })
 let roleList: any = ref([])
 let dialogFormVisible1 = ref(false)
+let detailDialog = ref(false)
 let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(10)
@@ -217,6 +245,16 @@ const update = async function () {
     ElMessage.success('修改失败')
   })
 }
+//详情
+const detail = async function (row: any) {
+    detailDialog.value = true
+    await getUserApi(row.id).then(res => {
+      console.log(res);    
+      Object.assign(detailForm.value,res.data.data)
+    }).catch(error => {
+        console.log(error);
+    })
+}
 </script>
 <style scoped lang="scss">
 .user-list {
@@ -252,5 +290,9 @@ const update = async function () {
 
   }
 
+}
+.m-20{
+  margin: 2rem;
+    word-wrap: break-word;
 }
 </style>

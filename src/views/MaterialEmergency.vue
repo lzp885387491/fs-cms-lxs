@@ -94,16 +94,33 @@
                         </span>
                     </template>
                 </el-dialog>
+                <el-dialog title="当前详情" v-model="detailDialog" width="30%">
+                    <div class="m-20">资源名称：{{ detailsForm.name }}</div>
+                    <div class="m-20">数量：{{ detailsForm.stock }}</div>
+                    <div class="m-20">单位：{{ detailsForm.unit }}</div>
+                    <div class="m-20">资源类型：{{ detailsForm.type }}</div>
+                    <div class="m-20">资源描述：{{ detailsForm.description }}</div>
+                    <div class="m-20">部署地点：{{ detailsForm.siteId }}</div>
+                    <div class="m-20">资源状态：{{ detailsForm.status }}</div>
+                    <div class="m-20">负责人：{{ detailsForm.head }}</div>
+                    <div class="m-20">负责人电话：{{ detailsForm.phoneNumber }}</div>
+                    <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="detailDialog = false">取 消</el-button>
+                            <el-button type="primary" @click="closeDeatil">确 定</el-button>
+                        </span>
+                    </template>
+                </el-dialog>
             </div>
             <div class="table mt-2">
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="id" label="id" width="100" />
+                    <el-table-column prop="i" label="序号" width="100" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
                     <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
                     <el-table-column prop="unit" label="单位" width="auto"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
-                    <el-table-column prop="description" label="资源描述" width="auto"></el-table-column>
+                    <el-table-column prop="description" label="资源描述" width="auto" :show-overflow-tooltip='true'></el-table-column>
                     <el-table-column label="部署地点" width="auto">
                         <template #default="scope">
                             <div>{{ getSiteName(scope.row.siteId) }}</div>
@@ -119,7 +136,7 @@
                     <el-table-column label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
-                            <!-- <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button> -->
+                            <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">详情</el-button>
                             <el-button link type="danger" size="small" @click.prevent="open(scope.row)">删除
 
                             </el-button>
@@ -239,6 +256,22 @@ let editForm: any = reactive({
 let dialogFormVisible = ref(false)
 // 编辑应急资源弹窗
 let editDialogFormVisible = ref(false)
+let detailDialog = ref(false)
+let detailsForm = reactive({
+    id: '',
+    name: '',
+    stock: '',
+    unit: '',
+    type: '',
+    description: '',
+    siteId: '',
+    status: '',
+    head: '',
+    phoneNumber: ''
+})
+const closeDeatil=function(){
+    detailDialog.value=false
+}
 let formLabelWidth = ref('30rem')
 let currentPage = ref(1)
 let pagingItem = ref(5)
@@ -266,13 +299,35 @@ const handleSizeChange = function (val: any) {
 const handleCurrentChange = function (val: any) {
     currentPage.value = val
 }
+const checkRow = async function (row: any) {
+    detailDialog.value = true;
+    await getEmergencyResource(row.id).then(response => {
+        let res = response.data;        
+        Object.assign(detailsForm, {
+            name: res.name,
+            stock: res.stock,
+            unit: res.unit,
+            type: res.type,
+            description: res.description,
+            siteId: getSiteName(res.siteId),
+            status: getStatusName(res.status),
+            head: res.head,
+            phoneNumber: res.phoneNumber
+        })
+
+
+
+
+    })
+}
 
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
-    return searchtableData.value.slice(
+    let res = searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
     )
+    return res
 })
 
 // interface resource {
@@ -340,8 +395,8 @@ const editRow = (row: any) => {
     editDialogFormVisible.value = true;
     editForm.id = row.id;
     editForm.name = row.name;
-    editForm.stock=row.stock;
-    editForm.unit=row.unit;
+    editForm.stock = row.stock;
+    editForm.unit = row.unit;
     editForm.type = row.type;
     editForm.description = row.description;
     editForm.siteId = row.siteId;
@@ -352,8 +407,8 @@ const editRow = (row: any) => {
 async function submitEditInformation() {
     let params = {
         name: editForm.name,
-        stock:editForm.stock,
-        unit:editForm.unit,
+        stock: editForm.stock,
+        unit: editForm.unit,
         type: editForm.type,
         description: editForm.description,
         siteId: +editForm.siteId,
@@ -369,16 +424,7 @@ async function submitEditInformation() {
     });
     editDialogFormVisible.value = false;
 }
-// 查看详情
-async function getEmergencyResourceApi(params: number) {
-    let res = await getEmergencyResource(params);
-    if (res.status == 200) {
-        console.log(res.data, '查询成功');
-    }
-    arr.value = res.data;
-    console.log('arr的value', arr.value);
 
-}
 
 // 删除某条应急资源
 async function deleteRow(row: any) {
@@ -403,11 +449,18 @@ const open = function (row: any) {
             deleteRow(row)
         })
 }
+
 // 获取应急资源列表
 async function emergencyResourceApi() {
     await emergencyResource().then(response => {
-        tableData.value = response.data;
-        searchtableData.value = response.data;
+        let data = JSON.parse(JSON.stringify(response.data))
+        data.forEach((e: any, i: number) => {
+            e.i = i + 1;
+        });
+        console.log(data)
+        // 给每一项添加一个字段 代表编号 要连贯的
+        tableData.value = data;
+        searchtableData.value = data;
         console.log(tableData.value);
 
     }).catch(error => {
@@ -415,6 +468,7 @@ async function emergencyResourceApi() {
     })
 
 }
+
 let allArr = [
     {
         name: '呼吸过滤防毒面具',
@@ -593,6 +647,10 @@ emergencyResourceApi();
 
 </script>
 <style scoped lang="scss">
+.m-20{
+    margin: 2rem;
+    word-wrap: break-word;
+}
 :deep(.el-dialog .el-input__wrapper) {
     flex-grow: 0 !important;
     width: 28rem !important;
