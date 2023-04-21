@@ -3,14 +3,13 @@
     <div class="table-title">人员管理</div>
     <div class="header mt-2">
       <div class="search">
-        <el-input v-model="from.id" clearable size="large" class="ipt-search" placeholder="通过id查询"></el-input>
+        <el-input v-model="from.avatarName" clearable size="large" class="ipt-search" placeholder="通过姓名查询"></el-input>
         <!-- <el-input v-model="from.phoneNumber" clearable size="large" class="ipt-search" placeholder="搜索手机号"></el-input> -->
         <el-button type="primary" @click="search" size="large">搜索</el-button>
       </div>
     </div>
     <div class="container mt-2">
-      <el-table :data="newTableData" border style="width: 100%" :header-cell-style="headerCellStyle"
-        :cell-style="cellStyle">
+      <el-table :data="newTableData" style="width: 100%" :header-cell-style="headerCellStyle" :cell-style="cellStyle">
         <el-table-column prop="id" label="序号" align="center" width="80">
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
@@ -20,6 +19,7 @@
             {{ positionName(scope.row.deptNo) }}
           </template>
         </el-table-column>
+        <el-table-column prop="enterprise.name" label="企业名称" align="center" width="auto"></el-table-column>
         <el-table-column prop="identityCard" label="身份证号" align="center" width="auto">
         </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
@@ -38,7 +38,12 @@
         </el-form-item>
         <el-form-item label="职位" :label-width="formLabelWidth">
           <el-select v-model="patchForm.deptNo" class="m-2" placeholder="请选择职位">
-            <el-option v-for="item in deptList" :key="item.deptId" :label="item.position" :value="item.deptId" />
+            <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="企业名称" :label-width="formLabelWidth">
+          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择职位">
+            <el-option v-for="item in enterprise" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="手机号" :label-width="formLabelWidth">
@@ -66,8 +71,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-import { getUserListApi, getUserApi, patchUserListApi } from '@/api/api'
-import deptList from '@/assets/js/list'
+import { getUserListApi, patchUserListApi, getEnterpriseList, getRoleListApi } from '@/api/api'
 let from = reactive({
   id: '',
   avatarName: '',
@@ -78,16 +82,17 @@ let patchForm = ref({
   avatarName: "",
   deptNo: '',
   phoneNumber: "",
-  identityCard:''
+  identityCard: '',
+  enterprise: ''
 })
-let deptList1: any = reactive(deptList)
-let dialogFormVisible = ref(false)
+let roleList: any = ref([])
 let dialogFormVisible1 = ref(false)
 let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(10)
 let tableData = ref([])
-let searchtableData: any = ref(tableData)
+let searchtableData = ref([])
+let enterprise: any = ref([])
 let val = computed(() => {
   return searchtableData.value.length
 })
@@ -108,20 +113,31 @@ let cellStyle = reactive({
   fontSize: '1.5rem',
   padding: '1rem 0'
 })
-
-onMounted(() => {
+onMounted(async () => {
+  await getRoleList()
   getUserList()
+  EnterpriseList()
 })
 //调用接口获取人员信息
-let getUserList = async function () {
-  await getUserListApi().then(res => {
-    console.log(1111);
-
+async function getUserList() {
+  let res =  await getUserListApi()
     console.log(res);
-    tableData.value = JSON.parse(JSON.stringify(res.data.data))
-  }).catch(error => {
-    console.log(error);
-  })
+    tableData.value = res.data.data
+    searchtableData.value = res.data.data
+    return res
+}
+//获取职位角色信息
+async function getRoleList() {
+  let res = await getRoleListApi()
+  roleList.value = res.data.data
+  console.log(roleList.value);
+  return res
+}
+//获取企业信息
+async function EnterpriseList() {
+  let res =  await getEnterpriseList()
+    enterprise.value = res.data
+    return res
 }
 const handleSizeChange = function (val: any) {
   pagingItem.value = val
@@ -129,49 +145,51 @@ const handleSizeChange = function (val: any) {
 const handleCurrentChange = function (val: any) {
   currentPage.value = val
 }
+
+//获取职位ID所对应的职位名称
 const positionName = function (deptNo: any) {
   if (deptNo == 0) return "暂无"
-  return deptList1.find((element: any) => deptNo == element.deptId).position
+  return roleList.value.find((element: any) => deptNo == element.id).name
 }
 //搜索
 const search = function () {
-  getUserApi(from.id).then((res: any) => {
-    if (!from.id) {
-      getUserList()
-    } else {
-      searchtableData.value = [JSON.parse(JSON.stringify(res.data.data))]
-    }
-    console.log(res);
-  })
-  // let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
-  // console.log(tableData.value);
-
-  // let from1: any = reactive({
-  //   avatarName: {
-  //     filter: (key: any) => {
-  //       return !from.avatarName
-  //         ? key
-  //         : key.filter((item: any) => {
-  //           return item.avatarName.includes(from.avatarName)
-  //         })
-  //     }
-  //   },
-  //   phoneNumber: {
-  //     filter: (key: any) => {
-  //       return !from.phoneNumber
-  //         ? key
-  //         : key.filter((item: any) => {
-  //           return item.phoneNumber.includes(from.phoneNumber)
-  //         })
-  //     }
+  // getUserApi(from.id).then((res: any) => {
+  //   if (!from.id) {
+  //     getUserList()
+  //   } else {
+  //     searchtableData.value = [JSON.parse(JSON.stringify(res.data.data))]
   //   }
+  //   console.log(res);
+  // })
+  let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
+  console.log(tableData.value);
 
-  // })
-  // Object.keys(from1).forEach((key1: any) => {
-  //   list = from1[key1].filter(list)
-  // })
-  // currentPage.value = 1
-  // searchtableData.value = list
+  let from1: any = reactive({
+    avatarName: {
+      filter: (key: any) => {
+        return !from.avatarName
+          ? key
+          : key.filter((item: any) => {
+            return item.avatarName.includes(from.avatarName)
+          })
+      }
+    },
+    phoneNumber: {
+      filter: (key: any) => {
+        return !from.phoneNumber
+          ? key
+          : key.filter((item: any) => {
+            return item.phoneNumber.includes(from.phoneNumber)
+          })
+      }
+    }
+
+  })
+  Object.keys(from1).forEach((key1: any) => {
+    list = from1[key1].filter(list)
+  })
+  currentPage.value = 1
+  searchtableData.value = list
 }
 //修改
 const patch = function (val: any) {
@@ -183,13 +201,15 @@ const patch = function (val: any) {
 }
 const update = async function () {
   dialogFormVisible1.value = false
+  console.log(patchForm.value);
+
   await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
     deptNo: patchForm.value.deptNo,
     phoneNumber: patchForm.value.phoneNumber,
-    identityCard:patchForm.value.identityCard
+    identityCard: patchForm.value.identityCard,
+    enterprise: patchForm.value.enterprise
   }).then(res => {
-    console.log(res)
     getUserList()
     ElMessage.success('修改成功')
   }).catch((error: any) => {
@@ -197,23 +217,10 @@ const update = async function () {
     ElMessage.success('修改失败')
   })
 }
-// 删除
-const delate = function (val: any) {
-  // delateUserListApi(val.id, {
-  // }).then(res=>{
-  // console.log(res)
-  // })
-}
-//增加
-const add = function () {
-  dialogFormVisible.value = false
-}
 </script>
 <style scoped lang="scss">
 .user-list {
   height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
 
   .header {
     display: flex;
@@ -225,7 +232,7 @@ const add = function () {
       gap: 1rem;
 
       .ipt-search {
-        width: 25rem;
+        width: 30rem;
       }
 
       .clear {

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { cretaePark, updatePark } from '@/types/xhrPayLoadApi';
-import { ElMessage } from 'element-plus'
 const BASE_URL = '/api'
 
 const $axios = axios.create({
@@ -26,6 +25,7 @@ $axios.interceptors.response.use(function (response) {
     // }
     return response;
 }, function (error) {
+    console.log('拦截器里的error',error)
     if (error.response.data.status == 401) {
         window.location.href = '/login'
     }
@@ -58,8 +58,8 @@ export const getUserInfoApi = function () {
 /**
  * @description 更新个人用户信息
  */
-export const UpdateUserInfoApi = function (payload = {}) {
-    return $axios.post('/auth/profile', payload)
+export const UpdateUserInfoApi = function (id: any, payload = {}) {
+    return $axios.patch(`/user/${id}`, payload)
 }
 
 
@@ -221,20 +221,27 @@ export const factorySiteApi = function (payload = {}) {
 }
 
 // 添加资源派发记录
-export const  addResourceRecordApi=function(payload={}){
-    return $axios.post('/emergency-dispatch',payload)
+export const addResourceRecordApi = function (payload = {}) {
+    return $axios.post('/emergency-dispatch', payload)
 }
 // 获取资源派发记录表
-export const  getResourceRecordApi=function(payload={}){
-    return $axios.get('/emergency-dispatch',payload)
+export const getResourceRecordApi = function (payload = {}) {
+    return $axios.get('/emergency-dispatch', payload)
 }
 // 删除派发记录
-export const  deleteResourceRecordApi=function(id:any,payload={}){
-    return $axios.delete('/emergency-dispatch/'+id,payload)
+export const deleteResourceRecordApi = function (id: any, payload = {}) {
+    return $axios.delete('/emergency-dispatch/' + id, payload)
 }
 // 更新派发记录
-export const  updateResourceRecordApi=function(id:any,payload={}){
-    return $axios.patch('/emergency-dispatch/'+id,payload)
+export const updateResourceRecordApi = function (id: any, payload = {}) {
+    return $axios.patch('/emergency-dispatch/' + id, payload)
 }
-
+//创建角色
+export const  addRoleListApi=function(payload={}){
+    return $axios.post('/role',payload)
+}
+//获取角色
+export const  getRoleListApi=function(payload={}){
+    return $axios.get('/role',payload)
+}
 export default $axios

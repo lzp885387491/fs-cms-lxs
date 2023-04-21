@@ -12,17 +12,17 @@
                 </el-form-item>
 
                 <el-form-item label="身份证号">
-                    <el-input v-model="form.identityCard" placeholder="请输入身份证号..." />
+                    <el-input disabled v-model="form.identityCard" placeholder="请输入身份证号..." />
                 </el-form-item>
 
                 <el-form-item label="职位">
-                    <el-input disabled v-model="form.position" :placeholder="form.position" />
+                    <el-input disabled v-model="form.position" :placeholder="form.position ? form.position : '暂无信息'" />
                 </el-form-item>
 
                 <el-form-item label="公司">
-                    <el-select v-model="form.enterprise" placeholder="please select your zone">
-                        <el-option label="公司1" value="公司1Val" />
-                        <el-option label="公司2" value="公司2Val" />
+                    <el-select v-model="form.enterpriseId" placeholder="请选择公司...">
+                        <el-option v-for="(item, index) in enterpriseList" :key="item.id || index" :label="item.name"
+                            :value="item.id" />
                     </el-select>
                 </el-form-item>
 
@@ -35,43 +35,72 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { UpdateUserInfoApi } from '@/api/api'
-import { userStore } from '@/stores/userInfo'
-
-
+import { reactive, ref } from 'vue'
+import { UpdateUserInfoApi, getUserInfoApi, getEnterpriseList } from '@/api/api'
+import { useUserStore } from '@/stores/useUserStore'
+const { getUserInfo } = useUserStore();
 
 interface fromType {
-    avatarName: string, // 姓名
-    phoneNumber: string, // 手机号
-    identityCard: string, // 身份证号
-    position: string,  // 职位
-    enterprise: string, // 企业
+    avatarName: string | number,
+    phoneNumber: string,
+    identityCard: string,
+    position: string,
+    enterpriseId: string | number,
+    deptNo: number | null,
+    id: number | null
+}
+const form: fromType = reactive({
+    id: null,
+    avatarName: '', // 姓名
+    deptNo: null,
+    phoneNumber: '', // 手机号
+    identityCard: '', // 身份证号
+    position: '',  // 职位
+    enterpriseId: '' // 企业
+});
+
+let userInfo: any = ref()
+
+let enterpriseList: any = ref();
+
+async function getEnterpriseListApi() {
+    const res: any = await getEnterpriseList();
+    if (res.status == 200 || res.code == 200) {
+        enterpriseList.value = JSON.parse(JSON.stringify(res.data))
+        getUserInfo()
+    } else {
+        getEnterpriseListApi()
+    }
 }
 
-const form: fromType = reactive({
-    avatarName: '',
-    phoneNumber: '',
-    identityCard: '',
-    position: '',
-    enterprise: ''
-})
+getEnterpriseListApi()
 
-const userStorePinia = userStore();
-const piniaRes = JSON.parse(JSON.stringify(userStorePinia.getUserStore('userinfo')));
-Object.assign(form, piniaRes);// 合并数组
-console.log(form);
 
 const onSubmit = () => {
-    console.log('form', form)
-    // setUserInfo(form);
+    console.log('这是先获取的form表单输入的值：', form)
+    let { id, avatarName, deptNo, phoneNumber, identityCard, enterpriseId } = form;
+    setUserInfo(id, {
+        avatarName, deptNo, phoneNumber, identityCard, enterpriseId
+    });
 }
 
-async function setUserInfo(params: fromType) {
-    const res = await UpdateUserInfoApi(params);
-    // if (res)
-    console.log('setUserInfoRes', res);
+async function setUserInfo(id: any, params: any) {
+    const res: any = await UpdateUserInfoApi(id, params);
+    if (res.code == 200 || res.status == 200) {
+        console.log('修改接口返回值', res);
+        console.log('修改完信息了，现在重新调取获取用户信息接口！');
+        reRunGetUserInfo()
+    }
 }
+
+async function reRunGetUserInfo() {
+    userInfo.value = await getUserInfo();
+    Object.assign(form, userInfo.value); // 合并数组
+    form.enterpriseId = userInfo.value.enterprise.id;
+    form.position = '';
+    form.identityCard = form.identityCard.replace(/^(\d{4})\d{10}(.{4}$)/g, `$1${Array(11).join('*')}$2`);
+}
+reRunGetUserInfo()
 </script>
 
 <style scoped lang="scss">

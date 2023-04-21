@@ -4,7 +4,7 @@
             <div class="table-title">园区公司列表</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.id" clearable class="ipt-search" placeholder="根据id查找"></el-input>
+                    <el-input v-model="form.name" clearable class="ipt-search" placeholder="根据公司名称查找"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加园区公司</el-button>
@@ -12,6 +12,14 @@
                     <el-form :model="addForm">
                         <el-form-item label="公司名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="公司状态" :label-width="formLabelWidth">
+                            <el-radio v-model="addForm.status" label="1">已投产</el-radio>
+                            <el-radio v-model="addForm.status" label="2">施工中</el-radio>
+                            <el-radio v-model="addForm.status" label="3">预购建</el-radio>
+                        </el-form-item>
+                        <el-form-item label="描述" :label-width="formLabelWidth">
+                            <el-input v-model="addForm.description" autocomplete="off" placeholder="请输入描述"></el-input>
                         </el-form-item>
                         <el-form-item label="公司地址" :label-width="formLabelWidth">
                             <el-input v-model="addForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
@@ -35,9 +43,20 @@
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column prop="id" label="id" width="auto"></el-table-column>
                     <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
+                    <el-table-column label="公司状态" width="auto">
+                        <template #default="scope">
+                            {{ filType(scope.row.status) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="description" label="描述" width="auto"></el-table-column>
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
                     <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
+                    <el-table-column prop="operate" label="公司简介" width="auto">
+                        <template #default="scope">
+                            <el-button link type="primary" size="small" @click="view(scope.row)">查看</el-button>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click="upDate(scope.row)">编辑</el-button>
@@ -47,10 +66,22 @@
                     </el-table-column>
                 </el-table>
             </div>
+            <el-dialog width="50%" v-model="dialogFormVisible3">
+                <img v-if="flag == 2" src="@/assets/images/introduction.jpg" class="img" alt="">
+                <img v-if="flag == 3" src="@/assets/images/introduction2.jpg" class="img" alt="">
+            </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
                     <el-form-item label="公司名称" :label-width="formLabelWidth">
                         <el-input v-model="upDateForm.name" autocomplete="off" placeholder="请输入公司名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="公司状态" :label-width="formLabelWidth">
+                        <el-radio v-model="upDateForm.status" :label="1">已投产</el-radio>
+                        <el-radio v-model="upDateForm.status" :label="2">施工中</el-radio>
+                        <el-radio v-model="upDateForm.status" :label="3">预购建</el-radio>
+                    </el-form-item>
+                    <el-form-item label="描述" :label-width="formLabelWidth">
+                        <el-input v-model="upDateForm.description" autocomplete="off" placeholder="请输入描述"></el-input>
                     </el-form-item>
                     <el-form-item label="公司地址" :label-width="formLabelWidth">
                         <el-input v-model="upDateForm.address" autocomplete="off" placeholder="请输入公司地址"></el-input>
@@ -77,11 +108,11 @@
     </div>
 </template>
 <script setup lang="ts">
-import { createEnterpriseList, getEnterpriseList, queryEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
+import { createEnterpriseList, getEnterpriseList, deleteEnterpriseList, updateEnterpriseList } from '@/api/api';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
 let form = reactive({
-    id: ''
+    name: ''
 })
 function chek(data: any | undefined) {
     // 如果传进来的是一个对象  则循环遍历每一个字段是否为空
@@ -106,30 +137,39 @@ function chek(data: any | undefined) {
 
 const addFormRule: any = reactive({
     name: '公司名称',
+    status: '公司状态',
+    description: '描述',
     address: '公司地址',
     contactPerson: '联系人',
     contactTel: '联系电话',
 })
 const addForm = reactive({
     name: '',
+    status: '',
+    description: '',
     address: '',
     contactPerson: '',
     contactTel: '',
 })
+const introduction: any = ref([])
+let flag: any = ref([])
 const upDateForm = reactive({
     id: 0,
     name: '',
+    status: '',
+    description: '',
     address: '',
     contactPerson: '',
     contactTel: '',
 })
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
+const dialogFormVisible3 = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
 let tableData = ref([])
-let searchtableData: any = ref(tableData)
+let searchtableData: any = ref([])
 let val = computed(() => {
     return searchtableData.value.length
 })
@@ -138,6 +178,18 @@ let headerCellStyle = reactive({
     textAlign: 'center',
     padding: '1rem 0'
 })
+const filType = function (status: any) {
+    if (status == 1) {
+        status = '已投产'
+    }
+    if (status == 2) {
+        status = '施工中'
+    }
+    if (status == 3) {
+        status = '预购建'
+    }
+    return status
+}
 const deleteList = function (index: number, row: any) {
     ElMessageBox.confirm(
         '确定要删除吗?',
@@ -164,6 +216,14 @@ const deleteRow = async (index: number, row: any) => {
         })
     }
 }
+const view = function (row: any) {
+    flag = row.id
+    if (row.id == 1) {
+        ElMessage.warning("暂无简介")
+    } else {
+        dialogFormVisible3.value = true
+    }
+}
 const upDate = function (row: any) {
     dialogFormVisible2.value = true
     upDateForm.id = row.id
@@ -171,18 +231,22 @@ const upDate = function (row: any) {
     upDateForm.address = row.address
     upDateForm.contactPerson = row.contactPerson
     upDateForm.contactTel = row.contactTel
+    upDateForm.status = row.status
+    upDateForm.description = row.description
 }
 const upDateFormList = async function () {
-    let { name, address, contactPerson, contactTel } = upDateForm
+    let { name, address, contactPerson, contactTel, status, description } = upDateForm
     await updateEnterpriseList(upDateForm.id, {
         name,
         address,
         contactPerson,
-        contactTel
+        contactTel,
+        status,
+        description
     }).then(res => {
         dialogFormVisible2.value = false
-        getEnterpriseInfo()
         ElMessage.success('修改成功')
+        getEnterpriseInfo()
     })
 }
 let cellStyle = reactive({
@@ -198,12 +262,14 @@ const handleCurrentChange = function (val: any) {
 }
 
 const addInformation = async function () {
-    let { name, address, contactPerson, contactTel } = addForm
+    let { name, address, contactPerson, contactTel, status, description } = addForm
     let res = await createEnterpriseList({
         name,
         address,
         contactPerson,
-        contactTel
+        contactTel,
+        status,
+        description
     })
     if (res) {
         if (chek(addForm)) {
@@ -220,6 +286,7 @@ const getEnterpriseInfo = async function () {
     let res = await getEnterpriseList()
     if (res) {
         tableData.value = res.data
+        searchtableData.value = res.data
         return tableData.value
     }
 }
@@ -227,20 +294,43 @@ onMounted(async () => {
     await getEnterpriseInfo()
 })
 
-const search = async function () {
-    await queryEnterpriseList(form.id).then((res) => {
-        if (form.id == '') {
-            getEnterpriseInfo()
-            return ElMessage.warning('关键词不能为空！！！')
-        } else {
-            ElMessage.success('搜索成功')
-            searchtableData.value = [res.data]
-            return searchtableData.value
-        }
-    }).catch((error) => {
-        getEnterpriseInfo()
-        return ElMessage.warning('没有查找到此内容')
+// const search = async function () {
+//     await queryEnterpriseList(form.id).then((res) => {
+//         if (form.id == '') {
+//             getEnterpriseInfo()
+//             return ElMessage.warning('关键词不能为空！！！')
+//         } else {
+//             ElMessage.success('搜索成功')
+//             searchtableData.value = [res.data]
+//             return searchtableData.value
+//         }
+//     }).catch((error) => {
+//         getEnterpriseInfo()
+//         return ElMessage.warning('没有查找到此内容')
+//     })
+// }
+const search = function () {
+    if (form.name == '') {
+        ElMessage.warning("搜索内容不能为空")
+    }
+    let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
+    let name: any = reactive({
+        avatarName: {
+            filter: (key: any) => {
+                return !form.name
+                    ? key
+                    : key.filter((item: any) => {
+                        return item.name.includes(form.name)
+                    })
+            }
+        },
+
     })
+    Object.keys(name).forEach((key1: any) => {
+        list = name[key1].filter(list)
+    })
+    currentPage.value = 1
+    searchtableData.value = list
 }
 const jobReport = function () {
     dialogFormVisible.value = true
@@ -337,5 +427,10 @@ let newTableData = computed(() => {
 
 .cl-r:hover {
     color: rgb(203, 69, 69);
+}
+
+.img {
+    width: 100%;
+    height: 100%;
 }
 </style>

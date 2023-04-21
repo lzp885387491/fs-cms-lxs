@@ -15,6 +15,12 @@
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="addForm.name" autocomplete="off" placeholder="请输入资源名称"></el-input>
                         </el-form-item>
+                        <el-form-item label="数量" :label-width="formLabelWidth">
+                            <el-input v-model="addForm.stock" autocomplete="off" placeholder="请输入数量"></el-input>
+                        </el-form-item>
+                        <el-form-item label="单位" :label-width="formLabelWidth">
+                            <el-input v-model="addForm.unit" autocomplete="off" placeholder="请输入单位"></el-input>
+                        </el-form-item>
                         <el-form-item label="资源类型" :label-width="formLabelWidth">
                             <el-input v-model="addForm.type" autocomplete="off" placeholder="请输入资源类型"></el-input>
                         </el-form-item>
@@ -50,6 +56,12 @@
                     <el-form :model="editForm" size="mini">
                         <el-form-item label="资源名称" :label-width="formLabelWidth">
                             <el-input v-model="editForm.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数量" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.stock" autocomplete="off" placeholder="请输入数量"></el-input>
+                        </el-form-item>
+                        <el-form-item label="单位" :label-width="formLabelWidth">
+                            <el-input v-model="editForm.unit" autocomplete="off" placeholder="请输入单位"></el-input>
                         </el-form-item>
                         <el-form-item label="资源类型" :label-width="formLabelWidth">
                             <el-input v-model="editForm.type" autocomplete="off"></el-input>
@@ -88,6 +100,8 @@
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column type="index" label="序号" width="100" />
                     <el-table-column prop="name" label="资源名称" width="auto"></el-table-column>
+                    <el-table-column prop="stock" label="数量" width="auto"></el-table-column>
+                    <el-table-column prop="unit" label="单位" width="auto"></el-table-column>
                     <el-table-column prop="type" label="资源类型" width="auto"></el-table-column>
                     <el-table-column prop="description" label="资源描述" width="auto"></el-table-column>
                     <el-table-column label="部署地点" width="auto">
@@ -187,6 +201,8 @@ async function getFactorySite() {
 // 添加规则
 const addFormRule: any = reactive({
     name: '资源名称',
+    stock: '数量',
+    unit: '单位',
     type: '资源类型',
     description: '资源描述',
     siteId: '部署地点',
@@ -197,6 +213,8 @@ const addFormRule: any = reactive({
 // 添加应急资源表单
 let addForm: any = reactive({
     name: '',
+    stock: '',
+    unit: '',
     type: '',
     description: '',
     siteId: '',
@@ -208,6 +226,8 @@ let addForm: any = reactive({
 let editForm: any = reactive({
     id: '',
     name: '',
+    stock: '',
+    unit: '',
     type: '',
     description: '',
     siteId: '',
@@ -291,6 +311,8 @@ const addResource = function () {
     dialogFormVisible.value = true
     Object.assign(addForm, {
         name: '',
+        stock: '',
+        unit: '',
         type: '',
         description: '',
         siteId: '',
@@ -318,6 +340,8 @@ const editRow = (row: any) => {
     editDialogFormVisible.value = true;
     editForm.id = row.id;
     editForm.name = row.name;
+    editForm.stock=row.stock;
+    editForm.unit=row.unit;
     editForm.type = row.type;
     editForm.description = row.description;
     editForm.siteId = row.siteId;
@@ -328,6 +352,8 @@ const editRow = (row: any) => {
 async function submitEditInformation() {
     let params = {
         name: editForm.name,
+        stock:editForm.stock,
+        unit:editForm.unit,
         type: editForm.type,
         description: editForm.description,
         siteId: +editForm.siteId,
@@ -564,6 +590,7 @@ let allArr = [
 //     console.log(res);
 // }
 emergencyResourceApi();
+
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
@@ -583,7 +610,6 @@ body {
 
 .job-list {
     box-sizing: border-box;
-    padding: 20px;
 
     .main {
         box-sizing: border-box;
