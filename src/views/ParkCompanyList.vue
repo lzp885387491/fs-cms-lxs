@@ -205,7 +205,6 @@ const deleteRow = async (index: number, row: any) => {
     }
 }
 const upDate = function (row: any) {
-    console.log(row);
     dialogFormVisible2.value = true
     upDateForm.id = row.id
     upDateForm.name = row.name
@@ -225,7 +224,6 @@ const upDateFormList = async function () {
         status,
         description
     }).then(res => {
-        console.log(res);
         dialogFormVisible2.value = false
         ElMessage.success('修改成功')
         getEnterpriseInfo()
@@ -268,7 +266,6 @@ const getEnterpriseInfo = async function () {
     let res = await getEnterpriseList()
     if (res) {
         tableData.value = res.data
-        console.log(tableData.value);
         searchtableData.value = res.data
         return tableData.value
     }
