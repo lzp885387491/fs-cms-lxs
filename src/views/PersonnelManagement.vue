@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="auto">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="patch(scope.row)">修改</el-button>
+            <el-button link type="primary" size="small" @click="patch(scope.row)">编辑</el-button>
             <el-button link type="primary" size="small" @click="detail(scope.row)">详情</el-button>
           </template>
         </el-table-column>
