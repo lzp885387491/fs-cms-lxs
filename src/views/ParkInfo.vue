@@ -62,8 +62,8 @@
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.area">
-          <el-input v-model="tableData.area" @input="tableData.area = Number(tableData.area.replace(/[^\d]/g,''))" :disabled="disabled">
-
+          <el-input v-model="tableData.area" @input="tableData.area = (tableData.area.replace(/[^0-9.]/g,''))" :disabled="disabled">
+            <template #append>平方公里</template>
           </el-input>
         </el-form-item>
         <el-form-item :label="addFormRule.description">
@@ -223,13 +223,15 @@ const upDate = function(){
 }
 // 确定
 const determine = async function(){
+  console.log(tableData.value);
+  
   let res = await updateParkInfo(tableData.value);
   if (res.data.code == 200) {
     disabled.value = true;
     ElMessage({
-          message: "修改成功",
-          type: 'success'
-        })
+      message: "修改成功",
+      type: 'success'
+    })
     getParkList()
   };
 }
