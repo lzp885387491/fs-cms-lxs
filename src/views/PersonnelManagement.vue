@@ -62,7 +62,7 @@
       </template>
     </el-dialog>
      <!-- 详情 -->
-     <el-dialog title="当前详情" v-model=" detailDialog " width="30%">
+     <el-dialog title="当前详情" v-model="detailDialog" width="30%">
         <div class="m-20">姓名：{{ detailForm.avatarName }}</div>
         <div class="m-20">职位：{{positionName(detailForm.deptNo)  }}</div>
         <div class="m-20">手机号：{{ detailForm.phoneNumber }}</div>

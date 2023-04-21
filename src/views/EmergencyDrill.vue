@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <el-dialog title="修改应急事件信息" v-model=" updateDialog " width="30%">
+    <el-dialog title="修改应急事件信息" v-model="updateDialog" width="30%">
         <el-form :model=" updateForm " size="mini">
             <el-form-item label="事件名称" :label-width=" formLabelWidth ">
                 <el-input type="text" v-model=" updateForm.name " class="ipt" placeholder="事件名称"></el-input>
@@ -97,7 +97,7 @@
     </el-dialog>
 
     <!-- 详情 -->
-    <el-dialog title="当前详情" v-model=" detailDialog " width="30%">
+    <el-dialog title="当前详情" v-model="detailDialog" width="30%">
         <div class="m-20">事件名称：{{ detailsForm.name }}</div>
         <div class="m-20">事件级别：{{ detailsForm.level }}</div>
         <div class="m-20">事件位置：{{ detailsForm.siteId }}</div>
