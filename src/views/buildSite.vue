@@ -1,16 +1,16 @@
 <template>
     <div class="job-list">
         <div class="main">
-            <div class="table-title">厂区位置管理</div>
+            <div class="table-title">厂区建筑位置管理</div>
             <div class="search mt-2">
                 <div class="search-left">
-                    <el-input v-model="form.eventName" clearable size="large" class="ipt-search"
-                        placeholder="根据厂区位置查询"></el-input>
+                    <el-input v-model="form.siteName" clearable size="large" class="ipt-search"
+                        placeholder="根据建筑位置查询"></el-input>
                     <el-button type="primary" @click="search" size="large">搜索</el-button>
                 </div>
                 <el-button type="primary" @click="jobReport" size="large">添加位置</el-button>
                 <!-- 添加事件弹层 -->
-                <el-dialog title="添加应急事件信息" v-model="dialogFormVisible" width="30%">
+                <el-dialog title="添加建筑位置" v-model="dialogFormVisible" width="30%">
                     <el-form :model="addForm" size="mini">
                         <el-form-item label="位置名称" :label-width="formLabelWidth">
                             <el-input type="text" v-model="addForm.name" class="ipt" placeholder="位置名称"></el-input>
@@ -30,9 +30,9 @@
                     <el-table-column prop="id" label="厂区位置id" width="auto"></el-table-column>
                     <el-table-column prop="name" label="厂区位置名称" width="auto"></el-table-column>
                     <el-table-column label="操作" width="auto">
-                        <template #default="scope">
+                        <template #default="scope :any">
                             <el-button link type="primary" size="small" @click.prevent="modify(scope.row)">修改</el-button>
-                            <!-- <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button> -->
+                            <el-button link type="primary" size="small" @click.prevent="detail(scope.row)">详情</el-button>
                             <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -45,10 +45,10 @@
             </div>
         </div>
     </div>
-    <el-dialog title="修改应急事件信息" v-model="updateDialog" width="30%">
+    <el-dialog title="修改建筑位置" v-model="updateDialog" width="30%">
                     <el-form :model="updateForm" size="mini">
-                        <el-form-item label="事件名称" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="事件名称"></el-input>
+                        <el-form-item label="位置名称" :label-width="formLabelWidth">
+                            <el-input type="text" v-model="updateForm.name" class="ipt" placeholder="位置名称"></el-input>
                         </el-form-item>
                     </el-form>
                     <template #footer>
@@ -59,31 +59,15 @@
                     </template>
                 </el-dialog>
                 <!-- 详情 -->
-                <!-- <el-dialog title="当前详情" v-model="updateDialog" width="30%">
-                    <el-form :model="detailsForm" size="mini">
-                        <el-form-item label="事件名称" :label-width="formLabelWidth">
-                            <el-input type="text" :value="detailsForm.name" v-model="detailsForm.name" class="ipt" placeholder="事件名称"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件级别" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.level" class="ipt" placeholder="事件级别"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件描述" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.description" class="ipt" placeholder="事件描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件站点" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.siteId" class="ipt" placeholder="事件站点"></el-input>
-                        </el-form-item>
-                        <el-form-item label="事件类型" :label-width="formLabelWidth">
-                            <el-input type="text" v-model="detailsForm.type" class="ipt" placeholder="事件类型"></el-input>
-                        </el-form-item>
-                    </el-form>
+                <el-dialog title="当前详情" v-model="detailDialog" width="30%">
+                    <div class="m-20">{{ detailsForm.name }}</div>
                     <template #footer>
                         <span class="dialog-footer">
-                            <el-button @click="updateDialog = false">取 消</el-button>
+                            <el-button @click="detailDialog = false">取 消</el-button>
                             <el-button type="primary" @click="updateRow">确 定</el-button>
                         </span>
                     </template>
-                </el-dialog> -->
+                </el-dialog>
 </template>
 <!-- details -->
 <script setup lang="ts">
@@ -99,13 +83,14 @@ import {
 
 let tableData = ref([])
 let form = reactive({
-    eventName: ''
+    siteName: ''
 })
 let dialogFormVisible = ref(false)
 let updateDialog = ref(false)
+let detailDialog = ref(false)
 let formLabelWidth = ref('15rem')
 let currentPage = ref(1)
-let pagingItem = ref(5)
+let pagingItem = ref(10)
 // const addFormRule: any = reactive({
 //     name: '厂区位置名称',
 // })
@@ -120,10 +105,6 @@ let updateForm = reactive({
 })
 let detailsForm = reactive({
     name: '',
-    siteId: 1,
-    level: '',
-    description: '',
-    type: '',
     id:1
 })
 
@@ -171,13 +152,10 @@ async function emer() {
 
 // 删除
 async function deleteRow(row: any) {
-    console.log(row.id);
-    
     await deleteSite(row.id, {}).then(res => {
         ElMessage.success('删除成功')
         emer()
     }).catch(res => {
-        console.log(res);
         ElMessage.warning('该地点不能删除！！')
     })
 }
@@ -186,10 +164,6 @@ const modify = function(row: any){
     updateDialog.value = true
     Object.assign(updateForm,{
         name: row.name,
-        siteId: row.siteId,
-        level: row.level,
-        description: row.description,
-        type: row.type,
         id : row.id 
     })
 }
@@ -250,10 +224,10 @@ const search = function () {
         planName: {
             filter: (key: any) => {
                 console.log(key);
-                return !form.eventName
+                return !form.siteName
                     ? key
                     : key.filter((item: any) => {
-                        return item.name.includes(form.eventName)
+                        return item.name.includes(form.siteName)
                     })
             }
         }
@@ -265,26 +239,28 @@ const search = function () {
     searchtableData.value = list
 }
 // // 详情
-// const detail = async function (row : any){
-//     await getEmergencyEvent(row.id,{}).then(res=>{
-//         console.log(res);
-//     }).catch(err=>{
-//         console.log(err);
-//     })
-// }
+const detail = async function (row : any){
+    detailDialog.value = true
+    await getSite(row.id,{}).then(res=>{
+        Object.assign(detailsForm,{
+        name: res.data.name,
+    })
+    }).catch(err=>{
+        console.log(err);
+    })
+}
 
 const jobReport = function () {
     dialogFormVisible.value = true
     Object.assign(addForm, {
         name: '',
-        site_id: 1,
-        level: '',
-        description: '',
-        type: ''
     })
 }
 </script>
 <style scoped lang="scss">
+.m-20{
+    margin: 2rem;
+}
 .job-list {
     padding: 20px;
     box-sizing: border-box;
