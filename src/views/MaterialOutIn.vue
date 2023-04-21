@@ -253,7 +253,7 @@ const handleCurrentChange = function (val: any) {
 
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
-    console.log('计算属性成功：', searchtableData.value);
+    // console.log('计算属性成功：', searchtableData.value);
     return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
@@ -281,7 +281,7 @@ const search = function () {
                 return !searchForm.name
                     ? list
                     : list.filter((item: any) => {
-                        console.log(item, searchForm.name);
+                        // console.log(item, searchForm.name);
                         return item.resource.name.includes(searchForm.name)
                     })
             }
@@ -308,7 +308,7 @@ const addResource = function () {
 // 提交添加信息的表单
 async function addInformation() {
     if (check(addForm)) {
-        console.log(typeof addForm.dispatchTime);
+        // console.log(typeof addForm.dispatchTime);
         await addResourceRecordApi(addForm).then(response => {
             ElMessage.success('添加成功！')
             getResourceRecord()
@@ -338,15 +338,15 @@ async function submitEditInformation() {
         dispatchTime: editForm.dispatchTime,
         finishTime: editForm.finishTime,
     }
-    console.log(params);
+    // console.log(params);
 
     await updateResourceRecordApi(editForm.id, params).then(response => {
         getResourceRecord()
         ElMessage.success('更新成功！')
-        console.log('更新成功！');
+        // console.log('更新成功！');
 
     }).catch(error => {
-        console.log(error);
+        // console.log(error);
 
     })
     editDialogFormVisible.value = false;
@@ -380,10 +380,10 @@ async function getResourceRecord() {
     await getResourceRecordApi().then(response => {
         tableData.value = response.data.data;
         searchtableData.value = response.data.data;
-        console.log('tableData', tableData.value);
-        console.log('searchtableData', searchtableData.value);
+        // console.log('tableData', tableData.value);
+        // console.log('searchtableData', searchtableData.value);
     }).catch(error => {
-        console.log(error);
+        // console.log(error);
     })
 }
 
@@ -391,7 +391,7 @@ getResourceRecord()
 // 获取应急资源列表
 async function emergencyResourceApi() {
     await emergencyResource().then(response => {
-        console.log('应急资源列表有：', response.data);
+        // console.log('应急资源列表有：', response.data);
         resourceList.value = response.data;
 
     })
@@ -400,7 +400,7 @@ emergencyResourceApi()//得到应急资源列表
 // 获取应急事件列表
 async function emergencyEventListApi() {
     await emergencyEventList().then(response => {
-        console.log('应急事件列表有：', response.data);
+        // console.log('应急事件列表有：', response.data);
         eventList.value = response.data;
     })
 }
@@ -408,7 +408,7 @@ emergencyEventListApi()//得到应急事件列表
 // 获取用户信息列表
 async function getUserList() {
     await getUserListApi().then(response => {
-        console.log('用户信息列表有：', response.data.data);
+        // console.log('用户信息列表有：', response.data.data);
         userList.value = response.data.data;
     })
 }

@@ -13,19 +13,19 @@
           ></el-input>
           <el-button type="primary" @click="search" size="large">搜索</el-button>
         </div>
-        <el-button type="primary" @click="showDialog" size="large">添加应急预案</el-button>
-        <el-dialog title="添加应急预案信息" v-model="dialogFormVisible" width="30%">
+        <el-button type="primary" @click="showAddPlan" size="large">添加应急预案</el-button>
+        <el-dialog title="添加应急预案信息" v-model="dialogFormVisible" width="30%" @close="clearPlan">
           <el-form :model="selectPlan" size="default">
             <el-form-item label="预案名称" :label-width="formLabelWidth">
-              <el-input type="text" v-model="selectPlan.name" class="ipt" placeholder="请输入预案名称"></el-input>
+              <el-input type="text" v-model="selectPlan.name" class="ipt" placeholder="输入预案名称"></el-input>
             </el-form-item>
-            <el-form-item label="haha" :label-width="formLabelWidth">
-              <el-select v-model="selectPlan" placeholder="请选择作业类型">
+            <el-form-item label="地点" :label-width="formLabelWidth">
+              <el-select v-model="selectPlan.siteId" placeholder="选择预案地点">
                 <el-option
                   v-for="item in siteList"
                   :label="item.name"
-                  :value="item.value"
-                  :key="item.value"
+                  :value="item.id"
+                  :key="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -34,67 +34,62 @@
                 type="text"
                 v-model="selectPlan.description"
                 class="ipt"
-                placeholder="请输入预案描述"
+                placeholder="输入预案描述"
               ></el-input>
             </el-form-item>
-            <el-form-item label="地点" :label-width="formLabelWidth">
-              <el-input type="text" v-model="selectPlan.site" class="ipt" placeholder="请输入预案所定地点"></el-input>
-            </el-form-item>
-            <!-- <el-form-item label="演练时间" :label-width="formLabelWidth">
-              <el-date-picker v-model="addForm.exerciseTime" type="datetime" placeholder="请选择时间" />
-            </el-form-item>
-            <el-form-item label="参加人数" :label-width="formLabelWidth">
-              <el-input
-                type="text"
-                v-model="addForm.numberOfParticipants"
-                class="ipt"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="举办单位" :label-width="formLabelWidth">
-              <el-input type="text" v-model="addForm.Organizer" class="ipt" placeholder="请输入举办单位"></el-input>
-            </el-form-item>
-            <el-form-item label="负责人" :label-width="formLabelWidth">
-              <el-input type="text" v-model="addForm.head" class="ipt" placeholder="请输入负责人"></el-input>
-            </el-form-item>-->
           </el-form>
           <template #footer>
             <span class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="addPlan">确 定</el-button>
+              <el-button @click="hiddenDialog">取 消</el-button>
+              <el-button v-show="btnStatus=='add'" type="primary" @click="addPlan">添 加</el-button>
+              <el-button v-show="btnStatus=='edit'" type="primary" @click="editPlan">修 改</el-button>
             </span>
           </template>
         </el-dialog>
       </div>
       <div class="table mt-2">
-        <el-table
+        <!-- <el-table
           :data="tableList"
           class="table-content"
           style="width: 100%"
           :header-cell-style="headerCellStyle"
           :cell-style="cellStyle"
         >
-          <el-table-column type="index" width="50" />
+          <el-table-column type="index" label="序号" min-width="30"></el-table-column>
           <el-table-column prop="name" label="预案名称" width="auto"></el-table-column>
           <el-table-column prop="description" label="预案描述" width="auto"></el-table-column>
-          <el-table-column prop="site" label="演练地点" width="auto"></el-table-column>
-          <!-- <el-table-column prop="exerciseLocation" label="演练地点" width="auto"></el-table-column> -->
-          <!-- <el-table-column label="演练时间" width="auto">
-            <template #default="scope">{{ Dates(scope.row.exerciseTime) }}</template>
-          </el-table-column>-->
-          <!-- <el-table-column prop="numberOfParticipants" label="参加人数" width="auto"></el-table-column>
-          <el-table-column prop="Organizer" label="举办单位" width="auto"></el-table-column>
-          <el-table-column prop="head" label="负责人" width="auto"></el-table-column>-->
+          <el-table-column prop="site.name" label="演练地点" width="auto"></el-table-column>
           <el-table-column label="操作" width="auto">
             <template #default="scope">
               <el-button
                 link
                 type="primary"
                 size="small"
-                @click.prevent="deleteRow(scope.$index)"
-              >删除</el-button>
+                @click.prevent="showEditPlan(scope.row)"
+              >编辑</el-button>
+              <el-button link type="danger" size="small" @click.prevent="openTip(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
+        </el-table>-->
+        <el-table
+          :data="fixedData"
+          class="table-content"
+          style="width: 100%"
+          :header-cell-style="headerCellStyle"
+          :cell-style="cellStyle"
+        >
+          <el-table-column type="index" label="序号" min-width="30"></el-table-column>
+          <el-table-column prop="name" label="预案名称" width="auto"></el-table-column>
+          <el-table-column prop="description" label="预案描述" width="auto"></el-table-column>
+          <el-table-column prop="site" label="演练地点" width="auto"></el-table-column>
+          <el-table-column label="操作" width="auto">
+            <template #default>
+              <el-button  @click.prevent="checkFile" link type="primary" size="small">查看文件</el-button>
+              <!-- <el-button link type="danger" size="small">删除</el-button> -->
+            </template>
+          </el-table-column>
+          <!-- @click.prevent="openTip(scope.row.id)" -->
+          <!-- @click.prevent="showEditPlan(scope.row)" -->
         </el-table>
       </div>
       <div class="block">
@@ -113,25 +108,49 @@
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 import { reactive, ref, computed, onMounted } from 'vue'
+import { ElMessageBox } from 'element-plus'
+
 import {
   getEmergencyPlanList,
   createEmergencyPlanList,
   deleteEmergencyPlan,
-  getSiteList
+  getSiteList,
+  updateEmergencyPlan
 } from '@/api/plan-api'
+let router = useRouter();
+const checkFile=function(){
+  window.location.href = "https://unier.oss-cn-beijing.aliyuncs.com/fs/resource/%E6%B5%AE%E5%B1%B1%E5%8E%BF%E4%BA%A7%E4%B8%9A%E9%9B%86%E8%81%9A%E5%8C%BA%E7%BB%BC%E5%90%88%E5%BA%94%E6%80%A5%E9%A2%84%E6%A1%88.pdf"
+}
 onMounted(async () => {
   getPlanList()
+  getSiteData()
 })
+interface Site {
+  id: number
+  name: string
+}
+interface Plan {
+  name: string
+  site: Site
+  description: string
+  id: number
+}
+let fixedData = ref([
+  { description: '建立预防为主、防治结合的综合应急处理机制，提高快速反应和应急处置能力，高效有序地实施救援，最大限度减少人员伤亡和财产损失，防止和减少环境污染，把事故危害降低到最低水平，并在应急领导小组统一领导下做好应急救助工作，维护社会稳定。', id: 5, name: '浮山产业集聚区综合应急预案', site: '浮山化工园区' }
+])
+let btnStatus = ref('add')
 let resList = ref([]) //服务端返回的数据
 let searchList = ref([])
 let pageNum = ref(1) //第几页
 let pageSize = ref(5) //每页数量
-let siteList = ref([])
+let siteList:any = ref([])
+let selectId = ref(0)
 let selectPlan: any = reactive({
   // name: '',
   // description: '',
-  site: 1
+  // site: 1
 }) //选中的预案
 let total = computed(() => {
   return searchList.value.length
@@ -156,33 +175,47 @@ const getSiteData = async function () {
   }
 }
 const showDialog = function () {
-  selectPlan = reactive({
-    site: 1
-  })
   dialogFormVisible.value = true
 }
 const hiddenDialog = function () {
   dialogFormVisible.value = false
 }
+const clearPlan = function () {
+  selectPlan = reactive({
+    // site: 1
+  })
+}
 const addPlan = async function () {
-  let res = await createEmergencyPlanList(selectPlan)
-  if (res.status == 201) {
-    ElMessage({
-      message: '创建成功',
-      type: 'success'
-    })
-    hiddenDialog()
-    getPlanList()
-  } else {
-    ElMessage({
-      message: '创建失败',
-      type: 'warning'
-    })
+  if (check(selectPlan)) {
+    console.log(1)
+    let res = await createEmergencyPlanList(selectPlan)
+    if (res.status == 201) {
+      ElMessage({
+        message: '创建成功',
+        type: 'success'
+      })
+      hiddenDialog()
+      getPlanList()
+    } else {
+      ElMessage({
+        message: '创建失败',
+        type: 'warning'
+      })
+    }
   }
 } //添加方案
+const openTip = function (id: number) {
+  ElMessageBox.confirm('是否确认删除?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deletePlan(id)
+  })
+}
 const deletePlan = async function (id: number) {
   let res = await deleteEmergencyPlan({ id })
-  if (res.status == 201) {
+  if (res.status == 200) {
     ElMessage({
       message: '删除成功',
       type: 'success'
@@ -219,63 +252,75 @@ const search = function () {
   pageNum.value = 1
   searchList.value = list
 }
+const showEditPlan = function (plan: Plan) {
+  selectId.value = plan.id
+  btnStatus.value = 'edit'
+  let { name, description, site, id } = plan
+  showDialog()
+  selectPlan = reactive({
+    name,
+    description,
+    siteId: site.id,
+    id
+  })
+}
+const showAddPlan = function (plan: Plan) {
+  btnStatus.value = 'add'
+  showDialog()
+}
 
-let tableData = reactive([
-  {
-    id: 1,
-    planName: '中毒窒息应急演练',
-    exerciseLocation: '成型二车间旁边',
-    exerciseTime: '2022-11-02 15:00:00',
-    numberOfParticipants: 21,
-    Organizer: '应急救援管理机构',
-    head: '邢建平'
+const editPlan = async function () {
+  if (check(selectPlan)) {
+    let { name, description, siteId } = selectPlan
+    let res = await updateEmergencyPlan(selectId.value, {
+      name,
+      description,
+      siteId
+    })
+    if (res.status == 200) {
+      ElMessage({
+        message: '修改成功',
+        type: 'success'
+      })
+      hiddenDialog()
+      getPlanList()
+    } else {
+      ElMessage({
+        message: '修改失败',
+        type: 'warning'
+      })
+    }
   }
-])
-function chek(data: any | undefined) {
-  // 如果传进来的是一个对象 则循环遍历每一个字段是否为空
-  // 如果传进来的值 是一个数组 就循环遍历每一项 判断每一项的值是否为空
-  // 如果传进来的值 是一个单独的字段 则就只校验该字段是否为空
-  let isType = Object.prototype.toString.call(data)
-  let flag = true
-  if (isType === '[object Object]') {
-    for (const key in data) {
-      if (data[key] === undefined || data[key] === '') {
-        flag = false
+}
 
-        ElMessage({
-          message: '请填写' + addFormRule[key],
-          type: 'warning'
-        })
-        break
-      }
+const handleSizeChange = function (val: any) {
+  pageSize.value = val
+}
+const handleCurrentChange = function (val: any) {
+  pageNum.value = val
+}
+
+function check(data: any) {
+  let flag = true
+  for (const key in addFormRule) {
+    if (data[key] === undefined || data[key] === '') {
+      flag = false
+      ElMessage({
+        message: '请填写' + addFormRule[key],
+        type: 'warning'
+      })
+      break
     }
   }
   return flag
 }
 const addFormRule: any = reactive({
-  planName: '预案名称',
-  exerciseLocation: '演练地点',
-  exerciseTime: '演练时间',
-  numberOfParticipants: '参加人数',
-  Organizer: '举办单位',
-  head: '负责人'
-})
-let addForm = reactive({
-  planName: '',
-  exerciseLocation: '',
-  exerciseTime: '',
-  numberOfParticipants: '',
-  Organizer: '',
-  head: ''
+  name: '预案名称',
+  siteId: '演练地点',
+  description: '预案描述'
 })
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref('15rem')
-let currentPage = ref(1)
-let pagingItem = ref(5)
-let searchtableData = ref(tableData)
-let val = computed(() => {
-  return searchtableData.value.length
-})
 
 let headerCellStyle = reactive({
   fontSize: '1.7rem',
@@ -287,79 +332,6 @@ let cellStyle = reactive({
   fontSize: '1.5rem',
   padding: '1rem 0'
 })
-let jobType = reactive([
-  {
-    id: '1',
-    title: '高空作业'
-  },
-  {
-    id: '2',
-    title: '火工品装卸'
-  },
-  {
-    id: '3',
-    title: '危险品包装'
-  },
-  {
-    id: '4',
-    title: '有毒物质接触'
-  },
-  {
-    id: '5',
-    title: '射线处理'
-  },
-  {
-    id: '6',
-    title: '水上作业'
-  }
-])
-let auditStatus = reactive([
-  {
-    id: '1',
-    status: 0,
-    title: '未通过'
-  },
-  {
-    id: '2',
-    status: 1,
-    title: '已通过'
-  }
-])
-let companyName = reactive([
-  {
-    id: '1',
-    name: 'ABC公司'
-  },
-  {
-    id: '2',
-    name: 'DEF公司'
-  },
-  {
-    id: '3',
-    name: 'GHI公司'
-  },
-  {
-    id: '4',
-    name: 'JKL公司'
-  },
-  {
-    id: '5',
-    name: 'MNO公司'
-  }
-])
-const handleSizeChange = function (val: any) {
-  pagingItem.value = val
-}
-const handleCurrentChange = function (val: any) {
-  currentPage.value = val
-}
-//计算属性计算出分页后需要的用户信息
-let newTableData = computed(() => {
-  return searchtableData.value.slice(
-    (currentPage.value - 1) * pagingItem.value,
-    currentPage.value * pagingItem.value
-  )
-})
 const Dates = function (time: any) {
   var date = new Date(time).toJSON()
   var timeft = new Date(+new Date(date))
@@ -368,50 +340,25 @@ const Dates = function (time: any) {
     .replace(/\.[\d]{3}Z/, '')
   return timeft
 }
-// const addInformation = function () {
-//   if (chek(addForm)) {
-//     let obj = ref(JSON.parse(JSON.stringify(addForm)))
-//     tableData.push(obj.value)
-//     dialogFormVisible.value = false
-//     ElMessage({
-//       message: '创建成功',
-//       type: 'success'
-//     })
-//   }
-// }
-
-const deleteRow = (index: number) => {
-  let arr = tableData
-  arr.splice((currentPage.value - 1) * pagingItem.value + index, 1)
-  tableData = arr
-  ElMessage({
-    message: '删除成功',
-    type: 'success'
-  })
-}
-
-const jobReport = function () {
-  dialogFormVisible.value = true
-  Object.assign(addForm, {
-    planName: '',
-    exerciseLocation: '',
-    exerciseTime: '',
-    numberOfParticipants: '',
-    Organizer: '',
-    head: ''
-  })
-}
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
   flex-grow: 0 !important;
-  width: 28rem !important;
+  width: 100% !important;
 }
 :deep(.el-dialog .el-input__inner) {
   flex-grow: 0 !important;
-  width: 28rem !important;
+  // width: 25rem !important;
 }
-
+:deep(.el-form-item__content) {
+  max-width: 30rem;
+}
+:deep(.el-select--default) {
+  width: 100% !important;
+}
+:deep(.ipt) {
+  width: 100% !important;
+}
 :deep(.el-dialog) {
   --el-dialog-margin-top: 0 !important;
   position: relative !important;
@@ -421,7 +368,6 @@ const jobReport = function () {
 }
 .job-list {
   box-sizing: border-box;
-  padding: 3rem;
   .main {
     height: 100%;
     box-sizing: border-box;

@@ -10,7 +10,7 @@
     </div>
     <div class="container mt-2">
       <el-table :data="newTableData" style="width: 100%" :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-        <el-table-column prop="id" label="序号" align="center" width="80">
+        <el-table-column prop="id" label="序号" align="center" width="60">
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
         </el-table-column>
@@ -24,7 +24,7 @@
         </el-table-column>
         <el-table-column prop="phoneNumber" label="手机号" align="center" width="auto">
         </el-table-column>
-        <el-table-column align="center" label="操作" width="150">
+        <el-table-column align="center" label="操作" width="auto">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="patch(scope.row)">修改</el-button>
             <el-button link type="primary" size="small" @click="detail(scope.row)">详情</el-button>
@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业名称" :label-width="formLabelWidth">
-          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择职位">
+          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择企业">
             <el-option v-for="item in enterprise" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
@@ -149,7 +149,6 @@ onMounted(async () => {
 //调用接口获取人员信息
 async function getUserList() {
   let res =  await getUserListApi()
-    console.log(res);
     tableData.value = res.data.data
     searchtableData.value = res.data.data
     return res
@@ -158,7 +157,6 @@ async function getUserList() {
 async function getRoleList() {
   let res = await getRoleListApi()
   roleList.value = res.data.data
-  console.log(roleList.value);
   return res
 }
 //获取企业信息
@@ -181,17 +179,7 @@ const positionName = function (deptNo: any) {
 }
 //搜索
 const search = function () {
-  // getUserApi(from.id).then((res: any) => {
-  //   if (!from.id) {
-  //     getUserList()
-  //   } else {
-  //     searchtableData.value = [JSON.parse(JSON.stringify(res.data.data))]
-  //   }
-  //   console.log(res);
-  // })
   let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
-  console.log(tableData.value);
-
   let from1: any = reactive({
     avatarName: {
       filter: (key: any) => {
@@ -221,7 +209,6 @@ const search = function () {
 }
 //修改
 const patch = function (val: any) {
-  console.log(val);
   dialogFormVisible1.value = true
   Object.assign(patchForm.value, val)
   if (val.deptNo == 0) patchForm.value.deptNo = "暂无"
@@ -229,7 +216,7 @@ const patch = function (val: any) {
 }
 const update = async function () {
   dialogFormVisible1.value = false
-  console.log(patchForm.value);
+  
 
   await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
@@ -241,18 +228,14 @@ const update = async function () {
     getUserList()
     ElMessage.success('修改成功')
   }).catch((error: any) => {
-    console.log(error);
     ElMessage.success('修改失败')
   })
 }
 //详情
 const detail = async function (row: any) {
     detailDialog.value = true
-    await getUserApi(row.id).then(res => {
-      console.log(res);    
+    await getUserApi(row.id).then(res => {    
       Object.assign(detailForm.value,res.data.data)
-    }).catch(error => {
-        console.log(error);
     })
 }
 </script>
