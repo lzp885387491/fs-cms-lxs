@@ -566,8 +566,6 @@ let allArr = [
 //     console.log(res);
 // }
 emergencyResourceApi();
-console.log(22222)
-
 
 </script>
 <style scoped lang="scss">
