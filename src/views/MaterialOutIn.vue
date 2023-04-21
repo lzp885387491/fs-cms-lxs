@@ -22,7 +22,6 @@
                                 <el-option v-for="item in resourceList" :key="item.id" :label="item.name"
                                     :value="item.id" />
                             </el-select>
-
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
                             <el-select v-model="addForm.workerId" class="m-2" placeholder="请选择负责人">
@@ -35,15 +34,17 @@
 
                         </el-form-item>
                         <el-form-item label="派发时间" :label-width="formLabelWidth">
-                                <el-date-picker  v-model="addForm.dispatchTime" type="datetime" placeholder="选择派发时间"
-                                    format="YYYY/MM/DD hh:mm:ss" value-format="YYYY-MM-DD h:m:s a" />
-                            
+
+                            <el-date-picker v-model="addForm.dispatchTime" type="datetime" placeholder="选择派发时间"
+                                format="YYYY/MM/DD HH:mm:ss" />
+
+
                             <!-- <el-input v-model="addForm.dispatchTime" autocomplete="off" placeholder="请输入派发时间"></el-input> -->
 
                         </el-form-item>
                         <el-form-item label="完成时间" :label-width="formLabelWidth">
-                            <el-date-picker  v-model="addForm.finishTime" type="datetime" placeholder="选择派发时间"
-                                    format="YYYY/MM/DD hh:mm:ss" value-format="YYYY-MM-DD h:m:s a" />
+                            <el-date-picker v-model="addForm.finishTime" type="datetime" placeholder="选择完成时间"
+                                format="YYYY/MM/DD HH:mm:ss" />
                             <!-- <el-input v-model="addForm.finishTime" autocomplete="off" placeholder="请输入完成时间"></el-input> -->
                         </el-form-item>
                     </el-form>
@@ -57,31 +58,42 @@
                 <el-dialog title="修改物资" v-model="editDialogFormVisible" width="50%">
                     <el-form :model="editForm" size="mini">
                         <el-form-item label="事件" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.eventId" autocomplete="off" placeholder="请输入事件"></el-input>
+                            <el-select v-model="editForm.eventId" class="m-2" placeholder="请选择事件名称">
+                                <el-option v-for="item in eventList" :key="item.id" :label="item.name" :value="item.id" />
+                            </el-select>
                         </el-form-item>
+
                         <el-form-item label="资源" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.resourceId" autocomplete="off" placeholder="请输入资源"></el-input>
+                            <el-select v-model="editForm.resourceId" class="m-2" placeholder="请选择资源名称">
+                                <el-option v-for="item in resourceList" :key="item.id" :label="item.name"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="负责人" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.workerId" autocomplete="off" placeholder="请输入负责人"></el-input>
+                            <el-select v-model="editForm.workerId" class="m-2" placeholder="请选择负责人">
+                                <el-option v-for="item in userList" :key="item.id" :label="item.avatarName"
+                                    :value="item.id" />
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="任务状态" :label-width="formLabelWidth">
                             <el-input v-model="editForm.taskStatus" autocomplete="off" placeholder="请输入任务状态"></el-input>
 
                         </el-form-item>
                         <el-form-item label="派发时间" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.dispatchTime" autocomplete="off" placeholder="请输入派发时间"></el-input>
+                            <el-date-picker v-model="editForm.dispatchTime" type="datetime" placeholder="选择派发时间"
+                                format="YYYY/MM/DD HH:mm:ss" />
 
                         </el-form-item>
                         <el-form-item label="完成时间" :label-width="formLabelWidth">
-                            <el-input v-model="editForm.finishTime" autocomplete="off" placeholder="请输入完成时间"></el-input>
+                            <el-date-picker v-model="editForm.finishTime" type="datetime" placeholder="选择完成时间"
+                                format="YYYY/MM/DD HH:mm:ss" />
                         </el-form-item>
                     </el-form>
                     <template #footer>
-                        <!-- <span class="dialog-footer">
+                        <span class="dialog-footer">
                             <el-button @click="editDialogFormVisible = false" size="mini">取 消</el-button>
                             <el-button type="primary" @click="submitEditInformation" size="mini">确 定</el-button>
-                        </span> -->
+                        </span>
                     </template>
                 </el-dialog>
             </div>
@@ -89,9 +101,11 @@
                 <el-table :data="newTableData" class="table-content" style="width: 100%"
                     :header-cell-style="headerCellStyle" :cell-style="cellStyle">
                     <el-table-column type="index" label="序号" width="100" />
-                    <el-table-column prop="eventId" label="事件" width="auto"></el-table-column>
-                    <el-table-column prop="resourceId" label="资源" width="auto"></el-table-column>
-                    <el-table-column prop="workId" label="负责人" width="auto"></el-table-column>
+                    <el-table-column prop="event.name" label="事件" width="auto">
+
+                    </el-table-column>
+                    <el-table-column prop="resource.name" label="资源" width="auto"></el-table-column>
+                    <el-table-column prop="worker.avatarName" label="负责人" width="auto"></el-table-column>
                     <el-table-column prop="taskStatus" label="任务状态" width="auto">
                     </el-table-column>
                     <el-table-column prop="dispatchTime" label="派发时间" width="auto">
@@ -99,13 +113,13 @@
                     <el-table-column prop="finishTime" label="完成时间" width="auto">
                     </el-table-column>
                     <el-table-column label="操作" width="auto">
-                        <!-- <template #default="scope">
+                        <template #default="scope">
                             <el-button link type="primary" size="small" @click.prevent="editRow(scope.row)">编辑</el-button>
-                            <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button>
+                            <!-- <el-button link type="primary" size="small" @click.prevent="checkRow(scope.row)">查看</el-button> -->
                             <el-button link type="danger" size="small" @click.prevent="open(scope.row)">删除
 
                             </el-button>
-                        </template> -->
+                        </template>
                     </el-table-column>
                 </el-table>
             </div>
@@ -121,7 +135,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, computed } from 'vue'
 // import { factorySiteApi, emergencyResource, addResourceRecordApi, deleteEmergencyResource, updateEmergencyResource, getResourceRecordApi } from '@/api/api'
-import { addResourceRecordApi, getResourceRecordApi } from '@/api/api'
+import { addResourceRecordApi, getResourceRecordApi, deleteResourceRecordApi, updateResourceRecordApi } from '@/api/api'
 import { emergencyResource, emergencyEventList, getUserListApi } from '@/api/api'
 let searchForm = reactive({
     name: ''
@@ -207,7 +221,7 @@ let addForm: any = reactive({
     dispatchTime: '',
     finishTime: '',
 })
-// 编辑应急资源表单
+// 编辑表单
 let editForm: any = reactive({
     id: '',
     eventId: '',
@@ -217,9 +231,9 @@ let editForm: any = reactive({
     dispatchTime: '',
     finishTime: '',
 })
-// 添加应急资源弹窗
+// 添加弹窗
 let dialogFormVisible = ref(false)
-// 编辑应急资源弹窗
+// 编辑弹窗
 let editDialogFormVisible = ref(false)
 let formLabelWidth = ref('30rem')
 let currentPage = ref(1)
@@ -251,6 +265,7 @@ const handleCurrentChange = function (val: any) {
 
 //计算属性计算出分页后需要的用户信息
 let newTableData = computed(() => {
+    console.log('计算属性成功：', tableData.value);
     return searchtableData.value.slice(
         (currentPage.value - 1) * pagingItem.value,
         currentPage.value * pagingItem.value
@@ -269,20 +284,24 @@ let newTableData = computed(() => {
 
 //根据名称查询
 const search = function () {
+
     let list = JSON.parse(JSON.stringify(tableData.value));
+
     let form: any = ref({
         name: {
             filter: (list: any) => {
                 return !searchForm.name
                     ? list
                     : list.filter((item: any) => {
-                        return item.name.includes(searchForm.name)
+                        console.log(item, searchForm.name);
+                        return item.event.name.includes(searchForm.name)
                     })
             }
         }
     })
 
     Object.keys(form.value).forEach((key: any) => {
+
         list = form.value[key].filter(list)
     })
     currentPage.value = 1
@@ -303,7 +322,7 @@ const addResource = function () {
 // 提交添加信息的表单
 async function addInformation() {
     if (check(addForm)) {
-        console.log(addForm);
+        console.log(typeof addForm.dispatchTime);
         await addResourceRecordApi(addForm).then(response => {
             ElMessage.success('添加成功！')
             getResourceRecord()
@@ -313,36 +332,39 @@ async function addInformation() {
         dialogFormVisible.value = false;
     }
 }
-// 编辑某条应急资源
-// const editRow = (row: any) => {
-//     editDialogFormVisible.value = true;
-//     editForm.id = row.id;
-//     editForm.name = row.name;
-//     editForm.type = row.type;
-//     editForm.description = row.description;
-//     editForm.siteId = row.siteId;
-//     editForm.head = row.head;
-//     editForm.phoneNumber = row.phoneNumber;
-//     editForm.status = row.status;
-// }
-// async function submitEditInformation() {
-//     let params = {
-//         name: editForm.name,
-//         type: editForm.type,
-//         description: editForm.description,
-//         siteId: +editForm.siteId,
-//         status: editForm.status,
-//         head: editForm.head,
-//         phoneNumber: editForm.phoneNumber
-//     }
-//     await updateEmergencyResource(editForm.id, params).then((response: any) => {
-//         ElMessage.success('更新成功！')
-//         emergencyResourceApi();
-//     }).catch((error: any) => {
-//         console.log(error);
-//     });
-//     editDialogFormVisible.value = false;
-// }
+// 编辑某条数据
+const editRow = (row: any) => {
+    editDialogFormVisible.value = true;
+    editForm.id = row.id;
+    editForm.eventId = row.eventId;
+    editForm.resourceId = row.resourceId;
+    editForm.workerId = row.workerId;
+    editForm.taskStatus = row.taskStatus;
+    editForm.dispatchTime = row.dispatchTime;
+    editForm.finishTime = row.finishTime;
+}
+async function submitEditInformation() {
+    let params = {
+        eventId: editForm.eventId,
+        resourceId: editForm.resourceId,
+        workerId: editForm.workerId,
+        taskStatus: editForm.taskStatus,
+        dispatchTime: editForm.dispatchTime,
+        finishTime: editForm.finishTime,
+    }
+    console.log(params);
+
+    await updateResourceRecordApi(editForm.id, params).then(response => {
+        getResourceRecord()
+        ElMessage.success('更新成功！')
+        console.log('更新成功！');
+
+    }).catch(error => {
+        console.log(error);
+
+    })
+    editDialogFormVisible.value = false;
+}
 // 查看详情
 // async function getEmergencyResourceApi(params: number) {
 //     let res = await getEmergencyResource(params);
@@ -354,29 +376,30 @@ async function addInformation() {
 
 // }
 
-// 删除某条应急资源
-// async function deleteRow(row: any) {
-//     await deleteEmergencyResource(row.id, {}).then(response => {
-//         ElMessage.success('删除成功！')
-//     }).catch(error => {
-//         ElMessage.warning(error.message)
-//     })
-//     emergencyResourceApi()
-// }
-// const open = function (row: any) {
-//     ElMessageBox.confirm(
-//         '确认要删除吗？',
-//         '是否删除',
-//         {
-//             confirmButtonText: '确认',
-//             cancelButtonText: '取消',
-//             type: 'warning',
-//         }
-//     )
-//         .then(() => {
-//             deleteRow(row)
-//         })
-// }
+// 删除某条记录
+async function deleteRow(row: any) {
+    await deleteResourceRecordApi(row.id, {}).then(response => {
+        ElMessage.success('删除成功！')
+    }).catch(error => {
+        ElMessage.warning(error.message)
+    })
+    getResourceRecord()
+
+}
+const open = function (row: any) {
+    ElMessageBox.confirm(
+        '确认要删除吗？',
+        '是否删除',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            deleteRow(row)
+        })
+}
 // 获取应急资源列表
 // async function emergencyResourceApi() {
 //     await emergencyResource().then(response => {
@@ -391,13 +414,15 @@ async function addInformation() {
 // }
 async function getResourceRecord() {
     await getResourceRecordApi().then(response => {
-        console.log(response);
-        tableData.value = response.data;
-        searchtableData.value = response.data;
+        tableData.value = response.data.data;
+        searchtableData.value = response.data.data;
+        console.log('tableData', tableData.value);
+        console.log('searchtableData', searchtableData.value);
     }).catch(error => {
         console.log(error);
     })
 }
+getResourceRecord()
 // 获取应急资源列表
 async function emergencyResourceApi() {
     await emergencyResource().then(response => {
