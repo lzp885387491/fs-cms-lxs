@@ -52,6 +52,11 @@
                     <el-table-column prop="address" label="地址" width="auto"></el-table-column>
                     <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
                     <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
+                    <el-table-column prop="operate" label="公司简介" width="auto">
+                        <template #default="scope">
+                            <el-button link type="primary" size="small" @click="view(scope.row)">查看</el-button>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="operate" label="操作" width="auto">
                         <template #default="scope">
                             <el-button link type="primary" size="small" @click="upDate(scope.row)">编辑</el-button>
@@ -61,6 +66,10 @@
                     </el-table-column>
                 </el-table>
             </div>
+            <el-dialog width="50%" v-model="dialogFormVisible3">
+                <img v-if="flag == 2" src="@/assets/images/introduction.jpg" class="img" alt="">
+                <img v-if="flag == 3" src="@/assets/images/introduction2.jpg" class="img" alt="">
+            </el-dialog>
             <el-dialog title="修改信息" v-model="dialogFormVisible2" width="28%">
                 <el-form :model="upDateForm">
                     <el-form-item label="公司名称" :label-width="formLabelWidth">
@@ -142,6 +151,8 @@ const addForm = reactive({
     contactPerson: '',
     contactTel: '',
 })
+const introduction: any = ref([])
+let flag: any = ref([])
 const upDateForm = reactive({
     id: 0,
     name: '',
@@ -153,6 +164,7 @@ const upDateForm = reactive({
 })
 let dialogFormVisible = ref(false)
 const dialogFormVisible2 = ref(false)
+const dialogFormVisible3 = ref(false)
 let formLabelWidth = ref('120px')
 let currentPage = ref(1)
 let pagingItem = ref(5)
@@ -202,6 +214,14 @@ const deleteRow = async (index: number, row: any) => {
             message: '删除成功',
             type: 'success'
         })
+    }
+}
+const view = function (row: any) {
+    flag = row.id
+    if (row.id == 1) {
+        ElMessage.warning("暂无简介")
+    } else {
+        dialogFormVisible3.value = true
     }
 }
 const upDate = function (row: any) {
@@ -290,6 +310,9 @@ onMounted(async () => {
 //     })
 // }
 const search = function () {
+    if (form.name == '') {
+        ElMessage.warning("搜索内容不能为空")
+    }
     let list = reactive(JSON.parse(JSON.stringify(tableData.value)))
     let name: any = reactive({
         avatarName: {
@@ -404,5 +427,10 @@ let newTableData = computed(() => {
 
 .cl-r:hover {
     color: rgb(203, 69, 69);
+}
+
+.img {
+    width: 100%;
+    height: 100%;
 }
 </style>

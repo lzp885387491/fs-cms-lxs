@@ -9,8 +9,7 @@
       </div>
     </div>
     <div class="container mt-2">
-      <el-table :data="newTableData"  style="width: 100%" :header-cell-style="headerCellStyle"
-        :cell-style="cellStyle">
+      <el-table :data="newTableData" style="width: 100%" :header-cell-style="headerCellStyle" :cell-style="cellStyle">
         <el-table-column prop="id" label="序号" align="center" width="80">
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
@@ -72,7 +71,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import { reactive, ref, computed, onMounted } from 'vue'
-import { getUserListApi, patchUserListApi,getEnterpriseList ,getRoleListApi} from '@/api/api'
+import { getUserListApi, patchUserListApi, getEnterpriseList, getRoleListApi } from '@/api/api'
 let from = reactive({
   id: '',
   avatarName: '',
@@ -83,18 +82,17 @@ let patchForm = ref({
   avatarName: "",
   deptNo: '',
   phoneNumber: "",
-  identityCard:'',
-  enterprise:''
+  identityCard: '',
+  enterprise: ''
 })
 let roleList: any = ref([])
-let dialogFormVisible = ref(false)
 let dialogFormVisible1 = ref(false)
 let formLabelWidth = ref('10rem')
 let currentPage = ref(1)
 let pagingItem = ref(10)
 let tableData = ref([])
 let searchtableData = ref([])
-let enterprise:any=ref([])
+let enterprise: any = ref([])
 let val = computed(() => {
   return searchtableData.value.length
 })
@@ -115,34 +113,32 @@ let cellStyle = reactive({
   fontSize: '1.5rem',
   padding: '1rem 0'
 })
+onMounted(async () => {
 
-onMounted(() => {
+  await getRoleList()
   getUserList()
   EnterpriseList()
-  getRoleList()
 })
 //调用接口获取人员信息
-let getUserList = async function () {
-  await getUserListApi().then(res => {
+async function getUserList() {
+  let res =  await getUserListApi()
+    console.log(res);
     tableData.value = res.data.data
-    searchtableData.value= res.data.data
-  }).catch(error => {
-    console.log(error);
-  })
+    searchtableData.value = res.data.data
+    return res
 }
 //获取职位角色信息
-const getRoleList=function(){
-    getRoleListApi().then((res: any) => {
-        roleList.value=res.data.data
-    })
+async function getRoleList() {
+  let res = await getRoleListApi()
+  roleList.value = res.data.data
+  console.log(roleList.value);
+  return res
 }
 //获取企业信息
-let EnterpriseList=async function () {
-  await getEnterpriseList().then(res => {
-    enterprise.value = res.data    
-  }).catch(error => {
-    console.log(error);
-  })
+async function EnterpriseList() {
+  let res =  await getEnterpriseList()
+    enterprise.value = res.data
+    return res
 }
 const handleSizeChange = function (val: any) {
   pagingItem.value = val
@@ -204,12 +200,14 @@ const patch = function (val: any) {
 }
 const update = async function () {
   dialogFormVisible1.value = false
+  console.log(patchForm.value);
+
   await patchUserListApi(patchForm.value.id, {
     avatarName: patchForm.value.avatarName,
     deptNo: patchForm.value.deptNo,
     phoneNumber: patchForm.value.phoneNumber,
-    identityCard:patchForm.value.identityCard,
-    enterprise:patchForm.value.enterprise
+    identityCard: patchForm.value.identityCard,
+    enterprise: patchForm.value.enterprise
   }).then(res => {
     getUserList()
     ElMessage.success('修改成功')
@@ -217,17 +215,6 @@ const update = async function () {
     console.log(error);
     ElMessage.success('修改失败')
   })
-}
-// 删除
-const delate = function (val: any) {
-  // delateUserListApi(val.id, {
-  // }).then(res=>{
-  // console.log(res)
-  // })
-}
-//增加
-const add = function () {
-  dialogFormVisible.value = false
 }
 </script>
 <style scoped lang="scss">
