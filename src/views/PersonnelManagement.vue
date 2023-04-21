@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="企业名称" :label-width="formLabelWidth">
-          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择职位">
+          <el-select v-model="patchForm.enterprise" class="m-2" placeholder="请选择企业">
             <el-option v-for="item in enterprise" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
