@@ -566,6 +566,9 @@ let allArr = [
 //     console.log(res);
 // }
 emergencyResourceApi();
+
+
+console.log(111)
 </script>
 <style scoped lang="scss">
 :deep(.el-dialog .el-input__wrapper) {
