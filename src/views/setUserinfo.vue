@@ -12,7 +12,7 @@
                 </el-form-item>
 
                 <el-form-item label="身份证号">
-                    <el-input v-model="form.identityCard" placeholder="请输入身份证号..." />
+                    <el-input disabled v-model="form.identityCard" placeholder="请输入身份证号..." />
                 </el-form-item>
 
                 <el-form-item label="职位">
@@ -59,7 +59,7 @@ const form: fromType = reactive({
     enterpriseId: '' // 企业
 });
 
-let userInfo:any = ref()
+let userInfo: any = ref()
 
 let enterpriseList: any = ref();
 
@@ -93,10 +93,12 @@ async function setUserInfo(id: any, params: any) {
     }
 }
 
-async function reRunGetUserInfo () {
-  userInfo.value = await getUserInfo();
-  Object.assign(form, userInfo.value); // 合并数组
-  form.enterpriseId = userInfo.value.enterprise.id;
+async function reRunGetUserInfo() {
+    userInfo.value = await getUserInfo();
+    Object.assign(form, userInfo.value); // 合并数组
+    form.enterpriseId = userInfo.value.enterprise.id;
+    form.position = '';
+    form.identityCard = form.identityCard.replace(/^(\d{4})\d{10}(.{4}$)/g, `$1${Array(11).join('*')}$2`);
 }
 reRunGetUserInfo()
 </script>
