@@ -23,7 +23,7 @@
         </div>
         <div class="role-content mt-2">
             <el-tag v-for="tag in roleList" size="large" :key="tag.name" class="tag" closable :type="tag.type"
-                @close="handleClose(tag)" @click="update">
+                @close="handleClose(tag)">
                 {{ tag.name }}
             </el-tag>
         </div>
@@ -55,15 +55,12 @@ const addRole = function () {
 }
 async function add() {
     dialogFormVisible.value = false
-    console.log(roleInfo.value);
     addRoleListApi({
         name: roleInfo.value.name,
         description: roleInfo.value.description
     }).then((res: any) => {
-        console.log(res);
         getRoleList()
     }).catch((error) => {
-        console.log(error);
     })
 }
 //获取角色
@@ -83,7 +80,6 @@ const handleClose = function (val: any) {
         }
     ) .then(() => {
             deleteRoleListApi(val.id).then((res: any) => {
-                console.log(res);
                 getRoleList()
                 ElMessage({
                     type: 'success',
@@ -93,9 +89,6 @@ const handleClose = function (val: any) {
 
         }) 
 
-}
-const update=function(){
-    console.log(1111);    
 }
 </script>
 <style scoped lang="scss">
