@@ -87,9 +87,9 @@ const router = createRouter({
           component: () => import('../views/EmergencyDrill.vue')
         },
         {
-          path: '/factorySite',
-          name: 'factorySite',
-          component: () => import('../views/FactorySite.vue')
+          path: '/buildSite',
+          name: 'buildSite',
+          component: () => import('../views/buildSite.vue')
         },
         {
           path: '/materialOutIn',

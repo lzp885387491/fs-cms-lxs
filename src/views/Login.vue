@@ -179,10 +179,10 @@ const toRegister = function(){
 }
 </script>
 <style scoped>
-::v-deep .el-link{
+:deep(.el-link){
     color: #efefef;
 }
-::v-deep .el-link:hover{
+:deep(.el-link:hover){
     color: #fff;
     text-decoration: #fff !important;
 }
@@ -190,6 +190,9 @@ const toRegister = function(){
     display: flex;
     justify-content: space-evenly;
     padding: 10px;
+}
+.login-button{
+  font-weight: 550;
 }
 .main{
     overflow: hidden;
