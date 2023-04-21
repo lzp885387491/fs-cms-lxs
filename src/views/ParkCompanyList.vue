@@ -71,21 +71,6 @@
                 <img v-if="flag == 2" src="@/assets/images/introduction.jpg" class="img" alt="">
                 <img v-if="flag == 3" src="@/assets/images/introduction2.jpg" class="img" alt="">
             </el-dialog>
-            <!-- <el-dialog title="详情信息" width="80%" v-model="dialogFormVisible4">
-                <el-table class="table-content" :data="getDetailList" style="width: 100%"
-                    :header-cell-style="headerCellStyle" :cell-style="cellStyle">
-                    <el-table-column prop="name" label="公司名称" width="auto"></el-table-column>
-                    <el-table-column label="公司状态" width="auto">
-                        <template #default="scope">
-                            {{ filType(scope.row.status) }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="description" label="描述" width="auto"></el-table-column>
-                    <el-table-column prop="address" label="地址" width="auto"></el-table-column>
-                    <el-table-column prop="contactPerson" label="联系人" width="auto"></el-table-column>
-                    <el-table-column prop="contactTel" label="联系电话" width="auto"></el-table-column>
-                </el-table>
-            </el-dialog> -->
             <el-dialog title="当前详情" v-model="dialogFormVisible4" width="30%">
                 <div class="m-20">公司名称：{{ getDetailList.name }}</div>
                 <div class="m-20">公司状态：{{ filType(getDetailList.status) }}</div>
