@@ -107,6 +107,18 @@ const router = createRouter({
           name: 'roleManagement',
           component: () => import('../views/RoleManagement.vue')
         },
+        // 危废列表
+        {
+          path: '/hazardousWasteList',
+          name: 'hazardousWasteList',
+          component: () => import('../views/HazardousWasteList.vue')
+        },
+        // 危废转移记录
+        {
+          path: '/hazardousWasteTransferRecords',
+          name: 'hazardousWasteTransferRecords',
+          component: () => import('../views/HazardousWasteTransferRecords.vue')
+        },
       ]
     },
     {
