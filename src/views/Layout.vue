@@ -2,51 +2,54 @@
   <div class="layout">
     <el-container class="container">
       <div class="aside">
-          <el-col :span="24" class="col">
-            <el-menu :default-active="route.name" class="el-menu-vertical-demo menu" active-text-color="#ffd04b"
-              background-color="#545c64" text-color="#fff" :collapse="isCollapse">
-              <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
-                <template #title>
-                  <el-icon>
-                    <component :is="item.icon"></component>
-                  </el-icon>
-                  <span>{{ item.label }}</span>
-                </template>
-                <el-menu-item @click="navigator(children)" :index="children.name"
-                  v-for="(children, index) in item.children" :key="index">{{
-                    children.label }}</el-menu-item>
-              </el-sub-menu>
-            </el-menu>
-          </el-col>
-        </div>
-        <div class="content">        
-          <el-header class="header">
-              <el-icon v-model="isCollapse" @click="collapse" size="3rem"><Expand v-if="isCollapse"  /> <Fold v-else /></el-icon>
-              <h3>浮山化工园区ERP管理平台</h3>           
-            <div class="user-info">
-              <div class="avatar">
-                <img src="@/assets/images/user_avatar.png" alt="">
-              </div>
-              <el-dropdown class="pointer" trigger="click">
-                <span class="el-dropdown-link">
-                  <span>{{ userInfo.avatarName ? userInfo.avatarName : '用户昵称' }}</span>
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
-                </span>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item class="pointer" :icon="Setting" @click="nav('setUserInfo')">修改个人信息</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
+        <el-col :span="24" class="col">
+          <el-menu :default-active="route.name" class="el-menu-vertical-demo menu" active-text-color="#ffd04b"
+            background-color="#545c64" text-color="#fff" :collapse="isCollapse">
+            <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
+              <template #title>
+                <el-icon>
+                  <component :is="item.icon"></component>
+                </el-icon>
+                <span>{{ item.label }}</span>
+              </template>
+              <el-menu-item @click="navigator(children)" :index="children.name" v-for="(children, index) in item.children"
+                :key="index">{{
+                  children.label }}</el-menu-item>
+            </el-sub-menu>
+          </el-menu>
+        </el-col>
+      </div>
+      <div class="content">
+        <el-header class="header">
+          <el-icon v-model="isCollapse" @click="collapse" size="3rem">
+            <Expand v-if="isCollapse" />
+            <Fold v-else />
+          </el-icon>
+          <h3>浮山化工园区ERP管理平台</h3>
+          <div class="user-info">
+            <div class="avatar">
+              <img src="@/assets/images/user_avatar.png" alt="">
             </div>
-          </el-header>
-          <el-container >
-            
-            <div class="main">
-              <RouterView></RouterView>
-            </div>
-          </el-container>
-        </div>
+            <el-dropdown class="pointer" trigger="click">
+              <span class="el-dropdown-link">
+                <span>{{ userInfo.avatarName ? userInfo.avatarName : '用户昵称' }}</span>
+                <el-icon class="el-icon--right"><arrow-down /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item class="pointer" :icon="Setting" @click="nav('setUserInfo')">修改个人信息</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </el-header>
+        <el-container>
+
+          <div class="main">
+            <RouterView></RouterView>
+          </div>
+        </el-container>
+      </div>
     </el-container>
   </div>
 </template>
@@ -181,11 +184,12 @@ function nav(name: string): void {
 .layout {
   height: 100vh;
   width: 100vw;
+
   .container {
-    
     width: 100%;
-    display: grid;
-    grid-template-columns: auto auto;
+    height: 100%;
+    display: flex;
+    // grid-template-columns: 200px auto;
 
     .aside {
       .col {
@@ -196,52 +200,52 @@ function nav(name: string): void {
         }
       }
     }
-.content{
-  .header {
-    height: 60px;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    h3 {
-      font-size: 16px;
-    }
+    .content {
+      width: 100%;
+      box-sizing: border-box;
+      .header {
+        height: 60px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
 
-    .user-info {
-      display: flex;
-      align-items: center;
+        h3 {
+          font-size: 16px;
+        }
 
-      .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 10px;
+        .user-info {
+          display: flex;
+          align-items: center;
 
-        img {
-          width: 100%;
-          height: 100%;
+          .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .pointer {
+            cursor: pointer;
+          }
         }
       }
 
-      .pointer {
-        cursor: pointer;
+      .main {
+        height: calc(100% - 60px);
+        padding: 20px;
+        width:calc(100% - 20px) ;
+        box-sizing: border-box;
       }
     }
+
   }
-  .main {
-    height: calc(100vh - 60px);
-      padding: 20px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-}
-    
-  }
-  
-
-
-
-}
-</style>
+}</style>
