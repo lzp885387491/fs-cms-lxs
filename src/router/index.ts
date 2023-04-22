@@ -22,6 +22,11 @@ const router = createRouter({
           component: () => import('../views/ParkInfo.vue')
         },
         {
+          path: '/personvehicleinoutmanagement',
+          name: 'PersonVehicleInOutManagement',
+          component: () => import('../views/PersonVehicleInOutManagement.vue')
+        },
+        {
           path: '/setUserInfo',
           name: 'setUserInfo',
           component: () => import('@/views/setUserinfo.vue')
