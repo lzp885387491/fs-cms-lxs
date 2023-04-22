@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { Document, } from '@element-plus/icons-vue'
+import { Document, CreditCard} from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Setting } from '@element-plus/icons-vue'
 import { ref } from 'vue'
@@ -121,14 +121,16 @@ const menu = [
         label: '卡口管理',
         name: 'parkMonitor'
       },
-      // {
-      //   label: '危出入园管理',
-      //   name: 'accessPark'
-      // },
-      // {
-      //   label: '公司监控',
-      //   name: 'companyMonitor'
-      // },
+    ]
+  },
+  {
+    icon: CreditCard,
+    label: '封闭化管理',
+    children: [
+      {
+        label: '人员车辆进出管理',
+        name: 'PersonVehicleInOutManagement'
+      },
     ]
   },
   // {
