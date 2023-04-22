@@ -12,12 +12,15 @@ import 'video.js/dist/video-js.css'
 import Video from 'video.js'
 import video_zhCN from 'video.js/dist/lang/zh-CN.json'
 import video_en from 'video.js/dist/lang/en.json'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 Video.addLanguage('zh-CN', video_zhCN);
 Video.addLanguage('en', video_en);
 
 const app = createApp(App)
-
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)

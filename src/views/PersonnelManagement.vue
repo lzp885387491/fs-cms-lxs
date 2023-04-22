@@ -8,8 +8,8 @@
         <el-button type="primary" @click="search" size="large">搜索</el-button>
       </div>
     </div>
-    <div class="container mt-2">
-      <el-table :data="newTableData" style="width: 100%" :header-cell-style="headerCellStyle" :cell-style="cellStyle">
+    <div class="container mt-2" >
+      <el-table :data="newTableData"  style="width: 100%; overflow: hidden;" :header-cell-style="headerCellStyle" :cell-style="cellStyle">
         <el-table-column prop="id" label="序号" align="center" width="60">
         </el-table-column>
         <el-table-column prop="avatarName" label="姓名" align="center" width="auto">
@@ -68,12 +68,6 @@
         <div class="m-20">手机号：{{ detailForm.phoneNumber }}</div>
         <div class="m-20">身份证号：{{ detailForm.identityCard }}</div>
         <div class="m-20">公司：{{ detailForm.enterprise.name }}</div>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click=" detailDialog = false ">取 消</el-button>
-                <el-button type="primary" @click=" detailDialog = false">确 定</el-button>
-            </span>
-        </template>
     </el-dialog>
     <div class="block mt-2">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
