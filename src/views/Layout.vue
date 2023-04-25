@@ -124,6 +124,21 @@ const menu = [
     ]
   },
   {
+    icon: Document,
+    label: '危废管理',
+    children: [
+      {
+        label: '危险废物列表',
+        name: 'hazardousWasteList'
+      },
+      {
+        label: '危险废物转移记录',
+        name: 'hazardousWasteTransferRecords'
+      },
+   
+    ]
+  },
+  {
     icon: Setting,
     label: '园区监控',
     children: [
