@@ -124,21 +124,21 @@ const menu = [
       },
     ]
   },
-  {
-    icon: Document,
-    label: '危废管理',
-    children: [
-      {
-        label: '危险废物列表',
-        name: 'hazardousWasteList'
-      },
-      {
-        label: '危险废物转移记录',
-        name: 'hazardousWasteTransferRecords'
-      },
+  // {
+  //   icon: Document,
+  //   label: '危废管理',
+  //   children: [
+  //     {
+  //       label: '危险废物列表',
+  //       name: 'hazardousWasteList'
+  //     },
+  //     {
+  //       label: '危险废物转移记录',
+  //       name: 'hazardousWasteTransferRecords'
+  //     },
    
-    ]
-  },
+  //   ]
+  // },
   {
     icon: Setting,
     label: '园区监控',
@@ -208,6 +208,9 @@ function nav(name: string): void {
   height: 100vh;
   width: 100vw;
 
+  ::-webkit-scrollbar {
+         display: none; 
+  }
   .container {
     width: 100%;
     height: 100%;
@@ -215,6 +218,7 @@ function nav(name: string): void {
     // grid-template-columns: 200px auto;
 
     .aside {
+      overflow: scroll;
       .col {
         height: 100%;
 
