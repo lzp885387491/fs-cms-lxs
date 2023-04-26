@@ -4,9 +4,10 @@
       <div class="aside">
         <el-col :span="24" class="col">
           <el-menu :default-active="route.name" class="el-menu-vertical-demo menu" active-text-color="#ffd04b"
-            background-color="#545c64" text-color="#fff" :collapse="isCollapse">
-            <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
-              <template #title>
+          background-color="#545c64" text-color="#fff" :collapse="isCollapse">
+          <img class="fs-icon_title" src="../assets/images/icon-fs_logo3.png" alt="">
+          <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
+            <template #title>
                 <el-icon>
                   <component :is="item.icon"></component>
                 </el-icon>
@@ -196,6 +197,13 @@ function nav(name: string): void {
 </script>
 
 <style scoped lang="scss">
+.el-menu{
+  text-align: center;
+}
+.fs-icon_title{
+  padding: 20px 0;
+  width: 80%;
+}
 .layout {
   height: 100vh;
   width: 100vw;

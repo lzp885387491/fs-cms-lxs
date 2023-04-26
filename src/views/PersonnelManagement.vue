@@ -71,7 +71,7 @@
     </el-dialog>
     <div class="block mt-2">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="[1, 2, 5, 10, 20]" :page-size="pagingItem" layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[1, 2, 5, 10]" :page-size="pagingItem" layout="total, sizes, prev, pager, next, jumper"
         :total="val">
       </el-pagination>
     </div>

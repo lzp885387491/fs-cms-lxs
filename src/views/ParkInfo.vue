@@ -235,7 +235,7 @@ const determine = async function(){
     getParkList()
   };
 }
-// 取消m
+// 取消
 const cancellation = function(){
   disabled.value = true;
   getParkList();
