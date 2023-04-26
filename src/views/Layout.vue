@@ -2,12 +2,16 @@
   <div class="layout">
     <el-container class="container">
       <div class="aside">
-        <el-col :span="24" class="col">
+        <el-col class="col">
+          <!-- <el-col :span="24"><div class="fs-icon_title"></div></el-col> -->
+          <div class="fs-icon_title">
+            <!-- <img :class="isMin ? 'logo-min logo' : 'logo-max logo'" src="../assets/images/icon-fs_logo3.png" alt=""
+              width="100%"> -->
+          </div>
           <el-menu :default-active="route.name" class="el-menu-vertical-demo menu" active-text-color="#ffd04b"
-          background-color="#545c64" text-color="#fff" :collapse="isCollapse">
-          <img class="fs-icon_title" src="../assets/images/icon-fs_logo3.png" alt="">
-          <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
-            <template #title>
+            background-color="#545c64" text-color="#fff" :collapse="isCollapse">
+            <el-sub-menu :index="item.label" v-for="(item, index) in menu" :key=index>
+              <template #title>
                 <el-icon>
                   <component :is="item.icon"></component>
                 </el-icon>
@@ -17,6 +21,7 @@
                 :key="index">{{
                   children.label }}</el-menu-item>
             </el-sub-menu>
+
           </el-menu>
         </el-col>
       </div>
@@ -59,7 +64,7 @@
 import { Document, CreditCard } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Setting } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 const { getUserInfo } = useUserStore();
 
@@ -68,6 +73,9 @@ const isCollapse = ref(false)
 const route = useRoute()
 const router = useRouter()
 
+const isMin = computed(()=>{
+  return isCollapse.value
+})
 
 interface MenuItem {
   label: string
@@ -136,7 +144,7 @@ const menu = [
   //       label: '危险废物转移记录',
   //       name: 'hazardousWasteTransferRecords'
   //     },
-   
+
   //   ]
   // },
   {
@@ -197,20 +205,23 @@ function nav(name: string): void {
 </script>
 
 <style scoped lang="scss">
-.el-menu{
+.el-menu {
   text-align: center;
 }
-.fs-icon_title{
-  padding: 20px 0;
-  width: 80%;
-}
+
+// .fs-icon_title {
+//   padding: 20px 0;
+//   width: 80%;
+// }
+
 .layout {
   height: 100vh;
   width: 100vw;
 
   ::-webkit-scrollbar {
-         display: none; 
+    display: none;
   }
+
   .container {
     width: 100%;
     height: 100%;
@@ -218,12 +229,56 @@ function nav(name: string): void {
     // grid-template-columns: 200px auto;
 
     .aside {
-      overflow: scroll;
       .col {
         height: 100%;
 
+        // background-color:#545c64;
+        .fs-icon_title {
+          padding: 10px 0;
+          box-sizing: border-box;
+          .logo {}
+
+          .logo-max {
+            width: 64px;
+            height: 100%;
+            display: block;
+            animation: fadenum 1s;
+            animation-fill-mode: forwards;
+          }
+
+          .logo-min {
+              width: 50%;
+              height: 100%;
+            display: block;
+            // animation: fadenum2 0.2s;
+            // animation-fill-mode: forwards;
+          }
+
+          @keyframes fadenum {
+            100% {
+              width: 50%;
+              height: 100%;
+              margin: 0 auto;
+            }
+          }
+          @keyframes fadenum2 {
+            100% {
+              width: 100%;
+            }
+          }
+
+          width: 100%;
+          height: 6rem;
+          background-color:#545c64;
+          background-image: url(../assets/images/icon-fs_logo3.png);
+          background-repeat: no-repeat;
+          background-size:80% 6rem;
+          background-position:center;
+        }
+
         .menu {
-          height: 100%;
+          overflow-y: scroll;
+          height: calc(100% - 6rem);
         }
       }
     }
@@ -231,6 +286,7 @@ function nav(name: string): void {
     .content {
       width: 100%;
       box-sizing: border-box;
+
       .header {
         height: 60px;
         border-bottom: 1px solid #ccc;
@@ -268,11 +324,13 @@ function nav(name: string): void {
 
       .main {
         height: calc(100% - 60px);
+        // width: 100%;
         padding: 20px;
-        width:calc(100% - 20px) ;
+        width: calc(100% - 20px);
         box-sizing: border-box;
       }
     }
 
   }
-}</style>
+}
+</style>
