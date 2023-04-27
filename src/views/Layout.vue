@@ -66,6 +66,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Setting } from '@element-plus/icons-vue'
 import { computed, ref } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
+import { ElMessage } from 'element-plus'
 const { getUserInfo } = useUserStore();
 
 const userInfo: any = ref({});
@@ -153,7 +154,8 @@ const menu = [
     children: [
       {
         label: '卡口管理',
-        name: 'parkMonitor'
+        name: ''
+        // name: 'parkMonitor'
       },
     ]
   },
@@ -191,7 +193,13 @@ const collapse = function () {
 }
 
 const navigator = function (item: MenuItem) {
-  router.push(item.name)
+  router.push(item.name);
+  if (item.name == '') {
+    ElMessage({
+      message: item.label + '模块暂未开放!',
+      type: 'warning',
+    })
+  }
 };
 
 (async function () {
